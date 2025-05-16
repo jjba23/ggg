@@ -1,7 +1,8 @@
 
 (define-module (sigilcraft main)
   #:declarative? #f
-  #:use-module (ice-9 getopt-long))
+  #:use-module (ice-9 getopt-long)
+  #:use-module (sxml simple))
 
 (define (mk-badges)
   `((div
@@ -12,6 +13,6 @@
   (newline)
   (with-output-to-file "dist/index.html"
     (lambda ()
-      (display (mk-badges)))))
+      (sxml->xml (mk-badges)))))
 
 (main (command-line))
