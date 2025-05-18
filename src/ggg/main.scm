@@ -368,7 +368,7 @@ formatting."
      (right-background . "#deb07a")
      (right-text . "Guile")
      (right-color . "#000"))
-    ((id . haskell)
+    ((id . haskell-ghc910)
      (left-background "#555")
      (left-text . "Haskell")
      (left-color . "#fff")
