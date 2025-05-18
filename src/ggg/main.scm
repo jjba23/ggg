@@ -356,7 +356,7 @@ formatting."
                                                    'right-color)))
 
 (define vector-images
-  `(((id . pipeline-success) (left-background . "#444")
+  `(((id . pipeline-succeeded) (left-background . "#444")
      (left-text . "pipeline")
      (left-color . "#fff")
      (right-background . "#407430")

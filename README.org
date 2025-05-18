@@ -11,9 +11,23 @@ If you like my work, please support me by [[https://bmc.link/jjbigorra][buying m
 
 ------
 
-* What is the GGG
+* Example Badges Generated
 
-Tired of bland, static status badges for your projects? Say hello to the *Guile Glyph Generator (GGG)*, a small but mighty tool crafted in the elegant Scheme programming language.
+Tired of bland, static status badges for your projects? Say hello to the *Guile Glyph Generator (GGG)*, a small but mighty tool crafted in the elegant Scheme programming language. Based on the provided configuration, GGG will produce something like the following badges (as both SVG and PNG files):
+
+[[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/gnu-emacs.png]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/gnu-make.png]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/scheme-guile.png]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/pipeline-succeeded.png]]
+
+--------
+
+* License
+
+ggg is free software released under the GNU General Public License (GPL) version 3 or later.  
+See the [[https://www.gnu.org/licenses/][GNU GPL]] for details.
+
+
+-------  
+
+* What is GGG
 
 GGG allows you to effortlessly generate stylish, customizable SVG, PNG and more badges directly from your command line.
 
@@ -28,22 +42,6 @@ With GGG, you have the power to create your own with a consistent and clean aest
 -  *Simple Definition:* Badge configurations are defined in an easy-to-understand data structure within the Scheme code.
 
   -----
-
-* License
-
-ggg is free software released under the GNU General Public License (GPL) version 3 or later.  
-See the [[https://www.gnu.org/licenses/][GNU GPL]] for details.
-
-
--------  
-
-* Example Badges Generated
-
-Based on the provided configuration, GGG will produce something like the following badges (as both SVG and PNG files):
-
-[[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/gnu-emacs.png]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/gnu-make.png]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/scheme-guile.png]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/pipeline-succeeded.png]]
-
---------
 
 * Get Started:
 
