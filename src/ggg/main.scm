@@ -289,7 +289,8 @@ formatting."
       (img (@ (id ,(format #f "~a-img" id))) ""))))
 
 (define (mk-vector-image xs)
-  (mk-badge #:id (assoc-ref xs 'id)
+  (mk-badge #:id (assoc-ref xs
+                            'id)
             #:left-background (assoc-ref xs
                                          'left-background)
             #:left-text (assoc-ref xs
@@ -304,16 +305,13 @@ formatting."
                                      'right-color)))
 
 (define vector-images
-  `(
-    ((id . pipeline-success)
-     (left-background . "#444")
+  `(((id . pipeline-success) (left-background . "#444")
      (left-text . "pipeline")
      (left-color . "#fff")
      (right-background . "#407430")
      (right-text . "succeeded")
      (right-color . "#fff"))
-    ((id . scheme-guile)
-     (left-background . "#444")
+    ((id . scheme-guile) (left-background . "#444")
      (left-text . "Scheme")
      (left-color . "#fff")
      (right-background . "#deb07a")
@@ -321,8 +319,6 @@ formatting."
      (right-color . "#000"))
 
     ))
-
-
 
 ;;     (gnu-make .
 ;;               (lambda(id ) (mk-badge
@@ -348,16 +344,25 @@ formatting."
 
 (define (badges-page)
   `("<!DOCTYPE html>" (div (h1 "GGG: Guile Glyph Generator")
-                           (em "Generate SVG images for handy useful glyphs, org/markdown badges and more, from Lisp (Guile Scheme), leveraging web development as well.")
+                           (em
+                            "Generate SVG images for handy useful glyphs, org/markdown badges and more, from Lisp (Guile Scheme), leveraging web development as well.")
                            (div (@ (style "padding: 1rem;")) "")
 
                            (script (@ (src "/index.js")) "")
-                           (script ,(format #f "
+                           (script ,(format #f
+                                     "
+const vectorImages = [~a]
 document.addEventListener('DOMContentLoaded', () => {
-  let vectorImages = [~a]
-  vectorImages.forEach(v => renderSvgToImage(v))
+
+  vectorImages.forEach(v => renderSvgToImage(v, false))
 })
-" (string-join (map (lambda(x) (assoc-ref x 'id)) vector-images) ",")))
+"
+                                     (string-join (map (lambda (x)
+                                                         (format #f "'~a'"
+                                                                 (symbol->string
+                                                                  (assoc-ref x
+                                                                   'id))))
+                                                       vector-images) ",")))
                            (div ""))))
 
 (define (main args)
@@ -368,3 +373,4 @@ document.addEventListener('DOMContentLoaded', () => {
       (sxml->xml (badges-page)))))
 
 (main (command-line))
+
