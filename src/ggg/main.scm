@@ -1,5 +1,5 @@
 
-(define-module (sigilcraft main)
+(define-module (ggg main)
   #:declarative? #f
   #:use-module (ice-9 getopt-long)
   #:use-module (ice-9 string-fun)
@@ -233,7 +233,7 @@ formatting."
                         (#\& . "&amp;")
                         (#\" . "&quot;"))))
 
-;; ====== SigilCraft ======
+;; ====== GGG ======
 
 (define* (mk-badge #:key left-background
                    left-color
@@ -347,7 +347,8 @@ formatting."
 ;;   )
 
 (define (badges-page)
-  `("<!DOCTYPE html>" (div (h1 "SigilCraft")
+  `("<!DOCTYPE html>" (div (h1 "GGG: Guile Glyph Generator")
+                           (em "Generate SVG images for handy useful glyphs, org/markdown badges and more, from Lisp (Guile Scheme), leveraging web development as well.")
                            (div (@ (style "padding: 1rem;")) "")
 
                            (script (@ (src "/index.js")) "")
