@@ -41,9 +41,9 @@ See the [[https://www.gnu.org/licenses/][GNU GPL]] for details.
 
 Based on the provided configuration, GGG will produce something like the following badges (as both SVG and PNG files):
 
+[[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/gnu-emacs.png]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/gnu-make.png]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/scheme-guile.png]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/pipeline-succeeded.png]]
 
-
-----
+--------
 
 * Get Started:
 
