@@ -1,4 +1,4 @@
-#+title: GGG: Guile Glyph Generator
+#+title: 🚧 GGG: Guile Glyph Generator
 #+author: Josep Bigorra
 #+email: jjbigorra@gmail.com
 
