@@ -235,38 +235,41 @@ formatting."
 
 ;; ====== SigilCraft ======
 
-(define* (mk-svg #:key left-background
-                 left-color
-                 left-text
-                 right-background
-                 right-color
-                 right-text
-                 id)
+(define* (mk-badge #:key left-background
+                   left-color
+                   left-text
+                   right-background
+                   right-color
+                   right-text
+                   id
+                   (font-family "sans-serif")
+                   (border-radius 6)
+                   (height 24))
   `((svg (@ (id ,id)
             (xmlns "http://www.w3.org/2000/svg")
             (width 140)
-            (height 24)
-            (viewBox "0 0 140 24"))
+            (height ,height)
+            (viewBox ,(format #f "0 0 140 ~a" height)))
          (g (@ (shape-rendering geometricPrecision))
             (rect (@ (width 70)
-                     (height 24)
+                     (height ,height)
                      (fill ,left-background)
-                     (rx 6)
-                     (ry 6)) "")
+                     (rx ,border-radius)
+                     (ry ,border-radius)) "")
             (rect (@ (x 56)
                      (width 10)
-                     (height 24)
+                     (height ,height)
                      (fill ,right-background)
                      (rx 0)
                      (ry 0)) "")
             (rect (@ (x 60)
                      (width 70)
-                     (height 24)
+                     (height ,height)
                      (fill ,right-background)
-                     (rx 6)
-                     (ry 6)) ""))
+                     (rx ,border-radius)
+                     (ry ,border-radius)) ""))
          (g (@ (text-anchor middle)
-               (font-family "sans-serif")
+               (font-family ,font-family)
                (font-size 11))
             (text (@ (fill ,left-color)
                      (x 30)
@@ -280,45 +283,36 @@ formatting."
 
 (define (mk-badges)
   `((div (h1 "SigilCraft")
-         ,(mk-svg #:id 'pipeline-success
-                  #:left-background "#444"
-                  #:left-text "pipeline"
-                  #:left-color "#fff"
-                  #:right-background "#407430"
-                  #:right-text "succeeded"
-                  #:right-color "#fff")
-         ,(mk-svg #:id 'pipeline-success
-                  #:left-background "#444"
-                  #:left-text "GNU"
-                  #:left-color "#fff"
-                  #:right-background "#deb07a"
-                  #:right-text "Guile"
-                  #:right-color "#000")
+         ,(mk-badge #:id 'pipeline-success
+                    #:left-background "#444"
+                    #:left-text "pipeline"
+                    #:left-color "#fff"
+                    #:right-background "#407430"
+                    #:right-text "succeeded"
+                    #:right-color "#fff")
+         ,(mk-badge #:id 'scheme-guile
+                    #:left-background "#444"
+                    #:left-text "Scheme"
+                    #:left-color "#fff"
+                    #:right-background "#deb07a"
+                    #:right-text "Guile"
+                    #:right-color "#000")
+         ,(mk-badge #:id 'gnu-make
+                    #:left-background "#444"
+                    #:left-text "GNU"
+                    #:left-color "#fff"
+                    #:right-background "#bbbbbb"
+                    #:right-text "Make"
+                    #:right-color "#000")
+         ,(mk-badge #:id 'gnu-emacs
+                    #:left-background "#444"
+                    #:left-text "GNU"
+                    #:left-color "#fff"
+                    #:right-background "#885997"
+                    #:right-text "Emacs"
+                    #:right-color "#fff")
          )
-    (script "
-function renderSvgToImage(id) {
-  let svg = document.getElementById(id);
-  let img = document.getElementById(id + '-img');
-  let canvas = document.createElement('canvas');
-
-  let xml = new XMLSerializer().serializeToString(svg);
-
-  let svg64 = btoa(xml);
-  let b64Start = 'data:image/svg+xml;base64,';
-
-  var image64 = b64Start + svg64;
-
-  img.onload = function() {
-      canvas.getContext('2d').drawImage(img, 0, 0);
-  }
-  img.src = image64;
-  svg.style.display = 'none';
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  renderSvgToImage('pipeline-success')
-})
-")))
+    (script (@(src "/index.js")) "")))
 
 (define (main args)
   (display args)
