@@ -8,6 +8,9 @@
 
 If you like my work, please support me by [[https://bmc.link/jjbigorra][buying me a cup of coffee ☕]] so I can continue with a lot of motivation.
 
+
+------
+
 * What is the GGG
 
 Tired of bland, static status badges for your projects? Say hello to the *Guile Glyph Generator (GGG)*, a small but mighty tool crafted in the elegant Scheme programming language.
@@ -24,11 +27,23 @@ With GGG, you have the power to create your own with a consistent and clean aest
 -  *Highly Customizable:* Define the text, background colors, and text colors for both the left and right sections of your badge.
 -  *Simple Definition:* Badge configurations are defined in an easy-to-understand data structure within the Scheme code.
 
+  -----
+
+* License
+
+ggg is free software released under the GNU General Public License (GPL) version 3 or later.  
+See the [[https://www.gnu.org/licenses/][GNU GPL]] for details.
+
+
+-------  
 
 * Example Badges Generated
 
 Based on the provided configuration, GGG will produce something like the following badges (as both SVG and PNG files):
 
+
+
+----
 
 * Get Started:
 
