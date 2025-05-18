@@ -235,17 +235,17 @@ formatting."
 
 ;; ====== GGG ======
 
-(define* (mk-badge #:key left-background
-                   left-color
-                   left-text
-                   right-background
-                   right-color
-                   right-text
-                   id
-                   (font-family "sans-serif")
-                   (font-size 11)
-                   (border-radius 6)
-                   (height 24))
+(define* (mk-readme-vector-image #:key left-background
+                                 left-color
+                                 left-text
+                                 right-background
+                                 right-color
+                                 right-text
+                                 id
+                                 (font-family "sans-serif")
+                                 (font-size 11)
+                                 (border-radius 6)
+                                 (height 24))
   (let* ((left-length (string-length left-text))
          (left-width (round (* 10 left-length)))
          (right-length (string-length right-text))
@@ -257,7 +257,8 @@ formatting."
               (height ,height)
               (viewBox ,(format #f "0 0 ~a ~a" total-width height)))
            (g (@ (shape-rendering geometricPrecision))
-              (rect (@ (width ,left-width)
+              (rect (@ (x 0)
+                       (width ,left-width)
                        (height ,height)
                        (fill ,left-background)
                        (rx ,border-radius)
@@ -288,21 +289,21 @@ formatting."
                     ,right-text)))
       (img (@ (id ,(format #f "~a-img" id))) ""))))
 
-(define (mk-vector-image xs)
-  (mk-badge #:id (assoc-ref xs
-                            'id)
-            #:left-background (assoc-ref xs
-                                         'left-background)
-            #:left-text (assoc-ref xs
-                                   'left-text)
-            #:left-color (assoc-ref xs
-                                    'left-color)
-            #:right-background (assoc-ref xs
-                                          'right-background)
-            #:right-text (assoc-ref xs
-                                    'right-text)
-            #:right-color (assoc-ref xs
-                                     'right-color)))
+(define (mk-vector-image x)
+  (mk-readme-vector-image #:id (assoc-ref x
+                                          'id)
+                          #:left-background (assoc-ref x
+                                                       'left-background)
+                          #:left-text (assoc-ref x
+                                                 'left-text)
+                          #:left-color (assoc-ref x
+                                                  'left-color)
+                          #:right-background (assoc-ref x
+                                                        'right-background)
+                          #:right-text (assoc-ref x
+                                                  'right-text)
+                          #:right-color (assoc-ref x
+                                                   'right-color)))
 
 (define vector-images
   `(((id . pipeline-success) (left-background . "#444")
@@ -317,44 +318,36 @@ formatting."
      (right-background . "#deb07a")
      (right-text . "Guile")
      (right-color . "#000"))
-
-    ))
-
-;;     (gnu-make .
-;;               (lambda(id ) (mk-badge
-;;                        #:id id
-;;                        #:left-background "#444"
-;;                        #:left-text "GNU"
-;;                        #:left-color "#fff"
-;;                        #:right-background "#bbbbbb"
-;;                        #:right-text "Make"
-;;                        #:right-color "#000")))
-
-;;     (gnu-emacs .
-;;                (lambda(id) (mk-badge
-;;                        #:id id
-;;                        #:left-background "#444"
-;;                        #:left-text "GNU"
-;;                        #:left-color "#fff"
-;;                        #:right-background "#885997"
-;;                        #:right-text "Emacs"
-;;                        #:right-color "#fff")))
-;;     )
-;;   )
+    ((id . gnu-make) (left-background . "#444")
+     (left-text . "GNU")
+     (left-color . "#fff")
+     (right-background . "#bbbbbb")
+     (right-text . "Make")
+     (right-color . "#000"))
+    ((id . gnu-emacs) (left-background . "#444")
+     (left-text . "GNU")
+     (left-color . "#fff")
+     (right-background . "#885997")
+     (right-text . "Emacs")
+     (right-color . "#fff"))))
 
 (define (badges-page)
   `("<!DOCTYPE html>" (div (h1 "GGG: Guile Glyph Generator")
                            (em
                             "Generate SVG images for handy useful glyphs, org/markdown badges and more, from Lisp (Guile Scheme), leveraging web development as well.")
-                           (div (@ (style "padding: 1rem;")) "")
+                           (div (@ (style "padding: 1rem;"))
+                                ,(map mk-vector-image vector-images))
 
                            (script (@ (src "/index.js")) "")
                            (script ,(format #f
                                      "
 const vectorImages = [~a]
 document.addEventListener('DOMContentLoaded', () => {
-
-  vectorImages.forEach(v => renderSvgToImage(v, false))
+  vectorImages.forEach(vectorImageId => renderSvgToImage({
+    id: vectorImageId,
+    hideImages: true,
+    hideVectorImages: false
+  }))
 })
 "
                                      (string-join (map (lambda (x)
