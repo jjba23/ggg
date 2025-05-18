@@ -4,6 +4,10 @@
   #:use-module (ice-9 getopt-long)
   #:use-module (ice-9 string-fun)
   #:use-module (ice-9 textual-ports)
+  #:use-module (srfi srfi-1)
+  #:use-module (ice-9 iconv)
+  #:use-module (ice-9 popen)
+  #:use-module (ice-9 rdelim)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
@@ -235,21 +239,29 @@ formatting."
 
 ;; ====== GGG ======
 
+(define (syscall cmd)
+  (let* ((process (open-input-pipe cmd))
+         (process-output (get-string-all process)))
+    (close-pipe process) process-output))
+
+(define (get-short-commit-sha)
+  (syscall "git log --pretty=format:'%h' -n 1"))
+
 (define* (length-for-text text-length)
   (cond
-   ((< text-length 4)
-    (round (* 17 text-length)))
-   ((< text-length 5)
-    (round (* 15 text-length)))
-   ((< text-length 6)
-    (round (* 13 text-length)))
-   ((< text-length 7)
-    (round (* 12 text-length)))
-   ((< text-length 8)
-    (round (* 10 text-length)))
-   ((< text-length 10)
-    (round (* 9 text-length)))
-   (else (round (* 6 text-length)))))
+    ((< text-length 4)
+     (round (* 17 text-length)))
+    ((< text-length 5)
+     (round (* 15 text-length)))
+    ((< text-length 6)
+     (round (* 13 text-length)))
+    ((< text-length 7)
+     (round (* 12 text-length)))
+    ((< text-length 8)
+     (round (* 10 text-length)))
+    ((< text-length 10)
+     (round (* 9 text-length)))
+    (else (round (* 6 text-length)))))
 
 (define* (mk-readme-vector-image #:key left-background
                                  left-color
@@ -309,8 +321,7 @@ formatting."
                                      (/ left-width 2)
                                      (/ left-width 12))))
                        (y ,text-y))
-                    ,right-text)))
-      (img (@ (id ,(format #f "~a-img" id))) ""))))
+                    ,right-text))))))
 
 (define (mk-vector-image x)
   (mk-readme-vector-image #:id (assoc-ref x
@@ -354,39 +365,34 @@ formatting."
      (right-text . "Emacs")
      (right-color . "#fff"))))
 
-(define (badges-page)
-  `("<!DOCTYPE html>" (div (h1 "GGG: Guile Glyph Generator")
-                           (em
-                            "Generate SVG images for handy useful glyphs, org/markdown badges and more, from Lisp (Guile Scheme), leveraging web development as well.")
-                           (div (@ (style "padding: 1rem; display: flex; flex-direction: column; gap: 0.6rem;"))
-                                ,(map mk-vector-image vector-images))
-
-                           (script (@ (src "/index.js")) "")
-                           (script ,(format #f
-                                            "
-const vectorImages = [~a]
-document.addEventListener('DOMContentLoaded', () => {
-  vectorImages.forEach(vectorImageId => renderSvgToImage({
-    id: vectorImageId,
-    hideImages: true,
-    hideVectorImages: false
-  }))
-})
-"
-                                            (string-join (map (lambda (x)
-                                                                (format #f "'~a'"
-                                                                        (symbol->string
-                                                                         (assoc-ref x
-                                                                                    'id))))
-                                                              vector-images) ",")))
-                           (div ""))))
-
 (define (main args)
+  (display "
+>>= starting ggg: guile glyph generator
+")
   (display args)
   (newline)
-  (with-output-to-file "dist/index.html"
-    (lambda ()
-      (sxml->xml (badges-page)))))
+  (map (lambda (vector-image)
+         (display (format #f "\n>>= producing svg dist/~a.svg\n"
+                          (assoc-ref vector-image
+                                     'id)))
+         (with-output-to-file (format #f "dist/~a.svg"
+                                      (assoc-ref vector-image
+                                                 'id))
+           (lambda ()
+             (sxml->xml (mk-vector-image vector-image))))) vector-images)
+
+  (map (lambda (vector-image)
+         (display (format #f "\n>>= producing png dist/~a.png\n"
+                          (assoc-ref vector-image
+                                     'id)))
+         (syscall (format #f
+                   "convert -background none -size 200x200 dist/~a.svg dist/~a.png"
+                   (assoc-ref vector-image
+                              'id)
+                   (assoc-ref vector-image
+                              'id)))) vector-images)
+  (display "\n>>= ggg is done generating images\n"))
 
 (main (command-line))
+
 

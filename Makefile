@@ -1,12 +1,10 @@
 
-serve:
+build:
 	rm -rfv dist
 	mkdir dist
 	guix shell -m manifest.scm -- guile --fresh-auto-compile src/ggg/main.scm
-	cp -rfv resources/js/index.js dist/
-	darkhttpd ./dist --port 50089
 dev:
-	watchexec -i "dist/**" -r -e scm,css,js -- "make serve"
+	watchexec -i "dist/**" -r -e scm,css,js -- "make build"
 
 # Target to format source code files according to the style guide
 # Find all .scm files and format them using 'guix style'
