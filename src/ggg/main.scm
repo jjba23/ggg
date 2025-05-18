@@ -235,6 +235,18 @@ formatting."
 
 ;; ====== GGG ======
 
+(define* (length-for-text text-length)
+  (cond
+   ((< text-length 4)
+    (round (* 20 text-length)))
+   ((< text-length 6)
+    (round (* 16 text-length)))
+   ((< text-length 8)
+    (round (* 10 text-length)))
+   ((< text-length 10)
+    (round (* 9 text-length)))
+   (else (round (* 6 text-length)))))
+
 (define* (mk-readme-vector-image #:key left-background
                                  left-color
                                  left-text
@@ -247,10 +259,15 @@ formatting."
                                  (border-radius 6)
                                  (height 24))
   (let* ((left-length (string-length left-text))
-         (left-width (round (* 10 left-length)))
+         (left-width (length-for-text left-length))
          (right-length (string-length right-text))
-         (right-width (round (* 10 right-length)))
-         (total-width (+ left-width right-width)))
+         (right-width (length-for-text right-length))
+         (part-separator-width 16)
+         (total-width (+ left-width right-width part-separator-width))
+         (text-y 16)
+         (part-separator-background right-background)
+         (part-separator-x (- (round (/ total-width 2)) 16))
+         (right-x left-width))
     `((svg (@ (id ,id)
               (xmlns "http://www.w3.org/2000/svg")
               (width ,total-width)
@@ -263,13 +280,13 @@ formatting."
                        (fill ,left-background)
                        (rx ,border-radius)
                        (ry ,border-radius)) "")
-              (rect (@ (x 56)
-                       (width 10)
+              (rect (@ (x ,part-separator-x)
+                       (width ,part-separator-width)
                        (height ,height)
-                       (fill ,right-background)
+                       (fill ,part-separator-background)
                        (rx 0)
                        (ry 0)) "")
-              (rect (@ (x 60)
+              (rect (@ (x ,right-x)
                        (width ,right-width)
                        (height ,height)
                        (fill ,right-background)
@@ -280,12 +297,14 @@ formatting."
                  (font-size ,font-size))
               (text (@ (fill ,left-color)
                        (x ,(round (- (/ left-width 2)
-                                     (/ left-width 10))))
-                       (y 16))
+                                     (/ left-width 12))))
+                       (y ,text-y))
                     ,left-text)
               (text (@ (fill ,right-color)
-                       (x 92)
-                       (y 16))
+                       (x ,(round (+ left-width
+                                     (/ left-width 2)
+                                     (/ left-width 12))))
+                       (y ,text-y))
                     ,right-text)))
       (img (@ (id ,(format #f "~a-img" id))) ""))))
 
@@ -335,12 +354,12 @@ formatting."
   `("<!DOCTYPE html>" (div (h1 "GGG: Guile Glyph Generator")
                            (em
                             "Generate SVG images for handy useful glyphs, org/markdown badges and more, from Lisp (Guile Scheme), leveraging web development as well.")
-                           (div (@ (style "padding: 1rem;"))
+                           (div (@ (style "padding: 1rem; display: flex; flex-direction: column; gap: 0.6rem;"))
                                 ,(map mk-vector-image vector-images))
 
                            (script (@ (src "/index.js")) "")
                            (script ,(format #f
-                                     "
+                                            "
 const vectorImages = [~a]
 document.addEventListener('DOMContentLoaded', () => {
   vectorImages.forEach(vectorImageId => renderSvgToImage({
@@ -350,12 +369,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }))
 })
 "
-                                     (string-join (map (lambda (x)
-                                                         (format #f "'~a'"
-                                                                 (symbol->string
-                                                                  (assoc-ref x
-                                                                   'id))))
-                                                       vector-images) ",")))
+                                            (string-join (map (lambda (x)
+                                                                (format #f "'~a'"
+                                                                        (symbol->string
+                                                                         (assoc-ref x
+                                                                                    'id))))
+                                                              vector-images) ",")))
                            (div ""))))
 
 (define (main args)
