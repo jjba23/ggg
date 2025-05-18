@@ -243,82 +243,91 @@ formatting."
                    right-text
                    id
                    (font-family "sans-serif")
+                   (font-size 11)
                    (border-radius 6)
                    (height 24))
-  `((svg (@ (id ,id)
-            (xmlns "http://www.w3.org/2000/svg")
-            (width 140)
-            (height ,height)
-            (viewBox ,(format #f "0 0 140 ~a" height)))
-         (g (@ (shape-rendering geometricPrecision))
-            (rect (@ (width 70)
-                     (height ,height)
-                     (fill ,left-background)
-                     (rx ,border-radius)
-                     (ry ,border-radius)) "")
-            (rect (@ (x 56)
-                     (width 10)
-                     (height ,height)
-                     (fill ,right-background)
-                     (rx 0)
-                     (ry 0)) "")
-            (rect (@ (x 60)
-                     (width 70)
-                     (height ,height)
-                     (fill ,right-background)
-                     (rx ,border-radius)
-                     (ry ,border-radius)) ""))
-         (g (@ (text-anchor middle)
-               (font-family ,font-family)
-               (font-size 11))
-            (text (@ (fill ,left-color)
-                     (x 30)
-                     (y 16))
-                  ,left-text)
-            (text (@ (fill ,right-color)
-                     (x 92)
-                     (y 16))
-                  ,right-text)))
-    (img (@ (id ,(format #f "~a-img" id))) "")))
+  (let* ((left-length (string-length left-text))
+         (left-width (round (* 10 left-length)))
+         (right-length (string-length right-text))
+         (right-width (round (* 10 right-length)))
+         (total-width (+ left-width right-width)))
+    `((svg (@ (id ,id)
+              (xmlns "http://www.w3.org/2000/svg")
+              (width ,total-width)
+              (height ,height)
+              (viewBox ,(format #f "0 0 ~a ~a" total-width height)))
+           (g (@ (shape-rendering geometricPrecision))
+              (rect (@ (width ,left-width)
+                       (height ,height)
+                       (fill ,left-background)
+                       (rx ,border-radius)
+                       (ry ,border-radius)) "")
+              (rect (@ (x 56)
+                       (width 10)
+                       (height ,height)
+                       (fill ,right-background)
+                       (rx 0)
+                       (ry 0)) "")
+              (rect (@ (x 60)
+                       (width ,right-width)
+                       (height ,height)
+                       (fill ,right-background)
+                       (rx ,border-radius)
+                       (ry ,border-radius)) ""))
+           (g (@ (text-anchor middle)
+                 (font-family ,font-family)
+                 (font-size ,font-size))
+              (text (@ (fill ,left-color)
+                       (x ,(round (- (/ left-width 2) (/ left-width 10))))
+                       (y 16))
+                    ,left-text)
+              (text (@ (fill ,right-color)
+                       (x 92)
+                       (y 16))
+                    ,right-text)))
+      (img (@ (id ,(format #f "~a-img" id))) ""))))
 
-(define (mk-badges)
-  `((div (h1 "SigilCraft")
-         ,(mk-badge #:id 'pipeline-success
-                    #:left-background "#444"
-                    #:left-text "pipeline"
-                    #:left-color "#fff"
-                    #:right-background "#407430"
-                    #:right-text "succeeded"
-                    #:right-color "#fff")
-         ,(mk-badge #:id 'scheme-guile
-                    #:left-background "#444"
-                    #:left-text "Scheme"
-                    #:left-color "#fff"
-                    #:right-background "#deb07a"
-                    #:right-text "Guile"
-                    #:right-color "#000")
-         ,(mk-badge #:id 'gnu-make
-                    #:left-background "#444"
-                    #:left-text "GNU"
-                    #:left-color "#fff"
-                    #:right-background "#bbbbbb"
-                    #:right-text "Make"
-                    #:right-color "#000")
-         ,(mk-badge #:id 'gnu-emacs
-                    #:left-background "#444"
-                    #:left-text "GNU"
-                    #:left-color "#fff"
-                    #:right-background "#885997"
-                    #:right-text "Emacs"
-                    #:right-color "#fff")
-         )
-    (script (@(src "/index.js")) "")))
+(define badges
+  `(div
+    ,(mk-badge #:id 'pipeline-success
+               #:left-background "#444"
+               #:left-text "pipeline"
+               #:left-color "#fff"
+               #:right-background "#407430"
+               #:right-text "succeeded"
+               #:right-color "#fff")
+    ,(mk-badge #:id 'scheme-guile
+               #:left-background "#444"
+               #:left-text "Scheme"
+               #:left-color "#fff"
+               #:right-background "#deb07a"
+               #:right-text "Guile"
+               #:right-color "#000")
+    ,(mk-badge #:id 'gnu-make
+               #:left-background "#444"
+               #:left-text "GNU"
+               #:left-color "#fff"
+               #:right-background "#bbbbbb"
+               #:right-text "Make"
+               #:right-color "#000")
+    ,(mk-badge #:id 'gnu-emacs
+               #:left-background "#444"
+               #:left-text "GNU"
+               #:left-color "#fff"
+               #:right-background "#885997"
+               #:right-text "Emacs"
+               #:right-color "#fff")))
+(define (badges-page)
+  `("<!DOCTYPE html>" (div (h1 "SigilCraft")
+                           (div (@(style "padding: 1rem;")) ,badges))
+    ;; (script (@ (src "/index.js")) "")
+    (div "")))
 
 (define (main args)
   (display args)
   (newline)
   (with-output-to-file "dist/index.html"
     (lambda ()
-      (sxml->xml (mk-badges)))))
+      (sxml->xml (badges-page)))))
 
 (main (command-line))
