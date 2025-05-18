@@ -1,1 +1,3 @@
-#+title: SigilCraft
+#+title: GGG: Guile Glyph Generator
+
+Generate SVG images for handy useful glyphs, org/markdown badges and more, from Lisp (Guile Scheme), leveraging web development as well .

@@ -278,7 +278,8 @@ formatting."
                  (font-family ,font-family)
                  (font-size ,font-size))
               (text (@ (fill ,left-color)
-                       (x ,(round (- (/ left-width 2) (/ left-width 10))))
+                       (x ,(round (- (/ left-width 2)
+                                     (/ left-width 10))))
                        (y 16))
                     ,left-text)
               (text (@ (fill ,right-color)
@@ -287,41 +288,76 @@ formatting."
                     ,right-text)))
       (img (@ (id ,(format #f "~a-img" id))) ""))))
 
-(define badges
-  `(div
-    ,(mk-badge #:id 'pipeline-success
-               #:left-background "#444"
-               #:left-text "pipeline"
-               #:left-color "#fff"
-               #:right-background "#407430"
-               #:right-text "succeeded"
-               #:right-color "#fff")
-    ,(mk-badge #:id 'scheme-guile
-               #:left-background "#444"
-               #:left-text "Scheme"
-               #:left-color "#fff"
-               #:right-background "#deb07a"
-               #:right-text "Guile"
-               #:right-color "#000")
-    ,(mk-badge #:id 'gnu-make
-               #:left-background "#444"
-               #:left-text "GNU"
-               #:left-color "#fff"
-               #:right-background "#bbbbbb"
-               #:right-text "Make"
-               #:right-color "#000")
-    ,(mk-badge #:id 'gnu-emacs
-               #:left-background "#444"
-               #:left-text "GNU"
-               #:left-color "#fff"
-               #:right-background "#885997"
-               #:right-text "Emacs"
-               #:right-color "#fff")))
+(define (mk-vector-image xs)
+  (mk-badge #:id (assoc-ref xs 'id)
+            #:left-background (assoc-ref xs
+                                         'left-background)
+            #:left-text (assoc-ref xs
+                                   'left-text)
+            #:left-color (assoc-ref xs
+                                    'left-color)
+            #:right-background (assoc-ref xs
+                                          'right-background)
+            #:right-text (assoc-ref xs
+                                    'right-text)
+            #:right-color (assoc-ref xs
+                                     'right-color)))
+
+(define vector-images
+  `(
+    ((id . pipeline-success)
+     (left-background . "#444")
+     (left-text . "pipeline")
+     (left-color . "#fff")
+     (right-background . "#407430")
+     (right-text . "succeeded")
+     (right-color . "#fff"))
+    ((id . scheme-guile)
+     (left-background . "#444")
+     (left-text . "Scheme")
+     (left-color . "#fff")
+     (right-background . "#deb07a")
+     (right-text . "Guile")
+     (right-color . "#000"))
+
+    ))
+
+
+
+;;     (gnu-make .
+;;               (lambda(id ) (mk-badge
+;;                        #:id id
+;;                        #:left-background "#444"
+;;                        #:left-text "GNU"
+;;                        #:left-color "#fff"
+;;                        #:right-background "#bbbbbb"
+;;                        #:right-text "Make"
+;;                        #:right-color "#000")))
+
+;;     (gnu-emacs .
+;;                (lambda(id) (mk-badge
+;;                        #:id id
+;;                        #:left-background "#444"
+;;                        #:left-text "GNU"
+;;                        #:left-color "#fff"
+;;                        #:right-background "#885997"
+;;                        #:right-text "Emacs"
+;;                        #:right-color "#fff")))
+;;     )
+;;   )
+
 (define (badges-page)
   `("<!DOCTYPE html>" (div (h1 "SigilCraft")
-                           (div (@(style "padding: 1rem;")) ,badges))
-    ;; (script (@ (src "/index.js")) "")
-    (div "")))
+                           (div (@ (style "padding: 1rem;")) "")
+
+                           (script (@ (src "/index.js")) "")
+                           (script ,(format #f "
+document.addEventListener('DOMContentLoaded', () => {
+  let vectorImages = [~a]
+  vectorImages.forEach(v => renderSvgToImage(v))
+})
+" (string-join (map (lambda(x) (assoc-ref x 'id)) vector-images) ",")))
+                           (div ""))))
 
 (define (main args)
   (display args)

@@ -1,4 +1,4 @@
-function renderSvgToImage(id) {
+function renderSvgToImage(id, hideVectorImages = false) {
   let svg = document.getElementById(id)
   let img = document.getElementById(id + '-img')
   let canvas = document.createElement('canvas')
@@ -14,11 +14,12 @@ function renderSvgToImage(id) {
     canvas.getContext('2d').drawImage(img, 0, 0)
   }
   img.src = image64
-  svg.style.display = 'none'
+  if (hideVectorImages) {
+    svg.style.display = 'none'
+  }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  renderSvgToImage('pipeline-success')
-})
+
+
 
 
