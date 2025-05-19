@@ -15,7 +15,7 @@ If you like my work, please support me by [[https://bmc.link/jjbigorra][buying m
 
 Tired of bland, static status badges for your projects? Say hello to the *Guile Glyph Generator (GGG)*, a small but mighty tool crafted in the elegant Scheme programming language. Based on the provided configuration, GGG will produce something like the following badges (as both SVG and PNG files):
 
-[[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/haskell-ghc910.png]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/gnu-emacs.png]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/gnu-make.png]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/scheme-guile.png]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/pipeline-succeeded.png]]
+[[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/haskell-ghc910.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/gnu-emacs.png]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/gnu-make.png]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/scheme-guile.png]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/pipeline-succeeded.png]]
 
 --------
 
