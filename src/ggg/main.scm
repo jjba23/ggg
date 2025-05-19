@@ -272,13 +272,12 @@ formatting."
   `((svg (@ (width ,width)
             (height ,height)
             (viewBox ,view-box)
-            (x ,x)(y ,y)
+            (x ,x)
+            (y ,y)
             (xmlns "http://www.w3.org/2000/svg")
             (fill none))
          (path (@ (fill ,fill)
-                  (d
-                   ,(get-path-for-svg 'lambda)))
-               ""))))
+                  (d ,(get-path-for-svg 'lambda))) ""))))
 
 (define* (gnu-svg #:key (width 18)
                   (height 18)
@@ -289,13 +288,12 @@ formatting."
   `((svg (@ (width ,width)
             (height ,height)
             (viewBox ,view-box)
-            (x ,x)(y ,y)
+            (x ,x)
+            (y ,y)
             (xmlns "http://www.w3.org/2000/svg")
             (fill none))
          (path (@ (fill ,fill)
-                  (d
-                   ,(get-path-for-svg 'gnu)))
-               ""))))
+                  (d ,(get-path-for-svg 'gnu))) ""))))
 
 (define (assoc-ref-or alist key default)
   (let ((x (assoc-ref alist key)))
@@ -312,44 +310,41 @@ formatting."
 (define* (length-for-text text-length)
   (cond
    ((< text-length 4)
-    (round (* 17 text-length)))
+    (round (* 18 text-length)))
    ((< text-length 5)
     (round (* 15 text-length)))
    ((< text-length 6)
-    (round (* 13 text-length)))
+    (round (* 14 text-length)))
    ((< text-length 7)
     (round (* 12 text-length)))
    ((< text-length 8)
-    (round (* 10 text-length)))
+    (round (* 11 text-length)))
    ((< text-length 10)
     (round (* 10 text-length)))
    (else (round (* 9 text-length)))))
 
 (define (mk-readme-vector-image x)
-  (let* ((left-logo (assoc-ref x
+  (let* ( ;--- Data from the input map ---
+         (left-logo (assoc-ref x
                                'left-logo))
-         (left-logo-width (if left-logo 18 0))
-         (left-length (string-length (assoc-ref x
-                                                'left-text)))
-
-         (left-width (+ (if (> left-logo-width 0)
-                            (+ left-logo-width 8)
-                            2)
-                        (length-for-text left-length)))
+         (left-text (assoc-ref x
+                               'left-text))
+         (right-text (assoc-ref x
+                                'right-text))
          (left-background (assoc-ref x
                                      'left-background))
-         (right-length (string-length (assoc-ref x
-                                                 'right-text)))
-         (right-width (length-for-text right-length))
          (right-background (assoc-ref x
                                       'right-background))
-         (part-separator-width 20)
-         (total-width (+ left-width right-width part-separator-width))
-         (text-y 17)
-         (part-separator-background (assoc-ref x
-                                               'right-background))
-         (part-separator-x (- left-width 8))
-         (right-x left-width)
+         (left-color (assoc-ref x
+                                'left-color))
+         (right-color (assoc-ref x
+                                 'right-color))
+         (badge-id (assoc-ref x
+                              'id))
+         (height (assoc-ref-or x
+                               'height 26))
+         (border-radius (assoc-ref-or x
+                                      'border-radius 10))
          (left-font-family (assoc-ref-or x
                                          'left-font-family "sans-serif"))
          (right-font-family (assoc-ref-or x
@@ -358,55 +353,78 @@ formatting."
                                        'left-font-size 12))
          (right-font-size (assoc-ref-or x
                                         'right-font-size 12))
-         (height (assoc-ref-or x
-                               'height 26))
-         (border-radius (assoc-ref-or x
-                                      'border-radius 10))
-         (left-text-x (round (+ (* 2 left-logo-width) 4)))
-         (right-text-x (round (+ left-width
-                                 (/ left-width 8)))))
-    `((svg (@ (id ,(assoc-ref x
-                              'id))
+
+         ;; --- Layout Constants ---
+         (default-logo-width 18)
+         (logo-padding 4)
+         (text-padding 4)
+         (separator-width 20)
+         (text-vertical-center 17)
+         (default-left-padding 2)
+         (separator-x-offset 9)
+
+         ;; --- Calculated Dimensions ---
+         (has-left-logo? (not (null? left-logo)))
+         (left-logo-effective-width (if has-left-logo? default-logo-width 0))
+         (left-text-length (string-length left-text))
+         (right-text-length (string-length right-text))
+
+         (left-text-width (length-for-text left-text-length))
+         (right-text-width (length-for-text right-text-length))
+
+         (left-area-width (+ (if has-left-logo?
+                                 (+ left-logo-effective-width logo-padding)
+                                 default-left-padding) left-text-width))
+
+         (total-badge-width (+ left-area-width right-text-width
+                               separator-width))
+
+         (separator-x (- left-area-width separator-x-offset)) 
+         (right-x left-area-width)
+         (left-text-x (round (+ (if has-left-logo?
+                                    (+ left-logo-effective-width text-padding)
+                                    text-padding)
+                                (/ left-text-width 2)))) ;Center text in left area
+         (right-text-x (round (+ right-x
+                                 (/ right-text-width 2)))) ;Center text in right area
+         )
+    `((svg (@ (id ,badge-id)
               (xmlns "http://www.w3.org/2000/svg")
-              (width ,total-width)
+              (width ,total-badge-width)
               (height ,height)
-              (viewBox ,(format #f "0 0 ~a ~a" total-width height)))
+              (viewBox ,(format #f "0 0 ~a ~a" total-badge-width height)))
            (g (@ (shape-rendering geometricPrecision))
               (rect (@ (x 0)
-                       (width ,left-width)
+                       (width ,left-area-width)
                        (height ,height)
                        (fill ,left-background)
                        (rx ,border-radius)
                        (ry ,border-radius)) "")
-              (rect (@ (x ,part-separator-x)
-                       (width ,part-separator-width)
+              (rect (@ (x ,separator-x)
+                       (width ,separator-width)
                        (height ,height)
-                       (fill ,part-separator-background)
+                       (fill ,right-background) ;Using right background as separator color
                        (rx 0)
                        (ry 0)) "")
               (rect (@ (x ,right-x)
-                       (width ,right-width)
+                       (width ,right-text-width)
                        (height ,height)
                        (fill ,right-background)
                        (rx ,border-radius)
                        (ry ,border-radius)) ""))
            (g (@ (text-anchor middle))
-              (text (@ (fill ,(assoc-ref x
-                                         'left-color))
+              (text (@ (fill ,left-color)
                        (font-size ,left-font-size)
                        (font-family ,left-font-family)
                        (x ,left-text-x)
-                       (y ,text-y))
-                    ,(assoc-ref x
-                                'left-text))
-              (text (@ (fill ,(assoc-ref x
-                                         'right-color))
+                       (y ,text-vertical-center))
+                    ,left-text)
+              (text (@ (fill ,right-color)
                        (font-size ,right-font-size)
                        (font-family ,right-font-family)
                        (x ,right-text-x)
-                       (y ,text-y))
-                    ,(assoc-ref x
-                                'right-text)))
+                       (y ,text-vertical-center))
+                    ,right-text))
            ,(if left-logo
                 `(g ,left-logo)
                 '())))))
@@ -429,21 +447,24 @@ formatting."
     ((id . haskell-ghc910) (left-background "#555")
      (left-text . "Haskell")
      (left-color . "#fff")
-     (left-logo unquote (lambda-svg))
+     (left-logo unquote
+                (lambda-svg))
      (right-background . "#7851A9")
      (right-text . "GHC 9.10")
      (right-color . "#fff"))
     ((id . gnu-make) (left-background . "#555")
      (left-text . "GNU")
      (left-color . "#fff")
-     (left-logo unquote (gnu-svg))
+     (left-logo unquote
+                (gnu-svg))
      (right-background . "#bbbbbb")
      (right-text . "Make")
      (right-color . "#000"))
     ((id . gnu-emacs) (left-background . "#555")
      (left-text . "GNU")
      (left-color . "#fff")
-     (left-logo unquote (gnu-svg))
+     (left-logo unquote
+                (gnu-svg))
      (right-background . "#885997")
      (right-text . "Emacs")
      (right-color . "#fff"))))
@@ -470,11 +491,11 @@ formatting."
                           (assoc-ref vector-image
                                      'id)))
          (syscall (format #f
-                          "convert -quality 100 -density 10000 -background none -resize 1% dist/~a.svg dist/~a.png"
-                          (assoc-ref vector-image
-                                     'id)
-                          (assoc-ref vector-image
-                                     'id)))) vector-images)
+                   "convert -quality 100 -density 10000 -background none -resize 1% dist/~a.svg dist/~a.png"
+                   (assoc-ref vector-image
+                              'id)
+                   (assoc-ref vector-image
+                              'id)))) vector-images)
 
   (display "\n>>= ggg is done generating images\n"))
 
