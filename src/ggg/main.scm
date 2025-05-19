@@ -386,8 +386,7 @@ formatting."
          (left-area-width (+ left-logo-effective-width default-left-padding
                              left-text-width))
 
-         (total-badge-width (+ left-area-width right-text-width
-                               separator-width))
+         (total-badge-width (+ left-area-width right-text-width))
 
          (separator-x (- left-area-width separator-x-offset))
          (right-x left-area-width)
