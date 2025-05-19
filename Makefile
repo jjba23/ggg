@@ -18,7 +18,7 @@
 build:
 	rm -rfv dist
 	mkdir dist
-	guix shell -m manifest.scm -- guile --fresh-auto-compile src/ggg/main.scm
+	guix shell -m manifest.scm -- guile --fresh-auto-compile src/ggg/main.scm glyphs/jjba23.scm
 dev:
 	watchexec -i "dist/**" -r -e scm,css,js -- "make build"
 

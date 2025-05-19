@@ -436,55 +436,13 @@ formatting."
                 `(g ,left-logo)
                 '())))))
 
-(define vector-images
-  `(((id . pipeline-succeeded) (left-background . "#555")
-     (left-text . "pipeline")
-     (left-color . "#fff")
-     (right-background . "#407430")
-     (right-text . "succeeded")
-     (right-color . "#fff"))
-    ((id . scheme-guile) (left-background . "#555")
-     (left-text . "Scheme")
-     (left-color . "#fff")
-     (left-logo unquote lambda-svg)
-     (right-background . "#deb07a")
-     (right-text . "Guile")
-     (right-color . "#000"))
-    ((id . haskell-ghc910) (left-background "#555")
-     (left-text . "Haskell")
-     (left-color . "#fff")
-     (left-logo unquote lambda-svg)
-     (right-background . "#7851A9")
-     (right-text . "GHC 9.10")
-     (right-color . "#fff"))
-    ((id . gnu-make) (left-background . "#555")
-     (left-text . "GNU")
-     (left-color . "#fff")
-     (left-logo unquote gnu-svg)
-     (right-background . "#bbbbbb")
-     (right-text . "Make")
-     (right-color . "#000"))
-    ((id . gnu-emacs) (left-background . "#555")
-     (left-text . "GNU")
-     (left-color . "#fff")
-     (left-logo unquote emacs-svg)
-     (right-background . "#885997")
-     (right-text . "Emacs")
-     (right-color . "#fff"))
-    ((id . scala-213) (left-background . "#555")
-     (left-text . "Scala")
-     (left-color . "#fff")
-     (left-logo unquote scala-svg)
-     (right-background . "#A50021")
-     (right-text . "v2.13")
-     (right-color . "#fff"))))
-
 (define (main args)
   (display "
 >>= starting ggg: guile glyph generator
 ")
-  (display args)
-  (newline)
+  (display (format #f "\n>>= loading glyphs: ~a\n\n"
+                   (cadr args)))
+  (load (cadr args))
   (map (lambda (vector-image)
          (display (format #f "\n>>= producing dist/~a.svg\n"
                           (assoc-ref vector-image
@@ -494,18 +452,18 @@ formatting."
                                                  'id))
            (lambda ()
              (sxml->xml (mk-readme-vector-image vector-image)))))
-       vector-images)
+       ggg-readme-vector-images)
 
   (map (lambda (vector-image)
          (display (format #f "\n>>= producing dist/~a.png\n"
                           (assoc-ref vector-image
                                      'id)))
          (syscall (format #f
-                   "convert -quality 100 -density 1000 -background none -resize 10% dist/~a.svg dist/~a.png"
-                   (assoc-ref vector-image
-                              'id)
-                   (assoc-ref vector-image
-                              'id)))) vector-images)
+                          "convert -quality 100 -density 1000 -background none -resize 10% dist/~a.svg dist/~a.png"
+                          (assoc-ref vector-image
+                                     'id)
+                          (assoc-ref vector-image
+                                     'id)))) ggg-readme-vector-images)
 
   (display "\n>>= ggg is done generating images\n"))
 
