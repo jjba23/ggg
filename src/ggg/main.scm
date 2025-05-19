@@ -349,7 +349,7 @@ formatting."
          (height (assoc-ref-or x
                                'height 26))
          (border-radius (assoc-ref-or x
-                                      'border-radius 10))
+                                      'border-radius 6))
          (left-font-family (assoc-ref-or x
                                          'left-font-family "sans-serif"))
          (right-font-family (assoc-ref-or x
@@ -362,10 +362,10 @@ formatting."
          ;; --- Layout Constants ---
          (default-logo-width 16)
          (text-padding 4)
-         (separator-width 12)
+         (separator-width 8)
          (text-vertical-center 17)
          (default-left-padding 2)
-         (separator-x-offset 10)
+         (separator-x-offset 6)
 
          ;; --- Calculated Dimensions ---
          (has-left-logo? (not (nil? left-logo)))
