@@ -307,25 +307,33 @@ formatting."
 (define (get-short-commit-sha)
   (syscall "git log --pretty=format:'%h' -n 1"))
 
-(define* (length-for-text text-length)
-  (cond
-   ((< text-length 4)
-    (round (* 18 text-length)))
-   ((< text-length 5)
-    (round (* 15 text-length)))
-   ((< text-length 6)
-    (round (* 14 text-length)))
-   ((< text-length 7)
-    (round (* 12 text-length)))
-   ((< text-length 8)
-    (round (* 11 text-length)))
-   ((< text-length 10)
-    (round (* 10 text-length)))
-   (else (round (* 9 text-length)))))
+(define* (length-for-text text-length
+                          #:key (font-size 12))
+  (let* ((base-char-width (case font-size
+                            ((10)
+                             8)
+                            ((11)
+                             9)
+                            ((12)
+                             9.5)
+                            ((14)
+                             10.5)
+                            ((16)
+                             11.5)
+                            (else 7)))
+         (horizontal-padding 16)
+         (scaling-factor (cond
+                           ((> text-length 7)
+                            0.9)
+                           ((< text-length 5)
+                            1.5)
+                           (else 1.0)))
+         (calculated-width (+ horizontal-padding
+                              (* base-char-width text-length scaling-factor))))
+    (round calculated-width)))
 
 (define (mk-readme-vector-image x)
-  (let* ( ;--- Data from the input map ---
-         (left-logo (assoc-ref x
+  (let* ((left-logo (assoc-ref x
                                'left-logo))
          (left-text (assoc-ref x
                                'left-text))
@@ -356,7 +364,7 @@ formatting."
 
          ;; --- Layout Constants ---
          (default-logo-width 18)
-         (logo-padding 4)
+         (logo-padding 2)
          (text-padding 4)
          (separator-width 20)
          (text-vertical-center 17)
@@ -379,7 +387,7 @@ formatting."
          (total-badge-width (+ left-area-width right-text-width
                                separator-width))
 
-         (separator-x (- left-area-width separator-x-offset)) 
+         (separator-x (- left-area-width separator-x-offset))
          (right-x left-area-width)
          (left-text-x (round (+ (if has-left-logo?
                                     (+ left-logo-effective-width text-padding)
