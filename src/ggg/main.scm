@@ -364,7 +364,6 @@ formatting."
 
          ;; --- Layout Constants ---
          (default-logo-width 18)
-         (logo-padding 2)
          (text-padding 4)
          (separator-width 20)
          (text-vertical-center 17)
@@ -372,7 +371,7 @@ formatting."
          (separator-x-offset 9)
 
          ;; --- Calculated Dimensions ---
-         (has-left-logo? (not (null? left-logo)))
+         (has-left-logo? (not (nil? left-logo)))
          (left-logo-effective-width (if has-left-logo? default-logo-width 0))
          (left-text-length (string-length left-text))
          (right-text-length (string-length right-text))
@@ -380,18 +379,15 @@ formatting."
          (left-text-width (length-for-text left-text-length))
          (right-text-width (length-for-text right-text-length))
 
-         (left-area-width (+ (if has-left-logo?
-                                 (+ left-logo-effective-width logo-padding)
-                                 default-left-padding) left-text-width))
+         (left-area-width (+ left-logo-effective-width default-left-padding
+                             left-text-width))
 
          (total-badge-width (+ left-area-width right-text-width
                                separator-width))
 
          (separator-x (- left-area-width separator-x-offset))
          (right-x left-area-width)
-         (left-text-x (round (+ (if has-left-logo?
-                                    (+ left-logo-effective-width text-padding)
-                                    text-padding)
+         (left-text-x (round (+ left-logo-effective-width
                                 (/ left-text-width 2)))) ;Center text in left area
          (right-text-x (round (+ right-x
                                  (/ right-text-width 2)))) ;Center text in right area
