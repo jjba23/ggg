@@ -82,6 +82,10 @@
 
 (define* (length-for-text text-length
                           #:key (font-size 12))
+  "Estimates text container widths in pixels. It looks up a rough width per character based on the font size.
+Then, it multiplies this by the number of characters and adds some padding.
+Finally, it slightly adjusts the width based on whether the text is very short, short,
+medium, or long to make the badge look better. It rounds the final width to a whole number."
   (let* ((base-char-width (case font-size
                             ((10)
                              8)
@@ -199,7 +203,8 @@
                        (fill ,right-background)
                        (rx 0)
                        (ry 0)) ""))
-           (g (@ (text-anchor middle))
+           (g (@ (text-anchor middle)
+                 (shape-rendering geometricPrecision))
               (text (@ (fill ,left-color)
                        (font-size ,left-font-size)
                        (font-family ,left-font-family)
@@ -213,7 +218,8 @@
                        (y ,text-vertical-center))
                     ,right-text))
            ,(if left-logo
-                `(g ,left-logo)
+                `(g (shape-rendering geometricPrecision)
+                    ,left-logo)
                 '())))))
 
 (define (main args)

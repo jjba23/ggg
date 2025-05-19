@@ -15,7 +15,7 @@ If you like my work, please support me by [[https://bmc.link/jjbigorra][buying m
 
 Tired of bland, static status badges for your projects? Say hello to the *Guile Glyph Generator (GGG)*, a small but mighty tool crafted in the elegant Scheme programming language. Based on the provided configuration, GGG will produce something like the following badges (as both SVG and PNG files):
 
-[[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/haskell-ghc910.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/gnu-emacs.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/gnu-make.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/scheme-guile.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/pipeline-succeeded.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/scala-213.svg]]
+[[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/haskell-ghc910.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/gnu-emacs.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/gnu-make.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/scheme-guile.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/pipeline-succeeded.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/scala-213.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/gnu-guix.svg]]
 
 --------
 
@@ -60,7 +60,27 @@ guix shell -m manifest.scm -- guile --fresh-auto-compile src/ggg/main.scm glyphs
 
 --------
 
-* Explaining the algorithm
+* What is this black magic? 🪄
+
+Through SVG generation from Lisp (Guile Scheme) we leverage a beautiful DSL and apply some mathematical knowledge to build pixel perfect badges. These SVG can then be easily converted without quality loss to any desired format.
+
+We dynamically estimate text width for the elements, specially text, looking up a rough width per character based on the font size. Then, we multiply this by the number of characters and add some padding. Finally, we slightly adjust the width based on whether the text is very short, short, medium, or long to make the badge look better.
+
+We try to provide sensible defaults to every option, but allow customization.
+
+We construct the SVG structure using SXML (S-expressions representing XML). This makes it easy to define the SVG elements and their attributes programmatically. 
+
+We choose for ~geometricPrecision~ in SVG to allow highest quality and fidelity, to prioritize geometric accuracy over rendering speed. This is often desirable for crisp, clean vector graphics like badges.
+
+In essence, the "magic" lies in the combination of:
+
+*Data-driven generation* The badge is created based on the input data.
+
+*Careful calculations* The dimensions and positions of elements are precisely calculated to achieve the desired layout.
+
+*Using SVG features effectively* Standard SVG elements and attributes are used in a structured way to create the visual appearance.
+
+*Abstraction of layout* and view thanks to Lisp, handling all options gracefully.
 
 
 ----------
