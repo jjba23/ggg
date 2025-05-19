@@ -70,7 +70,7 @@
                       #:y 3))
     (scales unquote
             (white-svg 'scales
-                       #:view-box "0 0 24 26"))))
+                       #:view-box "0 0 20 20"))))
 
 (define (assoc-ref-or alist key default)
   (let ((x (assoc-ref alist key)))
