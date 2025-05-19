@@ -255,6 +255,10 @@ formatting."
 
 ;; ====== GGG ======
 
+(define (assoc-ref-or alist key default)
+  (let ((x (assoc-ref alist key)))
+    (if (not x) default x)))
+
 (define (syscall cmd)
   (let* ((process (open-input-pipe cmd))
          (process-output (get-string-all process)))
@@ -265,42 +269,52 @@ formatting."
 
 (define* (length-for-text text-length)
   (cond
-   ((< text-length 4)
-    (round (* 17 text-length)))
-   ((< text-length 5)
-    (round (* 15 text-length)))
-   ((< text-length 6)
-    (round (* 13 text-length)))
-   ((< text-length 7)
-    (round (* 12 text-length)))
-   ((< text-length 8)
-    (round (* 10 text-length)))
-   ((< text-length 10)
-    (round (* 10 text-length)))
-   (else (round (* 9 text-length)))))
+    ((< text-length 4)
+     (round (* 17 text-length)))
+    ((< text-length 5)
+     (round (* 15 text-length)))
+    ((< text-length 6)
+     (round (* 13 text-length)))
+    ((< text-length 7)
+     (round (* 12 text-length)))
+    ((< text-length 8)
+     (round (* 10 text-length)))
+    ((< text-length 10)
+     (round (* 10 text-length)))
+    (else (round (* 9 text-length)))))
 
-(define* (mk-readme-vector-image #:key left-background
-                                 left-color
-                                 left-text
-                                 right-background
-                                 right-color
-                                 right-text
-                                 id
-                                 (font-family "sans-serif")
-                                 (font-size 12)
-                                 (border-radius 10)
-                                 (height 26))
-  (let* ((left-length (string-length left-text))
+(define (mk-readme-vector-image x)
+  (let* ((left-length (string-length (assoc-ref x
+                                                'left-text)))
          (left-width (length-for-text left-length))
-         (right-length (string-length right-text))
+         (left-background (assoc-ref x
+                                     'left-background))
+         (right-length (string-length (assoc-ref x
+                                                 'right-text)))
          (right-width (length-for-text right-length))
+         (right-background (assoc-ref x
+                                      'right-background))
          (part-separator-width 20)
          (total-width (+ left-width right-width part-separator-width))
          (text-y 17)
-         (part-separator-background right-background)
+         (part-separator-background (assoc-ref x
+                                               'right-background))
          (part-separator-x (- left-width 8))
-         (right-x left-width))
-    `((svg (@ (id ,id)
+         (right-x left-width)
+         (left-font-family (assoc-ref-or x
+                                         'left-font-family "sans-serif"))
+         (right-font-family (assoc-ref-or x
+                                          'right-font-family "sans-serif"))
+         (left-font-size (assoc-ref-or x
+                                       'left-font-size 12))
+         (right-font-size (assoc-ref-or x
+                                        'right-font-size 12))
+         (height (assoc-ref-or x
+                               'height 26))
+         (border-radius (assoc-ref-or x
+                                      'border-radius 10)))
+    `((svg (@ (id ,(assoc-ref x
+                              'id))
               (xmlns "http://www.w3.org/2000/svg")
               (width ,total-width)
               (height ,height)
@@ -324,36 +338,26 @@ formatting."
                        (fill ,right-background)
                        (rx ,border-radius)
                        (ry ,border-radius)) ""))
-           (g (@ (text-anchor middle)
-                 (font-family ,font-family)
-                 (font-size ,font-size))
-              (text (@ (fill ,left-color)
+           (g (@ (text-anchor middle))
+              (text (@ (fill ,(assoc-ref x
+                                         'left-color))
+                       (font-size ,left-font-size)
+                       (font-family ,left-font-family)
                        (x ,(round (- (/ left-width 2)
                                      (/ left-width 14))))
                        (y ,text-y))
-                    ,left-text)
-              (text (@ (fill ,right-color)
+                    ,(assoc-ref x
+                                'left-text))
+              (text (@ (fill ,(assoc-ref x
+                                         'right-color))
+                       (font-size ,right-font-size)
+                       (font-family ,right-font-family)
                        (x ,(round (+ left-width
                                      (/ left-width 2)
                                      (/ left-width 14))))
                        (y ,text-y))
-                    ,right-text))))))
-
-(define (mk-vector-image x)
-  (mk-readme-vector-image #:id (assoc-ref x
-                                          'id)
-                          #:left-background (assoc-ref x
-                                                       'left-background)
-                          #:left-text (assoc-ref x
-                                                 'left-text)
-                          #:left-color (assoc-ref x
-                                                  'left-color)
-                          #:right-background (assoc-ref x
-                                                        'right-background)
-                          #:right-text (assoc-ref x
-                                                  'right-text)
-                          #:right-color (assoc-ref x
-                                                   'right-color)))
+                    ,(assoc-ref x
+                                'right-text)))))))
 
 (define vector-images
   `(((id . pipeline-succeeded) (left-background . "#555")
@@ -368,8 +372,7 @@ formatting."
      (right-background . "#deb07a")
      (right-text . "Guile")
      (right-color . "#000"))
-    ((id . haskell-ghc910)
-     (left-background "#555")
+    ((id . haskell-ghc910) (left-background "#555")
      (left-text . "Haskell")
      (left-color . "#fff")
      (right-background . "#7851A9")
@@ -402,32 +405,21 @@ formatting."
                                       (assoc-ref vector-image
                                                  'id))
            (lambda ()
-             (sxml->xml (mk-vector-image vector-image))))) vector-images)
+             (sxml->xml (mk-readme-vector-image vector-image)))))
+       vector-images)
 
   (map (lambda (vector-image)
          (display (format #f "\n>>= producing dist/~a.png\n"
                           (assoc-ref vector-image
                                      'id)))
          (syscall (format #f
-                          "convert -quality 100 -density 10000 -background none -resize 1% dist/~a.svg dist/~a.png"
-                          (assoc-ref vector-image
-                                     'id)
-                          (assoc-ref vector-image
-                                     'id)))) vector-images)
+                   "convert -quality 100 -density 10000 -background none -resize 1% dist/~a.svg dist/~a.png"
+                   (assoc-ref vector-image
+                              'id)
+                   (assoc-ref vector-image
+                              'id)))) vector-images)
 
-  ;; (map (lambda (vector-image)
-  ;;        (display (format #f "\n>>= producing dist/~a.webp\n"
-  ;;                         (assoc-ref vector-image
-  ;;                                    'id)))
-  ;;        (syscall (format #f
-  ;;                         "convert -quality 100 -density 10000 -background none -resize 1% dist/~a.svg dist/~a.webp"
-  ;;                         (assoc-ref vector-image
-  ;;                                    'id)
-  ;;                         (assoc-ref vector-image
-  ;;                                    'id)))) vector-images)
-  
   (display "\n>>= ggg is done generating images\n"))
 
 (main (command-line))
-
 
