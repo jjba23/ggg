@@ -287,16 +287,16 @@ formatting."
                                  right-text
                                  id
                                  (font-family "sans-serif")
-                                 (font-size 13)
+                                 (font-size 12)
                                  (border-radius 10)
-                                 (height 28))
+                                 (height 26))
   (let* ((left-length (string-length left-text))
          (left-width (length-for-text left-length))
          (right-length (string-length right-text))
          (right-width (length-for-text right-length))
          (part-separator-width 20)
          (total-width (+ left-width right-width part-separator-width))
-         (text-y 18)
+         (text-y 16)
          (part-separator-background right-background)
          (part-separator-x (- left-width 8))
          (right-x left-width))
@@ -415,16 +415,16 @@ formatting."
                           (assoc-ref vector-image
                                      'id)))) vector-images)
 
-  (map (lambda (vector-image)
-         (display (format #f "\n>>= producing dist/~a.webp\n"
-                          (assoc-ref vector-image
-                                     'id)))
-         (syscall (format #f
-                          "convert -quality 100 -density 10000 -background none -resize 1% dist/~a.svg dist/~a.webp"
-                          (assoc-ref vector-image
-                                     'id)
-                          (assoc-ref vector-image
-                                     'id)))) vector-images)
+  ;; (map (lambda (vector-image)
+  ;;        (display (format #f "\n>>= producing dist/~a.webp\n"
+  ;;                         (assoc-ref vector-image
+  ;;                                    'id)))
+  ;;        (syscall (format #f
+  ;;                         "convert -quality 100 -density 10000 -background none -resize 1% dist/~a.svg dist/~a.webp"
+  ;;                         (assoc-ref vector-image
+  ;;                                    'id)
+  ;;                         (assoc-ref vector-image
+  ;;                                    'id)))) vector-images)
   
   (display "\n>>= ggg is done generating images\n"))
 
