@@ -289,14 +289,14 @@ formatting."
                                  (font-family "sans-serif")
                                  (font-size 13)
                                  (border-radius 10)
-                                 (height 30))
+                                 (height 28))
   (let* ((left-length (string-length left-text))
          (left-width (length-for-text left-length))
          (right-length (string-length right-text))
          (right-width (length-for-text right-length))
          (part-separator-width 20)
          (total-width (+ left-width right-width part-separator-width))
-         (text-y 19)
+         (text-y 18)
          (part-separator-background right-background)
          (part-separator-x (- left-width 8))
          (right-x left-width))
@@ -409,7 +409,7 @@ formatting."
                           (assoc-ref vector-image
                                      'id)))
          (syscall (format #f
-                          "convert -quality 100 -density 500 -background none -resize 20% dist/~a.svg dist/~a.png"
+                          "convert -quality 100 -density 10000 -background none -resize 1% dist/~a.svg dist/~a.png"
                           (assoc-ref vector-image
                                      'id)
                           (assoc-ref vector-image
@@ -420,7 +420,7 @@ formatting."
                           (assoc-ref vector-image
                                      'id)))
          (syscall (format #f
-                          "convert -quality 100 -density 500 -background none -resize 20% dist/~a.svg dist/~a.webp"
+                          "convert -quality 100 -density 10000 -background none -resize 1% dist/~a.svg dist/~a.webp"
                           (assoc-ref vector-image
                                      'id)
                           (assoc-ref vector-image
