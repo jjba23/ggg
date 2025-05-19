@@ -50,10 +50,20 @@ To use GGG, you'll need:
 -  *Guile Scheme:* Ensure you have Guile installed on your system.
 -  *ImageMagick:* If you want to generate PNG files, you'll need ImageMagick installed (specifically the `convert` command).
 
-Refer to the ~Makefile~ to understand more about running GGG. ~make build~ is the recommended way to run it.
+Refer to the ~Makefile~ to understand more about running GGG. ~make run~ is the recommended way to run it.
 
+You should point ggg to your files:
+
+#+begin_src shell
+guix shell -m manifest.scm -- guile --fresh-auto-compile src/ggg/main.scm glyphs/<your file>.scm
+#+end_src
 
 --------
+
+* Explaining the algorithm
+
+
+----------
 
 * Code of conduct
 

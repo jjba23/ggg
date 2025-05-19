@@ -15,12 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with ggg.  If not, see <https://www.gnu.org/licenses/>.
 
-build:
+run:
 	rm -rfv dist
 	mkdir dist
 	guix shell -m manifest.scm -- guile --fresh-auto-compile src/ggg/main.scm glyphs/jjba23.scm
 dev:
-	watchexec -i "dist/**" -r -e scm,css,js -- "make build"
+	watchexec -i "dist/**" -r -e scm,css,js -- "make run"
 
 # Target to format source code files according to the style guide
 # Find all .scm files and format them using 'guix style'
