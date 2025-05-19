@@ -255,6 +255,48 @@ formatting."
 
 ;; ====== GGG ======
 
+;; (left-logo (if (not (assoc-ref x
+;;                                -                                        'left-logo)) ""
+;;                                -                                        (get-string-all (open-input-file (assoc-ref x
+;;                                                                                                                     -                                                                                    'left-logo))))))
+
+(define (get-path-for-svg name)
+  (get-string-all (open-input-file (format #f "resources/svg-paths/~a" name))))
+
+(define* (lambda-svg #:key (width 18)
+                     (height 18)
+                     (view-box "0 0 18 20")
+                     (fill "#ffffff")
+                     (x 4)
+                     (y 6))
+  `((svg (@ (width ,width)
+            (height ,height)
+            (viewBox ,view-box)
+            (x ,x)(y ,y)
+            (xmlns "http://www.w3.org/2000/svg")
+            (fill none))
+         (path (@ (fill ,fill)
+                  (d
+                   ,(get-path-for-svg 'lambda)))
+               ""))))
+
+(define* (gnu-svg #:key (width 18)
+                  (height 18)
+                  (view-box "0 0 20 26")
+                  (fill "#ffffff")
+                  (x 4)
+                  (y 6))
+  `((svg (@ (width ,width)
+            (height ,height)
+            (viewBox ,view-box)
+            (x ,x)(y ,y)
+            (xmlns "http://www.w3.org/2000/svg")
+            (fill none))
+         (path (@ (fill ,fill)
+                  (d
+                   ,(get-path-for-svg 'gnu)))
+               ""))))
+
 (define (assoc-ref-or alist key default)
   (let ((x (assoc-ref alist key)))
     (if (not x) default x)))
@@ -269,24 +311,31 @@ formatting."
 
 (define* (length-for-text text-length)
   (cond
-    ((< text-length 4)
-     (round (* 17 text-length)))
-    ((< text-length 5)
-     (round (* 15 text-length)))
-    ((< text-length 6)
-     (round (* 13 text-length)))
-    ((< text-length 7)
-     (round (* 12 text-length)))
-    ((< text-length 8)
-     (round (* 10 text-length)))
-    ((< text-length 10)
-     (round (* 10 text-length)))
-    (else (round (* 9 text-length)))))
+   ((< text-length 4)
+    (round (* 17 text-length)))
+   ((< text-length 5)
+    (round (* 15 text-length)))
+   ((< text-length 6)
+    (round (* 13 text-length)))
+   ((< text-length 7)
+    (round (* 12 text-length)))
+   ((< text-length 8)
+    (round (* 10 text-length)))
+   ((< text-length 10)
+    (round (* 10 text-length)))
+   (else (round (* 9 text-length)))))
 
 (define (mk-readme-vector-image x)
-  (let* ((left-length (string-length (assoc-ref x
+  (let* ((left-logo (assoc-ref x
+                               'left-logo))
+         (left-logo-width (if left-logo 18 0))
+         (left-length (string-length (assoc-ref x
                                                 'left-text)))
-         (left-width (length-for-text left-length))
+
+         (left-width (+ (if (> left-logo-width 0)
+                            (+ left-logo-width 8)
+                            2)
+                        (length-for-text left-length)))
          (left-background (assoc-ref x
                                      'left-background))
          (right-length (string-length (assoc-ref x
@@ -313,18 +362,15 @@ formatting."
                                'height 26))
          (border-radius (assoc-ref-or x
                                       'border-radius 10))
-         (left-logo (if (not (assoc-ref x
-                                        'left-logo)) ""
-                                        (get-string-all (open-input-file (assoc-ref x
-                                                                                    'left-logo))))))
+         (left-text-x (round (+ (* 2 left-logo-width) 4)))
+         (right-text-x (round (+ left-width
+                                 (/ left-width 8)))))
     `((svg (@ (id ,(assoc-ref x
                               'id))
               (xmlns "http://www.w3.org/2000/svg")
               (width ,total-width)
               (height ,height)
               (viewBox ,(format #f "0 0 ~a ~a" total-width height)))
-           (g
-            ,left-logo)
            (g (@ (shape-rendering geometricPrecision))
               (rect (@ (x 0)
                        (width ,left-width)
@@ -349,8 +395,7 @@ formatting."
                                          'left-color))
                        (font-size ,left-font-size)
                        (font-family ,left-font-family)
-                       (x ,(round (- (/ left-width 2)
-                                     (/ left-width 14))))
+                       (x ,left-text-x)
                        (y ,text-y))
                     ,(assoc-ref x
                                 'left-text))
@@ -358,12 +403,13 @@ formatting."
                                          'right-color))
                        (font-size ,right-font-size)
                        (font-family ,right-font-family)
-                       (x ,(round (+ left-width
-                                     (/ left-width 2)
-                                     (/ left-width 14))))
+                       (x ,right-text-x)
                        (y ,text-y))
                     ,(assoc-ref x
-                                'right-text)))))))
+                                'right-text)))
+           ,(if left-logo
+                `(g ,left-logo)
+                '())))))
 
 (define vector-images
   `(((id . pipeline-succeeded) (left-background . "#555")
@@ -375,25 +421,29 @@ formatting."
     ((id . scheme-guile) (left-background . "#555")
      (left-text . "Scheme")
      (left-color . "#fff")
-     (left-logo . "resources/svg/gnu-svgrepo-com.svg")
+     (left-logo unquote
+                (lambda-svg))
      (right-background . "#deb07a")
      (right-text . "Guile")
      (right-color . "#000"))
     ((id . haskell-ghc910) (left-background "#555")
      (left-text . "Haskell")
      (left-color . "#fff")
+     (left-logo unquote (lambda-svg))
      (right-background . "#7851A9")
      (right-text . "GHC 9.10")
      (right-color . "#fff"))
     ((id . gnu-make) (left-background . "#555")
      (left-text . "GNU")
      (left-color . "#fff")
+     (left-logo unquote (gnu-svg))
      (right-background . "#bbbbbb")
      (right-text . "Make")
      (right-color . "#000"))
     ((id . gnu-emacs) (left-background . "#555")
      (left-text . "GNU")
      (left-color . "#fff")
+     (left-logo unquote (gnu-svg))
      (right-background . "#885997")
      (right-text . "Emacs")
      (right-color . "#fff"))))
@@ -420,14 +470,13 @@ formatting."
                           (assoc-ref vector-image
                                      'id)))
          (syscall (format #f
-                   "convert -quality 100 -density 10000 -background none -resize 1% dist/~a.svg dist/~a.png"
-                   (assoc-ref vector-image
-                              'id)
-                   (assoc-ref vector-image
-                              'id)))) vector-images)
+                          "convert -quality 100 -density 10000 -background none -resize 1% dist/~a.svg dist/~a.png"
+                          (assoc-ref vector-image
+                                     'id)
+                          (assoc-ref vector-image
+                                     'id)))) vector-images)
 
   (display "\n>>= ggg is done generating images\n"))
 
 (main (command-line))
-
 
