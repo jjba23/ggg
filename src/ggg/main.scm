@@ -255,11 +255,11 @@ formatting."
 
 ;; ====== GGG ======
 
-
 (define (get-path-for-svg name)
   (get-string-all (open-input-file (format #f "resources/svg-paths/~a" name))))
 
-(define* (white-svg id #:key (width 18)
+(define* (white-svg id
+                    #:key (width 18)
                     (height 18)
                     (view-box "0 0 18 20")
                     (fill "#ffffff")
@@ -275,10 +275,18 @@ formatting."
          (path (@ (fill ,fill)
                   (d ,(get-path-for-svg id))) ""))))
 
-(define lambda-svg (white-svg 'lambda))
-(define emacs-svg (white-svg 'emacs #:view-box "0 0 24 26"))
-(define gnu-svg (white-svg 'gnu #:view-box "0 0 24 26"))
-
+(define lambda-svg
+  (white-svg 'lambda))
+(define emacs-svg
+  (white-svg 'emacs
+             #:view-box "0 0 24 26"))
+(define gnu-svg
+  (white-svg 'gnu
+             #:view-box "0 0 24 26"))
+(define scala-svg
+  (white-svg 'scala
+             #:view-box "0 0 32 26"
+             #:y 3))
 
 (define (assoc-ref-or alist key default)
   (let ((x (assoc-ref alist key)))
@@ -308,15 +316,15 @@ formatting."
                             (else 7)))
          (horizontal-padding 16)
          (scaling-factor (cond
-                          ((> text-length 7)
-                           0.8)
-                          ((> text-length 6)
-                           0.9)
-                          ((> text-length 5)
-                           1.0)
-                          ((< text-length 5)
-                           1.5)
-                          (else 1.0)))
+                           ((> text-length 7)
+                            0.8)
+                           ((> text-length 6)
+                            0.9)
+                           ((> text-length 5)
+                            1.0)
+                           ((< text-length 5)
+                            1.5)
+                           (else 1.0)))
          (calculated-width (+ horizontal-padding
                               (* base-char-width text-length scaling-factor))))
     (round calculated-width)))
@@ -354,10 +362,10 @@ formatting."
          ;; --- Layout Constants ---
          (default-logo-width 12)
          (text-padding 4)
-         (separator-width 20)
+         (separator-width 12)
          (text-vertical-center 17)
          (default-left-padding 2)
-         (separator-x-offset 9)
+         (separator-x-offset 10)
 
          ;; --- Calculated Dimensions ---
          (has-left-logo? (not (nil? left-logo)))
@@ -373,7 +381,8 @@ formatting."
 
          (total-badge-width (+ left-area-width right-text-width))
 
-         (separator-x (- left-area-width separator-x-offset))
+         (left-separator-x (- left-area-width separator-x-offset))
+         (right-separator-x left-area-width)
          (right-x left-area-width)
          (left-text-x (round (+ left-logo-effective-width
                                 (/ left-text-width 2)))) ;Center text in left area
@@ -392,18 +401,24 @@ formatting."
                        (fill ,left-background)
                        (rx ,border-radius)
                        (ry ,border-radius)) "")
-              (rect (@ (x ,separator-x)
-                       (width ,separator-width)
-                       (height ,height)
-                       (fill ,right-background) ;Using right background as separator color
-                       (rx 0)
-                       (ry 0)) "")
               (rect (@ (x ,right-x)
                        (width ,right-text-width)
                        (height ,height)
                        (fill ,right-background)
                        (rx ,border-radius)
-                       (ry ,border-radius)) ""))
+                       (ry ,border-radius)) "")
+              (rect (@ (x ,left-separator-x)
+                       (width ,separator-width)
+                       (height ,height)
+                       (fill ,left-background)
+                       (rx 0)
+                       (ry 0)) "")
+              (rect (@ (x ,right-separator-x)
+                       (width ,separator-width)
+                       (height ,height)
+                       (fill ,right-background)
+                       (rx 0)
+                       (ry 0)) ""))
            (g (@ (text-anchor middle))
               (text (@ (fill ,left-color)
                        (font-size ,left-font-size)
@@ -431,34 +446,37 @@ formatting."
     ((id . scheme-guile) (left-background . "#555")
      (left-text . "Scheme")
      (left-color . "#fff")
-     (left-logo unquote
-                lambda-svg)
+     (left-logo unquote lambda-svg)
      (right-background . "#deb07a")
      (right-text . "Guile")
      (right-color . "#000"))
     ((id . haskell-ghc910) (left-background "#555")
      (left-text . "Haskell")
      (left-color . "#fff")
-     (left-logo unquote
-                lambda-svg)
+     (left-logo unquote lambda-svg)
      (right-background . "#7851A9")
      (right-text . "GHC 9.10")
      (right-color . "#fff"))
     ((id . gnu-make) (left-background . "#555")
      (left-text . "GNU")
      (left-color . "#fff")
-     (left-logo unquote
-                gnu-svg)
+     (left-logo unquote gnu-svg)
      (right-background . "#bbbbbb")
      (right-text . "Make")
      (right-color . "#000"))
     ((id . gnu-emacs) (left-background . "#555")
      (left-text . "GNU")
      (left-color . "#fff")
-     (left-logo unquote
-                emacs-svg)
+     (left-logo unquote emacs-svg)
      (right-background . "#885997")
      (right-text . "Emacs")
+     (right-color . "#fff"))
+    ((id . scala-213) (left-background . "#555")
+     (left-text . "Scala")
+     (left-color . "#fff")
+     (left-logo unquote scala-svg)
+     (right-background . "#A50021")
+     (right-text . "v2.13")
      (right-color . "#fff"))))
 
 (define (main args)
@@ -483,11 +501,11 @@ formatting."
                           (assoc-ref vector-image
                                      'id)))
          (syscall (format #f
-                          "convert -quality 100 -density 1000 -background none -resize 10% dist/~a.svg dist/~a.png"
-                          (assoc-ref vector-image
-                                     'id)
-                          (assoc-ref vector-image
-                                     'id)))) vector-images)
+                   "convert -quality 100 -density 1000 -background none -resize 10% dist/~a.svg dist/~a.png"
+                   (assoc-ref vector-image
+                              'id)
+                   (assoc-ref vector-image
+                              'id)))) vector-images)
 
   (display "\n>>= ggg is done generating images\n"))
 

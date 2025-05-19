@@ -1,10 +1,10 @@
-#+title: 🚧 GGG: Guile Glyph Generator
+#+title: GGG: Guile Glyph Generator
 #+author: Josep Bigorra
 #+email: jjbigorra@gmail.com
 
 [[https://jointhefreeworld.org/static-assets/badges/GNU-Guix-c48702.png]] [[https://jointhefreeworld.org/static-assets/badges/Scheme-Guile-d0730f.png]]
 
-/(WIP) Generate SVG images for handy useful glyphs, org/markdown badges and more, from Lisp (Guile Scheme)/
+/Generate SVG images for handy useful glyphs, org/markdown badges and more, from Lisp (Guile Scheme)/
 
 If you like my work, please support me by [[https://bmc.link/jjbigorra][buying me a cup of coffee ☕]] so I can continue with a lot of motivation.
 
@@ -15,7 +15,7 @@ If you like my work, please support me by [[https://bmc.link/jjbigorra][buying m
 
 Tired of bland, static status badges for your projects? Say hello to the *Guile Glyph Generator (GGG)*, a small but mighty tool crafted in the elegant Scheme programming language. Based on the provided configuration, GGG will produce something like the following badges (as both SVG and PNG files):
 
-[[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/haskell-ghc910.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/gnu-emacs.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/gnu-make.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/scheme-guile.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/pipeline-succeeded.svg]]
+[[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/haskell-ghc910.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/gnu-emacs.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/gnu-make.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/scheme-guile.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/pipeline-succeeded.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/scala-213.svg]]
 
 --------
 
