@@ -312,13 +312,19 @@ formatting."
          (height (assoc-ref-or x
                                'height 26))
          (border-radius (assoc-ref-or x
-                                      'border-radius 10)))
+                                      'border-radius 10))
+         (left-logo (if (not (assoc-ref x
+                                        'left-logo)) ""
+                                        (get-string-all (open-input-file (assoc-ref x
+                                                                                    'left-logo))))))
     `((svg (@ (id ,(assoc-ref x
                               'id))
               (xmlns "http://www.w3.org/2000/svg")
               (width ,total-width)
               (height ,height)
               (viewBox ,(format #f "0 0 ~a ~a" total-width height)))
+           (g
+            ,left-logo)
            (g (@ (shape-rendering geometricPrecision))
               (rect (@ (x 0)
                        (width ,left-width)
@@ -369,6 +375,7 @@ formatting."
     ((id . scheme-guile) (left-background . "#555")
      (left-text . "Scheme")
      (left-color . "#fff")
+     (left-logo . "resources/svg/gnu-svgrepo-com.svg")
      (right-background . "#deb07a")
      (right-text . "Guile")
      (right-color . "#000"))
@@ -422,4 +429,5 @@ formatting."
   (display "\n>>= ggg is done generating images\n"))
 
 (main (command-line))
+
 
