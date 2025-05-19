@@ -22,7 +22,7 @@
      (right-background . "#407430")
      (right-text . "succeeded")
      (right-color . "#fff"))
-
+    
     ((id . gnu-guix) (left-background . "#555")
      (left-text . "GNU")
      (left-color . "#fff")
