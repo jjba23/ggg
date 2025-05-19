@@ -27,42 +27,18 @@ See the [[https://www.gnu.org/licenses/][GNU GPL]] for details.
 
 -------  
 
-* What is GGG
 
-GGG allows you to effortlessly generate stylish, customizable SVG, PNG and more badges directly from your command line.
+* What is this black magic? 🪄
 
-GGG takes simple descriptions and turns them into visually appealing, tags and badges. Think of those concise indicators you often see on GitHub READMEs, showcasing build status, language used, or other project details.
+Through SVG generation from Lisp (Guile Scheme) we leverage a beautiful DSL and apply some mathematical knowledge to build pixel perfect badges. These SVG can then be easily converted without quality loss to any desired format.
 
-With GGG, you have the power to create your own with a consistent and clean aesthetic.
+With GGG, you have the power to create your own badges and images with a consistent and clean aesthetic.
 
 -  *Scheme Powered:* Built with the expressive and functional Guile Scheme, ensuring a concise and maintainable codebase.
 -  *Vector Graphics (SVG):* Generates crisp and scalable SVG images, perfect for any screen resolution.
 -  *Raster Images (PNG):* Also produces PNG versions for broader compatibility.
 -  *Highly Customizable:* Define the text, background colors, and text colors for both the left and right sections of your badge.
 -  *Simple Definition:* Badge configurations are defined in an easy-to-understand data structure within the Scheme code.
-
-  -----
-
-* Get Started:
-
-To use GGG, you'll need:
-
--  *Guile Scheme:* Ensure you have Guile installed on your system.
--  *ImageMagick:* If you want to generate PNG files, you'll need ImageMagick installed (specifically the `convert` command).
-
-Refer to the ~Makefile~ to understand more about running GGG. ~make run~ is the recommended way to run it.
-
-You should point ggg to your files:
-
-#+begin_src shell
-guix shell -m manifest.scm -- guile --fresh-auto-compile src/ggg/main.scm glyphs/<your file>.scm
-#+end_src
-
---------
-
-* What is this black magic? 🪄
-
-Through SVG generation from Lisp (Guile Scheme) we leverage a beautiful DSL and apply some mathematical knowledge to build pixel perfect badges. These SVG can then be easily converted without quality loss to any desired format.
 
 We dynamically estimate text width for the elements, specially text, looking up a rough width per character based on the font size. Then, we multiply this by the number of characters and add some padding. Finally, we slightly adjust the width based on whether the text is very short, short, medium, or long to make the badge look better.
 
@@ -84,6 +60,23 @@ In essence, the "magic" lies in the combination of:
 
 
 ----------
+
+* Get Started:
+
+To use GGG, you'll need:
+
+-  *Guile Scheme:* Ensure you have Guile installed on your system.
+-  *ImageMagick:* If you want to generate PNG files, you'll need ImageMagick installed (specifically the ~convert~ command).
+
+Refer to the ~Makefile~ to understand more about running GGG. ~make run~ is the recommended way to run it.
+
+You should point ggg to your files:
+
+#+begin_src shell
+guix shell -m manifest.scm -- guile --fresh-auto-compile src/ggg/main.scm glyphs/<your file>.scm
+#+end_src
+
+--------
 
 * Code of conduct
 
