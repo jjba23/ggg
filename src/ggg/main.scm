@@ -263,7 +263,7 @@ formatting."
                     (height 18)
                     (view-box "0 0 18 20")
                     (fill "#ffffff")
-                    (x 4)
+                    (x 6)
                     (y 5))
   `((svg (@ (width ,width)
             (height ,height)
@@ -285,7 +285,7 @@ formatting."
              #:view-box "0 0 24 26"))
 (define scala-svg
   (white-svg 'scala
-             #:view-box "0 0 32 26"
+             #:view-box "0 0 36 26"
              #:y 3))
 
 (define (assoc-ref-or alist key default)
@@ -360,7 +360,7 @@ formatting."
                                         'right-font-size 12))
 
          ;; --- Layout Constants ---
-         (default-logo-width 12)
+         (default-logo-width 16)
          (text-padding 4)
          (separator-width 12)
          (text-vertical-center 17)
