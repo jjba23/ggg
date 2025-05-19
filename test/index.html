@@ -11,13 +11,22 @@
   <body>
     <main>
         <h1>GGG</h1>
-        <object data="../dist/scheme-guile.svg"></object>
-        <object data="../dist/gnu-emacs.svg"></object>
-        <object data="../dist/gnu-make.svg"></object>
-        <object data="../dist/haskell-ghc910.svg"></object>
-        <object data="../dist/pipeline-succeeded.svg"></object>
-        <object data="../dist/scala-213.svg"></object>
-        <object data="../dist/gnu-guix.svg"></object>
+        <div id="vector-image-container" style="display:flex;flex-direction:row;flex-wrap:wrap;gap:0.4rem;">
+        </div>
     </main>
+    <script>
+      const vectorImages = ['scheme-guile', 'gnu-emacs', 'gnu-make', 'haskell-ghc910',
+                           'pipeline-succeeded', 'scala-213', 'gnu-guix',
+                            'license-lgpl3+', 'license-gpl3+']
+
+      document.addEventListener('DOMContentLoaded', () => {
+          const vectorImageContainer = document.getElementById('vector-image-container')
+          vectorImages.forEach(v => {
+              const vectorImage = document.createElement('object')
+              vectorImage.setAttribute('data', `../dist/${v}.svg`)
+              vectorImageContainer.appendChild(vectorImage)
+          })
+      })
+    </script>
   </body>
 </html>

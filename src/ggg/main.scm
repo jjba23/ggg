@@ -55,18 +55,22 @@
          (path (@ (fill ,fill)
                   (d ,(get-path-for-svg id))) ""))))
 
-(define lambda-svg
-  (white-svg 'lambda))
-(define emacs-svg
-  (white-svg 'emacs
-             #:view-box "0 0 24 26"))
-(define gnu-svg
-  (white-svg 'gnu
-             #:view-box "0 0 24 26"))
-(define scala-svg
-  (white-svg 'scala
-             #:view-box "0 0 36 26"
-             #:y 3))
+(define ggg-logos
+  `((emacs unquote
+           (white-svg 'emacs
+                      #:view-box "0 0 24 26"))
+    (lambda unquote
+      (white-svg 'lambda))
+    (gnu unquote
+         (white-svg 'gnu
+                    #:view-box "0 0 24 26"))
+    (scala unquote
+           (white-svg 'scala
+                      #:view-box "0 0 36 26"
+                      #:y 3))
+    (scales unquote
+            (white-svg 'scales
+                       #:view-box "0 0 24 26"))))
 
 (define (assoc-ref-or alist key default)
   (let ((x (assoc-ref alist key)))
@@ -114,8 +118,9 @@ medium, or long to make the badge look better. It rounds the final width to a wh
     (round calculated-width)))
 
 (define (mk-readme-vector-image x)
-  (let* ((left-logo (assoc-ref x
-                               'left-logo))
+  (let* ((left-logo (assoc-ref ggg-logos
+                               (assoc-ref x
+                                          'left-logo)))
          (left-text (assoc-ref x
                                'left-text))
          (right-text (assoc-ref x
