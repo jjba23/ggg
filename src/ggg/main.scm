@@ -296,7 +296,7 @@ formatting."
          (right-width (length-for-text right-length))
          (part-separator-width 20)
          (total-width (+ left-width right-width part-separator-width))
-         (text-y 16)
+         (text-y 17)
          (part-separator-background right-background)
          (part-separator-x (- left-width 8))
          (right-x left-width))
