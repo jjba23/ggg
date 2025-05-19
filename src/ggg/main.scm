@@ -395,7 +395,7 @@ formatting."
   (display args)
   (newline)
   (map (lambda (vector-image)
-         (display (format #f "\n>>= producing svg dist/~a.svg\n"
+         (display (format #f "\n>>= producing dist/~a.svg\n"
                           (assoc-ref vector-image
                                      'id)))
          (with-output-to-file (format #f "dist/~a.svg"
@@ -405,15 +405,27 @@ formatting."
              (sxml->xml (mk-vector-image vector-image))))) vector-images)
 
   (map (lambda (vector-image)
-         (display (format #f "\n>>= producing png dist/~a.png\n"
+         (display (format #f "\n>>= producing dist/~a.png\n"
                           (assoc-ref vector-image
                                      'id)))
          (syscall (format #f
-                   "convert -background none -size 200x200 dist/~a.svg dist/~a.png"
-                   (assoc-ref vector-image
-                              'id)
-                   (assoc-ref vector-image
-                              'id)))) vector-images)
+                          "convert -quality 100 -density 500 -background none -resize 20% dist/~a.svg dist/~a.png"
+                          (assoc-ref vector-image
+                                     'id)
+                          (assoc-ref vector-image
+                                     'id)))) vector-images)
+
+  (map (lambda (vector-image)
+         (display (format #f "\n>>= producing dist/~a.webp\n"
+                          (assoc-ref vector-image
+                                     'id)))
+         (syscall (format #f
+                          "convert -quality 100 -density 500 -background none -resize 20% dist/~a.svg dist/~a.webp"
+                          (assoc-ref vector-image
+                                     'id)
+                          (assoc-ref vector-image
+                                     'id)))) vector-images)
+  
   (display "\n>>= ggg is done generating images\n"))
 
 (main (command-line))
