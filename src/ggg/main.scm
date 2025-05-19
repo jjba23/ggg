@@ -255,20 +255,16 @@ formatting."
 
 ;; ====== GGG ======
 
-;; (left-logo (if (not (assoc-ref x
-;;                                -                                        'left-logo)) ""
-;;                                -                                        (get-string-all (open-input-file (assoc-ref x
-;;                                                                                                                     -                                                                                    'left-logo))))))
 
 (define (get-path-for-svg name)
   (get-string-all (open-input-file (format #f "resources/svg-paths/~a" name))))
 
-(define* (lambda-svg #:key (width 18)
-                     (height 18)
-                     (view-box "0 0 18 20")
-                     (fill "#ffffff")
-                     (x 4)
-                     (y 6))
+(define* (white-svg id #:key (width 18)
+                    (height 18)
+                    (view-box "0 0 18 20")
+                    (fill "#ffffff")
+                    (x 4)
+                    (y 5))
   `((svg (@ (width ,width)
             (height ,height)
             (viewBox ,view-box)
@@ -277,23 +273,12 @@ formatting."
             (xmlns "http://www.w3.org/2000/svg")
             (fill none))
          (path (@ (fill ,fill)
-                  (d ,(get-path-for-svg 'lambda))) ""))))
+                  (d ,(get-path-for-svg id))) ""))))
 
-(define* (gnu-svg #:key (width 18)
-                  (height 18)
-                  (view-box "0 0 20 26")
-                  (fill "#ffffff")
-                  (x 4)
-                  (y 6))
-  `((svg (@ (width ,width)
-            (height ,height)
-            (viewBox ,view-box)
-            (x ,x)
-            (y ,y)
-            (xmlns "http://www.w3.org/2000/svg")
-            (fill none))
-         (path (@ (fill ,fill)
-                  (d ,(get-path-for-svg 'gnu))) ""))))
+(define lambda-svg (white-svg 'lambda))
+(define emacs-svg (white-svg 'emacs #:view-box "0 0 24 26"))
+(define gnu-svg (white-svg 'gnu #:view-box "0 0 24 26"))
+
 
 (define (assoc-ref-or alist key default)
   (let ((x (assoc-ref alist key)))
@@ -367,7 +352,7 @@ formatting."
                                         'right-font-size 12))
 
          ;; --- Layout Constants ---
-         (default-logo-width 18)
+         (default-logo-width 12)
          (text-padding 4)
          (separator-width 20)
          (text-vertical-center 17)
@@ -447,7 +432,7 @@ formatting."
      (left-text . "Scheme")
      (left-color . "#fff")
      (left-logo unquote
-                (lambda-svg))
+                lambda-svg)
      (right-background . "#deb07a")
      (right-text . "Guile")
      (right-color . "#000"))
@@ -455,7 +440,7 @@ formatting."
      (left-text . "Haskell")
      (left-color . "#fff")
      (left-logo unquote
-                (lambda-svg))
+                lambda-svg)
      (right-background . "#7851A9")
      (right-text . "GHC 9.10")
      (right-color . "#fff"))
@@ -463,7 +448,7 @@ formatting."
      (left-text . "GNU")
      (left-color . "#fff")
      (left-logo unquote
-                (gnu-svg))
+                gnu-svg)
      (right-background . "#bbbbbb")
      (right-text . "Make")
      (right-color . "#000"))
@@ -471,7 +456,7 @@ formatting."
      (left-text . "GNU")
      (left-color . "#fff")
      (left-logo unquote
-                (gnu-svg))
+                emacs-svg)
      (right-background . "#885997")
      (right-text . "Emacs")
      (right-color . "#fff"))))
@@ -498,11 +483,11 @@ formatting."
                           (assoc-ref vector-image
                                      'id)))
          (syscall (format #f
-                   "convert -quality 100 -density 10000 -background none -resize 1% dist/~a.svg dist/~a.png"
-                   (assoc-ref vector-image
-                              'id)
-                   (assoc-ref vector-image
-                              'id)))) vector-images)
+                          "convert -quality 100 -density 1000 -background none -resize 10% dist/~a.svg dist/~a.png"
+                          (assoc-ref vector-image
+                                     'id)
+                          (assoc-ref vector-image
+                                     'id)))) vector-images)
 
   (display "\n>>= ggg is done generating images\n"))
 
