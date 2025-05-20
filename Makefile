@@ -36,5 +36,6 @@ repl:
 # Deploy generated assets to jointhefreeworld
 deploy:
 	CI=true make run
+	mkdir -p /srv/http/jointhefreeworld.org/ggg
 	rm -rfv /srv/http/jointhefreeworld.org/ggg/dist
 	mv -v dist /srv/http/jointhefreeworld.org/ggg/dist
