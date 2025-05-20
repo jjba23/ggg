@@ -32,3 +32,9 @@ fmt:
 # Development REPL
 repl:
 	guix shell -m manifest.scm -- guile --fresh-auto-compile -c '((@ (ares server) run-nrepl-server))'
+
+# Deploy generated assets to jointhefreeworld
+deploy:
+	CI=true make run
+	rm -rfv /srv/http/jointhefreeworld.org/ggg/dist
+	mv -v dist /srv/http/jointhefreeworld.org/ggg/
