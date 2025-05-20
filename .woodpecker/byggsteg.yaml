@@ -14,5 +14,7 @@ steps:
         -X POST -H 'Content-Type: application/x-www-form-urlencoded' \
         --data-urlencode 'username=Joe' \
         --data-urlencode "password=$BYGGSTEG_KEY" \
-        --data-urlencode 'job-code=(lambda() `((project . "ggg")(branch-name . "trunk")(task . "pull-and-deploy")(clone-url . "https://codeberg.org/jjba23/ggg)))'
+        --data-urlencode 'job-code=(lambda() `((project . "ggg")(branch-name . "trunk")(task . "pull-and-deploy")(clone-url . "https://codeberg.org/jjba23/ggg")))'
 
+
+        
