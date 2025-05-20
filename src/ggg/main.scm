@@ -81,7 +81,9 @@
                         #:clip-rule "evenodd"
                         #:view-box "0 0 30 30"
                         #:y 6))
-    (fish unquote (white-svg 'fish #:view-box "0 0 250 100"))))
+    (fish unquote
+          (white-svg 'fish
+                     #:view-box "0 0 250 100"))))
 
 (define (assoc-ref-or alist key default)
   (let ((x (assoc-ref alist key)))
@@ -115,15 +117,15 @@ medium, or long to make the badge look better. It rounds the final width to a wh
                             (else 7)))
          (horizontal-padding 16)
          (scaling-factor (cond
-                          ((> text-length 7)
-                           0.8)
-                          ((> text-length 6)
-                           0.9)
-                          ((> text-length 5)
-                           1.0)
-                          ((< text-length 5)
-                           1.3)
-                          (else 1.0)))
+                           ((> text-length 7)
+                            0.8)
+                           ((> text-length 6)
+                            0.9)
+                           ((> text-length 5)
+                            1.0)
+                           ((< text-length 5)
+                            1.3)
+                           (else 1.0)))
          (calculated-width (+ horizontal-padding
                               (* base-char-width text-length scaling-factor))))
     (round calculated-width)))
@@ -255,21 +257,19 @@ medium, or long to make the badge look better. It rounds the final width to a wh
            (lambda ()
              (sxml->xml (mk-readme-vector-image vector-image)))))
        ggg-readme-vector-images)
-  
 
   (map (lambda (vector-image)
          (display (format #f "\n>>= producing dist/~a.png\n"
                           (assoc-ref vector-image
                                      'id)))
          (syscall (format #f
-                          "convert -quality 100 -density 1000 -background none -resize 10% dist/~a.svg dist/~a.png"
-                          (assoc-ref vector-image
-                                     'id)
-                          (assoc-ref vector-image
-                                     'id)))) ggg-readme-vector-images)
+                   "convert -quality 100 -density 1000 -background none -resize 10% dist/~a.svg dist/~a.png"
+                   (assoc-ref vector-image
+                              'id)
+                   (assoc-ref vector-image
+                              'id)))) ggg-readme-vector-images)
 
   (display "\n>>= ggg is done generating images\n"))
 
 (main (command-line))
-
 
