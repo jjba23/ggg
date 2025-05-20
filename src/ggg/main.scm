@@ -43,6 +43,8 @@
                     (height 18)
                     (view-box "0 0 18 20")
                     (fill "#ffffff")
+                    (fill-rule "nonzero")
+                    (clip-rule "nonzero")
                     (x 6)
                     (y 5))
   `((svg (@ (width ,width)
@@ -53,6 +55,8 @@
             (xmlns "http://www.w3.org/2000/svg")
             (fill none))
          (path (@ (fill ,fill)
+                  (fill-rule ,fill-rule)
+                  (clip-rule ,clip-rule)
                   (d ,(get-path-for-svg id))) ""))))
 
 (define ggg-logos
@@ -71,6 +75,12 @@
     (scales unquote
             (white-svg 'scales
                        #:view-box "0 0 20 20"))
+    (hashtag unquote
+             (white-svg 'hashtag
+                        #:fill-rule "evenodd"
+                        #:clip-rule "evenodd"
+                        #:view-box "0 0 30 30"
+                        #:y 6))
     (fish unquote (white-svg 'fish #:view-box "0 0 250 100"))))
 
 (define (assoc-ref-or alist key default)
@@ -261,4 +271,5 @@ medium, or long to make the badge look better. It rounds the final width to a wh
   (display "\n>>= ggg is done generating images\n"))
 
 (main (command-line))
+
 

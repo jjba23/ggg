@@ -74,7 +74,7 @@
     ((id . shell-fish) (left-background . "#555")
      (left-text . "Shell")
      (left-color . "#fff")
-     (left-logo . fish)
+     (left-logo . hashtag)
      (right-background . "#407430")
      (right-text . "Fish")
      (right-color . "#fff"))
@@ -85,3 +85,4 @@
      (right-background . "#A50021")
      (right-text . "v2.13")
      (right-color . "#fff"))))
+
