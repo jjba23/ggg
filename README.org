@@ -19,15 +19,6 @@ Tired of bland, static status badges for your projects? Say hello to the *Guile 
 
 --------
 
-* License
-
-ggg is free software released under the GNU General Public License (GPL) version 3 or later.  
-See the [[https://www.gnu.org/licenses/][GNU GPL]] for details.
-
-
--------  
-
-
 * What is this black magic? 🪄
 
 Through SVG generation from Lisp (Guile Scheme) we leverage a beautiful DSL and apply some mathematical knowledge to build pixel perfect badges. These SVG can then be easily converted without quality loss to any desired format.
@@ -61,14 +52,14 @@ In essence, the "magic" lies in the combination of:
 
 ----------
 
-* Get Started:
+* Get Started
 
 To use GGG, you'll need:
 
 -  *Guile Scheme:* Ensure you have Guile installed on your system.
 -  *ImageMagick:* If you want to generate PNG files, you'll need ImageMagick installed (specifically the ~convert~ command).
 
-Refer to the ~Makefile~ to understand more about running GGG. ~make run~ is the recommended way to run it.
+Refer to the ~Makefile~ to understand more about running GGG. ~make run~ is the recommended way to run it. It is convenient to use the ~manifest.scm~ with Guix.
 
 You should point ggg to your files:
 
@@ -77,6 +68,20 @@ guix shell -m manifest.scm -- guile --fresh-auto-compile src/ggg/main.scm glyphs
 #+end_src
 
 --------
+
+* Licensing
+
+
+ggg and all of its source code are free software, licensed under the GNU Affero General Public License v3 (or newer at your convenience).
+
+https://www.gnu.org/licenses/agpl-3.0.nl.html
+
+The documentation and examples, including this document, which are provided with ggg, are all licensed under the GNU Free Documentation License v1.3 (or newer at your convenience).
+
+https://www.gnu.org/licenses/fdl-1.3.html
+
+-------  
+
 
 * Code of conduct
 
