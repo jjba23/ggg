@@ -37,4 +37,4 @@ repl:
 deploy:
 	CI=true make run
 	rm -rfv /srv/http/jointhefreeworld.org/ggg/dist
-	mv -v dist /srv/http/jointhefreeworld.org/ggg/
+	mv -v dist /srv/http/jointhefreeworld.org/ggg/dist
