@@ -15,7 +15,7 @@ If you like my work, please support me by [[https://bmc.link/jjbigorra][buying m
 
 Tired of bland, static status badges for your projects? Say hello to the *Guile Glyph Generator (GGG)*, a small but mighty tool crafted in the elegant Scheme programming language. Based on the provided configuration, GGG will produce something like the following badges (as both SVG and PNG files):
 
-[[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/haskell-ghc910.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/gnu-emacs.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/gnu-make.svg]]  [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/pipeline-succeeded.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/scala-213.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/license-lgpl3+.svg]]
+[[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/haskell-ghc910.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/gnu-emacs.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/gnu-make.svg]]  [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/pipeline-succeeded.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/scala-213.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/license-lgpl3+.svg]] [[https://codeberg.org/jjba23/ggg/raw/branch/trunk/dist/shell-fish.svg]]
 
 --------
 

@@ -70,7 +70,8 @@
                       #:y 3))
     (scales unquote
             (white-svg 'scales
-                       #:view-box "0 0 20 20"))))
+                       #:view-box "0 0 20 20"))
+    (fish unquote (white-svg 'fish #:view-box "0 0 256 110"))))
 
 (define (assoc-ref-or alist key default)
   (let ((x (assoc-ref alist key)))
@@ -244,17 +245,18 @@ medium, or long to make the badge look better. It rounds the final width to a wh
            (lambda ()
              (sxml->xml (mk-readme-vector-image vector-image)))))
        ggg-readme-vector-images)
+  
 
   (map (lambda (vector-image)
          (display (format #f "\n>>= producing dist/~a.png\n"
                           (assoc-ref vector-image
                                      'id)))
          (syscall (format #f
-                   "convert -quality 100 -density 1000 -background none -resize 10% dist/~a.svg dist/~a.png"
-                   (assoc-ref vector-image
-                              'id)
-                   (assoc-ref vector-image
-                              'id)))) ggg-readme-vector-images)
+                          "convert -quality 100 -density 1000 -background none -resize 10% dist/~a.svg dist/~a.png"
+                          (assoc-ref vector-image
+                                     'id)
+                          (assoc-ref vector-image
+                                     'id)))) ggg-readme-vector-images)
 
   (display "\n>>= ggg is done generating images\n"))
 
