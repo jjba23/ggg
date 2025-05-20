@@ -71,7 +71,7 @@
     (scales unquote
             (white-svg 'scales
                        #:view-box "0 0 20 20"))
-    (fish unquote (white-svg 'fish #:view-box "0 0 256 110"))))
+    (fish unquote (white-svg 'fish #:view-box "0 0 250 100"))))
 
 (define (assoc-ref-or alist key default)
   (let ((x (assoc-ref alist key)))
