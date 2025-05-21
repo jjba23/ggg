@@ -103,7 +103,7 @@
      (left-text . "GNU")
      (left-color . "#fff")
      (left-logo . lambda)
-     (right-background . "#7851A9")
+     (right-background . "#4a2034")
      (right-text . "Artanis")
      (right-color . "#fff"))
     ((id . css-tailwind4) (left-background . "#555")
