@@ -75,6 +75,10 @@
     (scales unquote
             (white-svg 'scales
                        #:view-box "0 0 20 20"))
+    (paint unquote
+           (white-svg 'paint
+                      #:view-box "0 0 42 42"
+                      #:y 7))
     (hashtag unquote
              (white-svg 'hashtag
                         #:fill-rule "evenodd"
