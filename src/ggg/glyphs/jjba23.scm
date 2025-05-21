@@ -121,4 +121,3 @@
      (right-text . "v2.13")
      (right-color . "#fff"))))
 
-
