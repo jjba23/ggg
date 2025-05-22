@@ -201,10 +201,10 @@ medium, or long to make the badge look better. It rounds the final width to a wh
          (first-logo-effective-width (if has-first-logo? default-logo-width 0))
 
          (first-text-width (length-for-text (string-length first-text)))
-         (second-text-width (length-for-text (if (not second-text) 0
-                                                 (string-length second-text))))
-         (third-text-width (length-for-text (if (not third-text) 0
-                                                (string-length third-text))))
+         (second-text-width (if (not second-text) 0
+                                (length-for-text (string-length second-text))))
+         (third-text-width (if (not third-text) 0
+                               (length-for-text (string-length third-text))))
 
          (first-area-width (+ first-logo-effective-width default-first-padding
                               first-text-width))
@@ -295,7 +295,7 @@ medium, or long to make the badge look better. It rounds the final width to a wh
                        (font-size ,first-font-size)
                        (font-family ,first-font-family)
                        (style ,(serialize-style `((font-weight unquote
-                                                               first-font-weight))))
+                                                   first-font-weight))))
                        (x ,first-text-x)
                        (y ,text-vertical-center))
                     ,first-text)
@@ -305,7 +305,7 @@ medium, or long to make the badge look better. It rounds the final width to a wh
                              (font-size ,second-font-size)
                              (font-family ,second-font-family)
                              (style ,(serialize-style `((font-weight unquote
-                                                                     second-font-weight))))
+                                                         second-font-weight))))
                              (x ,second-text-x)
                              (y ,text-vertical-center))
                           ,second-text))
@@ -315,7 +315,7 @@ medium, or long to make the badge look better. It rounds the final width to a wh
                              (font-size ,third-font-size)
                              (font-family ,third-font-family)
                              (style ,(serialize-style `((font-weight unquote
-                                                                     third-font-weight))))
+                                                         third-font-weight))))
                              (x ,third-text-x)
                              (y ,text-vertical-center))
                           ,third-text)))
