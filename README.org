@@ -18,7 +18,7 @@ If you like my work, please support me by [[https://bmc.link/jjbigorra][buying m
 Tired of bland, static status badges for your projects? Say hello to the *Guile Glyph Generator (GGG)*, a small but mighty tool crafted in the elegant Scheme programming language. Based on the provided configuration, GGG will produce something like the following badges (1-3 part) (as both SVG and PNG files):
 
 [[https://jointhefreeworld.org/ggg/dist/haskell-ghc910.svg]] [[https://jointhefreeworld.org/ggg/dist/gnu-emacs.svg]]  [[https://jointhefreeworld.org/ggg/dist/pipeline-succeeded.svg]] [[https://jointhefreeworld.org/ggg/dist/scala-213.svg]]  [[https://jointhefreeworld.org/ggg/dist/shell-fish.svg]]  [[https://jointhefreeworld.org/ggg/dist/shell-eshell.svg]] 
-[[https://jointhefreeworld.org/ggg/dist/css-tailwind4.svg]]  [[https://jointhefreeworld.org/ggg/dist/gnu-artanis.svg]]
+[[https://jointhefreeworld.org/ggg/dist/css-tailwind4.svg]]  [[https://jointhefreeworld.org/ggg/dist/gnu-artanis.svg]] [[https://jointhefreeworld.org/ggg/dist/gnu-emacs-single.svg]] [[https://jointhefreeworld.org/ggg/dist/gnu-artanis-122.svg]] 
 
 --------
 
