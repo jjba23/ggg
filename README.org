@@ -6,7 +6,7 @@
 
 /Generate SVG images for handy useful glyphs, org/markdown badges and more, from Lisp (Guile Scheme)/
 
-Be proud and appreciate technologies and techniques you use, distinguish clearly supported versions of things, etc.
+Be proud and appreciate technologies and techniques you use, distinguish clearly supported versions of things, etc. With flexible support for badges between one and three parts.
 
 If you like my work, please support me by [[https://bmc.link/jjbigorra][buying me a cup of coffee ☕]] so I can continue with a lot of motivation.
 
