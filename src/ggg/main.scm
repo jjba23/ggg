@@ -135,65 +135,65 @@ medium, or long to make the badge look better. It rounds the final width to a wh
     (round calculated-width)))
 
 (define (mk-readme-vector-image x)
-  (let* ((left-logo (assoc-ref ggg-logos
-                               (assoc-ref x
-                                          'left-logo)))
-         (left-text (assoc-ref x
-                               'left-text))
-         (right-text (assoc-ref x
-                                'right-text))
-         (left-background (assoc-ref x
-                                     'left-background))
-         (right-background (assoc-ref x
-                                      'right-background))
-         (left-color (assoc-ref x
-                                'left-color))
-         (right-color (assoc-ref x
-                                 'right-color))
+  (let* ((first-logo (assoc-ref ggg-logos
+                                (assoc-ref x
+                                           'first-logo)))
+         (first-text (assoc-ref x
+                                'first-text))
+         (second-text (assoc-ref x
+                                 'second-text))
+         (first-background (assoc-ref x
+                                      'first-background))
+         (second-background (assoc-ref x
+                                       'second-background))
+         (first-color (assoc-ref x
+                                 'first-color))
+         (second-color (assoc-ref x
+                                  'second-color))
          (badge-id (assoc-ref x
                               'id))
          (height (assoc-ref-or x
                                'height 26))
          (border-radius (assoc-ref-or x
                                       'border-radius 6))
-         (left-font-family (assoc-ref-or x
-                                         'left-font-family "sans-serif"))
-         (right-font-family (assoc-ref-or x
-                                          'right-font-family "sans-serif"))
-         (left-font-size (assoc-ref-or x
-                                       'left-font-size 12))
-         (right-font-size (assoc-ref-or x
-                                        'right-font-size 12))
+         (first-font-family (assoc-ref-or x
+                                          'first-font-family "sans-serif"))
+         (second-font-family (assoc-ref-or x
+                                           'second-font-family "sans-serif"))
+         (first-font-size (assoc-ref-or x
+                                        'first-font-size 12))
+         (second-font-size (assoc-ref-or x
+                                         'second-font-size 12))
 
          ;; --- Layout Constants ---
          (default-logo-width 16)
          (text-padding 4)
          (separator-width 8)
          (text-vertical-center 17)
-         (default-left-padding 2)
+         (default-first-padding 2)
          (separator-x-offset 6)
 
          ;; --- Calculated Dimensions ---
-         (has-left-logo? (not (nil? left-logo)))
-         (left-logo-effective-width (if has-left-logo? default-logo-width 0))
-         (left-text-length (string-length left-text))
-         (right-text-length (string-length right-text))
+         (has-first-logo? (not (nil? first-logo)))
+         (first-logo-effective-width (if has-first-logo? default-logo-width 0))
+         (first-text-length (string-length first-text))
+         (second-text-length (string-length second-text))
 
-         (left-text-width (length-for-text left-text-length))
-         (right-text-width (length-for-text right-text-length))
+         (first-text-width (length-for-text first-text-length))
+         (second-text-width (length-for-text second-text-length))
 
-         (left-area-width (+ left-logo-effective-width default-left-padding
-                             left-text-width))
+         (first-area-width (+ first-logo-effective-width default-first-padding
+                              first-text-width))
 
-         (total-badge-width (+ left-area-width right-text-width))
+         (total-badge-width (+ first-area-width second-text-width))
 
-         (left-separator-x (- left-area-width separator-x-offset))
-         (right-separator-x left-area-width)
-         (right-x left-area-width)
-         (left-text-x (round (+ left-logo-effective-width
-                                (/ left-text-width 2)))) ;Center text in left area
-         (right-text-x (round (+ right-x
-                                 (/ right-text-width 2)))) ;Center text in right area
+         (first-separator-x (- first-area-width separator-x-offset))
+         (second-separator-x first-area-width)
+         (second-x first-area-width)
+         (first-text-x (round (+ first-logo-effective-width
+                                 (/ first-text-width 2)))) ;Center text in first area
+         (second-text-x (round (+ second-x
+                                  (/ second-text-width 2)))) ;Center text in second area
          )
     `((svg (@ (id ,badge-id)
               (xmlns "http://www.w3.org/2000/svg")
@@ -202,46 +202,46 @@ medium, or long to make the badge look better. It rounds the final width to a wh
               (viewBox ,(format #f "0 0 ~a ~a" total-badge-width height)))
            (g (@ (shape-rendering geometricPrecision))
               (rect (@ (x 0)
-                       (width ,left-area-width)
+                       (width ,first-area-width)
                        (height ,height)
-                       (fill ,left-background)
+                       (fill ,first-background)
                        (rx ,border-radius)
                        (ry ,border-radius)) "")
-              (rect (@ (x ,right-x)
-                       (width ,right-text-width)
+              (rect (@ (x ,second-x)
+                       (width ,second-text-width)
                        (height ,height)
-                       (fill ,right-background)
+                       (fill ,second-background)
                        (rx ,border-radius)
                        (ry ,border-radius)) "")
-              (rect (@ (x ,left-separator-x)
+              (rect (@ (x ,first-separator-x)
                        (width ,separator-width)
                        (height ,height)
-                       (fill ,left-background)
+                       (fill ,first-background)
                        (rx 0)
                        (ry 0)) "")
-              (rect (@ (x ,right-separator-x)
+              (rect (@ (x ,second-separator-x)
                        (width ,separator-width)
                        (height ,height)
-                       (fill ,right-background)
+                       (fill ,second-background)
                        (rx 0)
                        (ry 0)) ""))
            (g (@ (text-anchor middle)
                  (shape-rendering geometricPrecision))
-              (text (@ (fill ,left-color)
-                       (font-size ,left-font-size)
-                       (font-family ,left-font-family)
-                       (x ,left-text-x)
+              (text (@ (fill ,first-color)
+                       (font-size ,first-font-size)
+                       (font-family ,first-font-family)
+                       (x ,first-text-x)
                        (y ,text-vertical-center))
-                    ,left-text)
-              (text (@ (fill ,right-color)
-                       (font-size ,right-font-size)
-                       (font-family ,right-font-family)
-                       (x ,right-text-x)
+                    ,first-text)
+              (text (@ (fill ,second-color)
+                       (font-size ,second-font-size)
+                       (font-family ,second-font-family)
+                       (x ,second-text-x)
                        (y ,text-vertical-center))
-                    ,right-text))
-           ,(if left-logo
+                    ,second-text))
+           ,(if first-logo
                 `(g (shape-rendering geometricPrecision)
-                    ,left-logo)
+                    ,first-logo)
                 '())))))
 
 (define (main args)
