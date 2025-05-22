@@ -142,14 +142,20 @@ medium, or long to make the badge look better. It rounds the final width to a wh
                                 'first-text))
          (second-text (assoc-ref x
                                  'second-text))
+         (third-text (assoc-ref x
+                                'third-text))
          (first-background (assoc-ref x
                                       'first-background))
          (second-background (assoc-ref x
                                        'second-background))
+         (third-background (assoc-ref x
+                                      'third-background))
          (first-color (assoc-ref x
                                  'first-color))
          (second-color (assoc-ref x
                                   'second-color))
+         (third-color (assoc-ref x
+                                 'third-color))
          (badge-id (assoc-ref x
                               'id))
          (height (assoc-ref-or x
@@ -160,10 +166,14 @@ medium, or long to make the badge look better. It rounds the final width to a wh
                                           'first-font-family "sans-serif"))
          (second-font-family (assoc-ref-or x
                                            'second-font-family "sans-serif"))
+         (third-font-family (assoc-ref-or x
+                                          'third-font-family "sans-serif"))
          (first-font-size (assoc-ref-or x
                                         'first-font-size 12))
          (second-font-size (assoc-ref-or x
                                          'second-font-size 12))
+         (third-font-size (assoc-ref-or x
+                                        'third-font-size 12))
 
          ;; --- Layout Constants ---
          (default-logo-width 16)
@@ -176,24 +186,32 @@ medium, or long to make the badge look better. It rounds the final width to a wh
          ;; --- Calculated Dimensions ---
          (has-first-logo? (not (nil? first-logo)))
          (first-logo-effective-width (if has-first-logo? default-logo-width 0))
-         (first-text-length (string-length first-text))
-         (second-text-length (string-length second-text))
 
-         (first-text-width (length-for-text first-text-length))
-         (second-text-width (length-for-text second-text-length))
+         (first-text-width (length-for-text (string-length first-text)))
+         (second-text-width (length-for-text (string-length second-text)))
+         (third-text-width (length-for-text (if (not third-text) 0
+                                                (string-length third-text))))
 
          (first-area-width (+ first-logo-effective-width default-first-padding
                               first-text-width))
 
-         (total-badge-width (+ first-area-width second-text-width))
+         (total-badge-width (+ first-area-width second-text-width
+                               (if (not third-text-width) 0 third-text-width)))
 
          (first-separator-x (- first-area-width separator-x-offset))
          (second-separator-x first-area-width)
+
+         (third-separator-x (- (+ first-area-width second-text-width) separator-x-offset))
+         (fourth-separator-x (+ first-area-width second-text-width))
+         
          (second-x first-area-width)
+         (third-x (+ first-area-width second-text-width))
          (first-text-x (round (+ first-logo-effective-width
                                  (/ first-text-width 2)))) ;Center text in first area
          (second-text-x (round (+ second-x
                                   (/ second-text-width 2)))) ;Center text in second area
+         (third-text-x (round (+ third-x
+                                 (/ third-text-width 2)))) ;Center text in third area
          )
     `((svg (@ (id ,badge-id)
               (xmlns "http://www.w3.org/2000/svg")
