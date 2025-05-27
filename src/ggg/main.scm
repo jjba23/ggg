@@ -75,6 +75,10 @@
     (scales unquote
             (white-svg 'scales
                        #:view-box "0 0 20 20"))
+    (paint unquote
+           (white-svg 'paint
+                      #:view-box "0 0 42 42"
+                      #:y 7))
     (hashtag unquote
              (white-svg 'hashtag
                         #:fill-rule "evenodd"
@@ -84,6 +88,12 @@
     (fish unquote
           (white-svg 'fish
                      #:view-box "0 0 250 100"))))
+
+(define (serialize-style alist)
+  (string-join (map (lambda (p)
+                      (format #f "~a: ~a"
+                              (car p)
+                              (cdr p))) alist) ";"))
 
 (define (assoc-ref-or alist key default)
   (let ((x (assoc-ref alist key)))
@@ -131,65 +141,93 @@ medium, or long to make the badge look better. It rounds the final width to a wh
     (round calculated-width)))
 
 (define (mk-readme-vector-image x)
-  (let* ((left-logo (assoc-ref ggg-logos
-                               (assoc-ref x
-                                          'left-logo)))
-         (left-text (assoc-ref x
-                               'left-text))
-         (right-text (assoc-ref x
-                                'right-text))
-         (left-background (assoc-ref x
-                                     'left-background))
-         (right-background (assoc-ref x
-                                      'right-background))
-         (left-color (assoc-ref x
-                                'left-color))
-         (right-color (assoc-ref x
-                                 'right-color))
+  (let* ((first-logo (assoc-ref ggg-logos
+                                (assoc-ref x
+                                           'first-logo)))
+         (first-text (assoc-ref x
+                                'first-text))
+         (second-text (assoc-ref x
+                                 'second-text))
+         (third-text (assoc-ref x
+                                'third-text))
+         (first-background (assoc-ref x
+                                      'first-background))
+         (second-background (assoc-ref x
+                                       'second-background))
+         (third-background (assoc-ref x
+                                      'third-background))
+         (first-color (assoc-ref x
+                                 'first-color))
+         (second-color (assoc-ref x
+                                  'second-color))
+         (third-color (assoc-ref x
+                                 'third-color))
          (badge-id (assoc-ref x
                               'id))
          (height (assoc-ref-or x
                                'height 26))
          (border-radius (assoc-ref-or x
                                       'border-radius 6))
-         (left-font-family (assoc-ref-or x
-                                         'left-font-family "sans-serif"))
-         (right-font-family (assoc-ref-or x
-                                          'right-font-family "sans-serif"))
-         (left-font-size (assoc-ref-or x
-                                       'left-font-size 12))
-         (right-font-size (assoc-ref-or x
-                                        'right-font-size 12))
+         (first-font-family (assoc-ref-or x
+                                          'first-font-family "sans-serif"))
+         (second-font-family (assoc-ref-or x
+                                           'second-font-family "sans-serif"))
+         (third-font-family (assoc-ref-or x
+                                          'third-font-family "sans-serif"))
+         (first-font-size (assoc-ref-or x
+                                        'first-font-size 12))
+         (second-font-size (assoc-ref-or x
+                                         'second-font-size 12))
+         (third-font-size (assoc-ref-or x
+                                        'third-font-size 12))
+
+         (first-font-weight (assoc-ref-or x
+                                          'first-font-weight 500))
+         (second-font-weight (assoc-ref-or x
+                                           'second-font-weight 500))
+         (third-font-weight (assoc-ref-or x
+                                          'third-font-weight 500))
 
          ;; --- Layout Constants ---
-         (default-logo-width 16)
+         (default-logo-width 18)
          (text-padding 4)
          (separator-width 8)
          (text-vertical-center 17)
-         (default-left-padding 2)
+         (default-first-padding 2)
          (separator-x-offset 6)
 
          ;; --- Calculated Dimensions ---
-         (has-left-logo? (not (nil? left-logo)))
-         (left-logo-effective-width (if has-left-logo? default-logo-width 0))
-         (left-text-length (string-length left-text))
-         (right-text-length (string-length right-text))
+         (has-first-logo? (not (nil? first-logo)))
+         (first-logo-effective-width (if has-first-logo? default-logo-width 0))
 
-         (left-text-width (length-for-text left-text-length))
-         (right-text-width (length-for-text right-text-length))
+         (first-text-width (length-for-text (string-length first-text)))
+         (second-text-width (if (not second-text) 0
+                                (length-for-text (string-length second-text))))
+         (third-text-width (if (not third-text) 0
+                               (length-for-text (string-length third-text))))
 
-         (left-area-width (+ left-logo-effective-width default-left-padding
-                             left-text-width))
+         (first-area-width (+ first-logo-effective-width default-first-padding
+                              first-text-width))
 
-         (total-badge-width (+ left-area-width right-text-width))
+         (total-badge-width (+ first-area-width
+                               (if (not second-text-width) 0 second-text-width)
+                               (if (not third-text-width) 0 third-text-width)))
 
-         (left-separator-x (- left-area-width separator-x-offset))
-         (right-separator-x left-area-width)
-         (right-x left-area-width)
-         (left-text-x (round (+ left-logo-effective-width
-                                (/ left-text-width 2)))) ;Center text in left area
-         (right-text-x (round (+ right-x
-                                 (/ right-text-width 2)))) ;Center text in right area
+         (first-separator-x (- first-area-width separator-x-offset))
+         (second-separator-x first-area-width)
+
+         (third-separator-x (- (+ first-area-width second-text-width)
+                               separator-x-offset))
+         (fourth-separator-x (+ first-area-width second-text-width))
+
+         (second-x first-area-width)
+         (third-x (+ first-area-width second-text-width))
+         (first-text-x (round (+ first-logo-effective-width
+                                 (/ first-text-width 2)))) ;Center text in first area
+         (second-text-x (round (+ second-x
+                                  (/ second-text-width 2)))) ;Center text in second area
+         (third-text-x (round (+ third-x
+                                 (/ third-text-width 2)))) ;Center text in third area
          )
     `((svg (@ (id ,badge-id)
               (xmlns "http://www.w3.org/2000/svg")
@@ -198,46 +236,92 @@ medium, or long to make the badge look better. It rounds the final width to a wh
               (viewBox ,(format #f "0 0 ~a ~a" total-badge-width height)))
            (g (@ (shape-rendering geometricPrecision))
               (rect (@ (x 0)
-                       (width ,left-area-width)
+                       (width ,first-area-width)
                        (height ,height)
-                       (fill ,left-background)
+                       (fill ,first-background)
                        (rx ,border-radius)
                        (ry ,border-radius)) "")
-              (rect (@ (x ,right-x)
-                       (width ,right-text-width)
-                       (height ,height)
-                       (fill ,right-background)
-                       (rx ,border-radius)
-                       (ry ,border-radius)) "")
-              (rect (@ (x ,left-separator-x)
-                       (width ,separator-width)
-                       (height ,height)
-                       (fill ,left-background)
-                       (rx 0)
-                       (ry 0)) "")
-              (rect (@ (x ,right-separator-x)
-                       (width ,separator-width)
-                       (height ,height)
-                       (fill ,right-background)
-                       (rx 0)
-                       (ry 0)) ""))
+              ,(if (not second-text)
+                   '()
+                   `(rect (@ (x ,second-x)
+                             (width ,second-text-width)
+                             (height ,height)
+                             (fill ,second-background)
+                             (rx ,border-radius)
+                             (ry ,border-radius)) ""))
+              ,(if (not third-text)
+                   '()
+                   `(rect (@ (x ,third-x)
+                             (width ,third-text-width)
+                             (height ,height)
+                             (fill ,third-background)
+                             (rx ,border-radius)
+                             (ry ,border-radius)) ""))
+              ,(if (not second-text)
+                   '()
+                   `(rect (@ (x ,first-separator-x)
+                             (width ,separator-width)
+                             (height ,height)
+                             (fill ,first-background)
+                             (rx 0)
+                             (ry 0)) ""))
+              ,(if (not second-text)
+                   '()
+                   `(rect (@ (x ,second-separator-x)
+                             (width ,separator-width)
+                             (height ,height)
+                             (fill ,second-background)
+                             (rx 0)
+                             (ry 0)) ""))
+              ,(if (not third-text)
+                   '()
+                   `(rect (@ (x ,third-separator-x)
+                             (width ,separator-width)
+                             (height ,height)
+                             (fill ,second-background)
+                             (rx 0)
+                             (ry 0)) ""))
+              ,(if (not third-text)
+                   '()
+                   `(rect (@ (x ,fourth-separator-x)
+                             (width ,separator-width)
+                             (height ,height)
+                             (fill ,third-background)
+                             (rx 0)
+                             (ry 0)) "")))
            (g (@ (text-anchor middle)
                  (shape-rendering geometricPrecision))
-              (text (@ (fill ,left-color)
-                       (font-size ,left-font-size)
-                       (font-family ,left-font-family)
-                       (x ,left-text-x)
+              (text (@ (fill ,first-color)
+                       (font-size ,first-font-size)
+                       (font-family ,first-font-family)
+                       (style ,(serialize-style `((font-weight unquote
+                                                   first-font-weight))))
+                       (x ,first-text-x)
                        (y ,text-vertical-center))
-                    ,left-text)
-              (text (@ (fill ,right-color)
-                       (font-size ,right-font-size)
-                       (font-family ,right-font-family)
-                       (x ,right-text-x)
-                       (y ,text-vertical-center))
-                    ,right-text))
-           ,(if left-logo
+                    ,first-text)
+              ,(if (not second-text)
+                   '()
+                   `(text (@ (fill ,second-color)
+                             (font-size ,second-font-size)
+                             (font-family ,second-font-family)
+                             (style ,(serialize-style `((font-weight unquote
+                                                         second-font-weight))))
+                             (x ,second-text-x)
+                             (y ,text-vertical-center))
+                          ,second-text))
+              ,(if (not third-text)
+                   '()
+                   `(text (@ (fill ,third-color)
+                             (font-size ,third-font-size)
+                             (font-family ,third-font-family)
+                             (style ,(serialize-style `((font-weight unquote
+                                                         third-font-weight))))
+                             (x ,third-text-x)
+                             (y ,text-vertical-center))
+                          ,third-text)))
+           ,(if first-logo
                 `(g (shape-rendering geometricPrecision)
-                    ,left-logo)
+                    ,first-logo)
                 '())))))
 
 (define (main args)
