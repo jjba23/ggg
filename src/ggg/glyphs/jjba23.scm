@@ -101,7 +101,7 @@
      (left-color . "#fff")
      (left-logo . scales)
      (right-background . "#4f677f")
-     (right-text . "FDL v1.3+")
+     (right-text . "GFDL v1.3+")
      (right-color . "#fff"))
     ;; Shell Fish
     ((id . shell-fish) (left-background . "#555")
