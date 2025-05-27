@@ -116,7 +116,7 @@
     (first-color . "#fff")
     (first-logo . scales)
     (second-background . "#4f677f")
-    (second-text . "FDL v1.3+")
+    (second-text . "GFDL v1.3+")
     (second-color . "#fff")))
 
 (define ggg-badge-shell-fish
