@@ -80,9 +80,9 @@
                       #:view-box "0 0 42 42"
                       #:y 7))
     (language unquote
-           (white-svg 'language
-                      #:view-box "0 0 20 24"
-                      #:y 4))
+              (white-svg 'language
+                         #:view-box "0 0 20 24"
+                         #:y 4))
     (hashtag unquote
              (white-svg 'hashtag
                         #:fill-rule "evenodd"
