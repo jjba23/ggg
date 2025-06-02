@@ -59,6 +59,15 @@
     (second-text . "Make")
     (second-color . "#fff")))
 
+(define ggg-badge-i18n-gnu-gettext
+  `((id . i18n-gnu-gettext) (first-background . "#555")
+    (first-text . "i18n")
+    (first-color . "#fff")
+    (first-logo . language)
+    (second-background . "#a32d2a")
+    (second-text . "GNU gettext")
+    (second-color . "#fff")))
+
 (define ggg-badge-gnu-emacs
   `((id . gnu-emacs) (first-background . "#555")
     (first-text . "GNU")
@@ -188,6 +197,7 @@
         ggg-badge-gnu-emacs
         ggg-badge-gnu-emacs-single
         ggg-badge-emacs-lisp
+        ggg-badge-i18n-gnu-gettext
         ggg-badge-license-gpl3+
         ggg-badge-license-lgpl3+
         ggg-badge-license-agpl3+
