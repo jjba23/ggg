@@ -15,23 +15,27 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with ggg.  If not, see <https://www.gnu.org/licenses/>.
 
-run:
-	rm -rfv dist
-	mkdir dist
-	guix shell -m manifest.scm -- guile --fresh-auto-compile src/ggg/main.scm glyphs/jjba23.scm
+dev-run:
+	guix shell -m manifest.scm -- guile -L ./src -c '((@(ggg main) main))' \
+		--glyph-file ./glyphs/jjba23.scm --output-dir ./dist
 dev:
-	watchexec -i "dist/**" -r -e scm,css,js -- "make run"
+	watchexec -i "dist/**" -r -e scm,css,js -- "make dev-run"
+
+run:
+	guix shell -f guix.scm -- \
+		ggg --glyph-file ./glyphs/jjba23.scm --output-dir ./dist
 
 # Target to format source code files according to the style guide
 # Find all .scm files and format them using 'guix style'
 fmt:
-	$(call hygguile-log-info,"formatting all Scheme files")
 	find . -maxdepth 8 -name "*.scm" -type f -exec guix style -f {} \;
-
 
 # Development REPL
 repl:
-	guix shell -m manifest.scm -- guile --fresh-auto-compile -c '((@ (ares server) run-nrepl-server))'
+	guix shell -m manifest.scm -- \
+		guile \
+		-L ./src \
+		-c '((@ (ares server) run-nrepl-server))'
 
 # Deploy generated assets to jointhefreeworld
 deploy:

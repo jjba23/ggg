@@ -15,7 +15,6 @@
 ;; You should have received a copy of the GNU Affero General Public License
 ;; along with ggg.  If not, see <https://www.gnu.org/licenses/>.
 
-(load "./sxml.scm")
 
 (define-module (ggg main)
   #:declarative? #f

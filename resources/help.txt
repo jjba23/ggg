@@ -1,0 +1,20 @@
+
+GGG - Guile Glyph Generator:
+    Generate SVG images for handy useful glyphs, Org/Markdown badges and more, from Guile Scheme
+    See more at: https://codeberg.org/jjba23/ggg
+    
+Usage: ggg [OPTIONS]
+
+Options:
+    -g, --glyph-file FILE        Specify the Scheme config - glyph file (required).
+    -o, --output-dir DIRECTORY   Specify the output directory for the generated SVGs.
+                                     Defaults to "./dist"
+    -h, --help                   Display this help message and exit.
+
+Examples:
+    ggg -g ~/documents/my-glyphs.scm -o ~/documents/dist
+
+    ggg --glyph-file ~/documents/my-glyphs.scm --output-dir ~/documents/dist
+
+
+        

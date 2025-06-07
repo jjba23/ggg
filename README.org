@@ -4,7 +4,7 @@
 
 [[https://jointhefreeworld.org/ggg/dist/scheme-guile.svg]]  [[https://jointhefreeworld.org/ggg/dist/gnu-guix.svg]]  [[https://jointhefreeworld.org/ggg/dist/gnu-make.svg]]  [[https://jointhefreeworld.org/ggg/dist/license-agpl3+.svg]]  [[https://jointhefreeworld.org/ggg/dist/license-fdl13+.svg]] 
 
-/Generate SVG images for handy useful glyphs, org/markdown badges and more, from Lisp (Guile Scheme)/
+/Generate SVG images for handy useful glyphs, Org/Markdown badges and more, from Lisp (Guile Scheme)/
 
 Be proud and appreciate technologies and techniques you use, distinguish clearly supported versions of things, etc. With flexible support for badges between one and three parts.
 

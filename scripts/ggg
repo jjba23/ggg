@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+
+# Copyright © Josep Bigorra <jjbigorra@gmail.com>
+
+# ggg is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# ggg is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+
+# You should have received a copy of the GNU Affero General Public License
+# along with ggg. If not, see <https://www.gnu.org/licenses/>.
+
+# Commentary:
+#
+# This bash script provides a convenient and user-friendly wrapper
+# around the command-line usage of `ggg`, allowing the
+# Guile Scheme application to behave and feel like any other
+# executable or binary that users may install to their systems.
+#
+# This also helps installing `ggg` in a convenient fashion
+# to the Guix store and it allows us to decouple the user-facing
+# command-line interface from the internal Guile Scheme arguments
+# to the main program and library.
+#
+# Some of the rationale behind the `SCRIPT_DIR` and `STORE_DIR`
+# can be explained due to the need of reliably and reproducibly
+# deploying source code and other resources to the store
+# and have access to those at runtime.
+
+set -euo pipefail
+
+SCRIPT_DIR=$(dirname "$0")
+STORE_DIR=$(readlink -f "$SCRIPT_DIR/..")
+SCHEME_SOURCES_DIR="$STORE_DIR/share/guile/site/3.0"
+RESOURCES_DIR="$STORE_DIR/share/resources"
+SCRIPTS_DIR="$STORE_DIR/share/scripts"
+
+source "$SCRIPTS_DIR/log.sh"
+
+show-help() {
+    cat "$RESOURCES_DIR/help.txt"
+}
+
+PARSED_OPTIONS=$(getopt -n "ggg" -o l:o:p:h --long locale:,output-dir:,persona-file:,help -- "$@")
+eval set -- "$PARSED_OPTIONS"
+
+LOCALE=""
+OUTPUT_DIR=""
+PERSONA_FILE=""
+
+while true; do
+  case "$1" in
+    -l|--locale)
+      LOCALE="$2"
+      shift 2
+      ;;
+    -o|--output-dir)
+      OUTPUT_DIR="$2"
+      shift 2
+      ;;
+    -p|--persona-file)
+      PERSONA_FILE="$2"
+      shift 2
+      ;;
+    -h|--help)
+      show-help
+      exit 0
+      ;;
+    --) 
+      shift
+      break
+      ;;
+    *)
+      log-error "Internal error: unrecognized option '$1'"
+      show-help
+      exit 1
+      ;;
+  esac
+done
+
+if [[ -z "$PERSONA_FILE" ]]; then
+  log-error "Error: The persona file is required. Use -p or --persona-file." >&2
+  show-help
+  exit 1
+fi
+
+GUILE_CMD_ARGS=(
+  "-L" "$SCHEME_SOURCES_DIR"
+  "-c" "((@(ggg main) main))"
+)
+
+[[ -n "$LOCALE" ]] && GUILE_CMD_ARGS+=("--locale" "$LOCALE")
+[[ -n "$OUTPUT_DIR" ]] && GUILE_CMD_ARGS+=("--output-dir" "$OUTPUT_DIR")
+
+GUILE_CMD_ARGS+=("--persona-file" "$PERSONA_FILE")
+GUILE_CMD_ARGS+=("--resources-dir" "$RESOURCES_DIR")
+
+log-info "Running Guile command: guile ${GUILE_CMD_ARGS[*]}"
+exec guile "${GUILE_CMD_ARGS[@]}"
