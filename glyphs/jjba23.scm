@@ -15,6 +15,9 @@
 ;; You should have received a copy of the GNU Affero General Public License
 ;; along with ggg.  If not, see <https://www.gnu.org/licenses/>.
 
+(define-module (ggg config)
+  #:export (ggg-readme-vector-images))
+
 (define ggg-badge-pipeline-succeeded
   `((id . pipeline-succeeded) (first-background . "#555")
     (first-text . "pipeline")

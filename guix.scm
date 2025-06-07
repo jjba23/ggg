@@ -15,7 +15,7 @@
 
 (package
   (name "ggg")
-  (version "0.2.6")
+  (version "0.2.7")
   (source
    (local-file %source-dir
                #:recursive? #t

@@ -16,8 +16,9 @@
 # along with ggg.  If not, see <https://www.gnu.org/licenses/>.
 
 dev-run:
-	guix shell -m manifest.scm -- guile -L ./src -c '((@(ggg main) main))' \
-		--glyph-file ./glyphs/jjba23.scm --output-dir ./dist
+	guix shell -m manifest.scm -- \
+		guile -L ./src -c '((@(ggg main) main))' \
+		--glyph-file $(realpath ./glyphs/jjba23.scm) --output-dir ./dist
 dev:
 	watchexec -i "dist/**" -r -e scm,css,js -- "make dev-run"
 

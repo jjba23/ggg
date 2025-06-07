@@ -17,19 +17,56 @@
 
 (define-module (ggg main)
   #:declarative? #f
-  #:use-module (ice-9 getopt-long)
+  #:use-module (ggg sxml)
+  #:use-module (ice-9 format)
+  #:use-module (ice-9 iconv)
+  #:use-module (ice-9 match)
+  #:use-module (ice-9 popen)
+  #:use-module (ice-9 rdelim)
+  #:use-module (ice-9 regex)
   #:use-module (ice-9 string-fun)
   #:use-module (ice-9 textual-ports)
   #:use-module (srfi srfi-1)
-  #:use-module (ice-9 iconv)
-  #:use-module (ice-9 popen)
-  #:use-module (ice-9 rdelim)
-  #:use-module (ice-9 format)
-  #:use-module (ice-9 match)
-  #:use-module (ice-9 regex)
-  #:use-module (ggg sxml)
   #:use-module (srfi srfi-13)
-  #:use-module (srfi srfi-64))
+  #:use-module (ice-9 getopt-long)
+  #:export (main render-glyphs
+                 mk-readme-vector-image
+                 length-for-text
+                 get-short-commit-sha
+                 syscall
+                 assoc-ref-or
+                 serialize-style
+                 ggg-logos
+                 white-svg
+                 log-message
+                 log
+                 log-info
+                 log-error
+                 get-path-for-svg))
+
+(define preferred-strftime-format
+  (make-parameter "%Y-%m-%d %H:%M:%S%z"))
+
+(define (log-message msg)
+  (display (format #f "\n\x1b[1m~a\x1b[0m" msg)))
+
+(define (log msg . args)
+  (log-message (apply format
+                      (append (list #f msg) args))))
+
+(define (log-info msg . args)
+  (log-message (format #f "[INFO][~a] ~a"
+                       (strftime (preferred-strftime-format)
+                                 (localtime (current-time)))
+                       (apply format
+                              (append (list #f msg) args)))))
+
+(define (log-error msg . args)
+  (log-message (format #f "[ERROR][~a] ~a"
+                       (strftime (preferred-strftime-format)
+                                 (localtime (current-time)))
+                       (apply format
+                              (append (list #f msg) args)))))
 
 ;; ====== GGG ======
 
@@ -327,14 +364,18 @@ medium, or long to make the badge look better. It rounds the final width to a wh
                 '())))))
 
 (define* (render-glyphs #:key glyph-file resources-dir output-dir)
-  (display (format #f "\n>>= loading glyphs: ~a\n\n"
-                   (cadr args)))
-  (load (cadr args))
+  (log-info "Start rendering glyphs")
+  (log-info "\tglyph-file: ~a" glyph-file)
+
+  ;; load user-supplied Scheme file
+  (load glyph-file)
+  (use-modules (ggg config))
+
   (map (lambda (vector-image)
-         (display (format #f "\n>>= producing dist/~a.svg\n"
-                          (assoc-ref vector-image
-                                     'id)))
-         (with-output-to-file (format #f "dist/~a.svg"
+         (log-info "producing ~a/~a.svg" output-dir (assoc-ref vector-image 'id))
+
+         (with-output-to-file (format #f "~a/~a.svg"
+                                      output-dir
                                       (assoc-ref vector-image
                                                  'id))
            (lambda ()
@@ -342,13 +383,13 @@ medium, or long to make the badge look better. It rounds the final width to a wh
        ggg-readme-vector-images)
 
   (map (lambda (vector-image)
-         (display (format #f "\n>>= producing dist/~a.png\n"
-                          (assoc-ref vector-image
-                                     'id)))
+         (log-info "producing ~a/~a.png" output-dir (assoc-ref vector-image 'id))
          (syscall (format #f
-                   "convert -quality 100 -density 1000 -background none -resize 10% dist/~a.svg dist/~a.png"
+                   "convert -quality 100 -density 1000 -background none -resize 10% ~a/~a.svg ~a/~a.png"
+                   output-dir
                    (assoc-ref vector-image
                               'id)
+                   output-dir
                    (assoc-ref vector-image
                               'id)))) ggg-readme-vector-images)
 
@@ -356,18 +397,20 @@ medium, or long to make the badge look better. It rounds the final width to a wh
 
 (define* (main #:key (args (command-line)))
   
-  (let ((option-spec '((output-dir (single-char #\o)
-                                   (value #t))
-                       (resources-dir (single-char #\r)
-                                      (value #t))
-                       (glyph-file (single-char #\g)
-                                   (value #t)
-                                   (required? #t))))
-        (options (getopt-long args option-spec))
-        (glyph-file (option-ref options
-                                'glyph-file #f))
-        (output-dir (option-ref options
-                                'output-dir "./dist")))
+  (let* ((option-spec '((output-dir (single-char #\o)
+                                    (value #t))
+                        (resources-dir (single-char #\r)
+                                       (value #t))
+                        (glyph-file (single-char #\g)
+                                    (value #t)
+                                    (required? #t))))
+         (options (getopt-long args option-spec))
+         (glyph-file (option-ref options
+                                 'glyph-file #f))
+         (resources-dir (option-ref options
+                                 'resources-dir #f))         
+         (output-dir (option-ref options
+                                 'output-dir "./dist")))
     (log-info "GGG: Guile Glyph Generator")
     (render-glyphs #:glyph-file glyph-file
                    #:resources-dir resources-dir
