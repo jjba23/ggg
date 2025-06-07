@@ -15,7 +15,6 @@
 ;; You should have received a copy of the GNU Affero General Public License
 ;; along with ggg.  If not, see <https://www.gnu.org/licenses/>.
 
-
 (define-module (ggg main)
   #:declarative? #f
   #:use-module (ice-9 getopt-long)
@@ -327,10 +326,7 @@ medium, or long to make the badge look better. It rounds the final width to a wh
                     ,first-logo)
                 '())))))
 
-(define (main args)
-  (display "
->>= starting ggg: guile glyph generator
-")
+(define* (render-glyphs #:key glyph-file resources-dir output-dir)
   (display (format #f "\n>>= loading glyphs: ~a\n\n"
                    (cadr args)))
   (load (cadr args))
@@ -358,5 +354,22 @@ medium, or long to make the badge look better. It rounds the final width to a wh
 
   (display "\n>>= ggg is done generating images\n"))
 
-(main (command-line))
+(define* (main #:key (args (command-line)))
+  
+  (let ((option-spec '((output-dir (single-char #\o)
+                                   (value #t))
+                       (resources-dir (single-char #\r)
+                                      (value #t))
+                       (glyph-file (single-char #\g)
+                                   (value #t)
+                                   (required? #t))))
+        (options (getopt-long args option-spec))
+        (glyph-file (option-ref options
+                                'glyph-file #f))
+        (output-dir (option-ref options
+                                'output-dir "./dist")))
+    (log-info "GGG: Guile Glyph Generator")
+    (render-glyphs #:glyph-file glyph-file
+                   #:resources-dir resources-dir
+                   #:output-dir output-dir)))
 
