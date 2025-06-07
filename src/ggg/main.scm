@@ -363,37 +363,63 @@ medium, or long to make the badge look better. It rounds the final width to a wh
                     ,first-logo)
                 '())))))
 
-(define* (render-glyphs #:key glyph-file resources-dir output-dir)
-  (log-info "Start rendering glyphs")
-  (log-info "\tglyph-file: ~a" glyph-file)
-
-  ;; load user-supplied Scheme file
-  (load glyph-file)
-  (use-modules (ggg config))
-
-  (map (lambda (vector-image)
-         (log-info "producing ~a/~a.svg" output-dir (assoc-ref vector-image 'id))
-
-         (with-output-to-file (format #f "~a/~a.svg"
-                                      output-dir
-                                      (assoc-ref vector-image
-                                                 'id))
+(define-syntax-rule (get-setting setting)
+  "Get a setting for ggg, from glyph file."
+  (let* ((val (module-variable (resolve-module '(ggg config)) setting)))
+    (catch #t
            (lambda ()
-             (sxml->xml (mk-readme-vector-image vector-image)))))
-       ggg-readme-vector-images)
+             (variable-ref val))
+           (lambda (key . args)
+             #f))))
 
-  (map (lambda (vector-image)
-         (log-info "producing ~a/~a.png" output-dir (assoc-ref vector-image 'id))
-         (syscall (format #f
-                   "convert -quality 100 -density 1000 -background none -resize 10% ~a/~a.svg ~a/~a.png"
-                   output-dir
-                   (assoc-ref vector-image
-                              'id)
-                   output-dir
-                   (assoc-ref vector-image
-                              'id)))) ggg-readme-vector-images)
+(define* (render-glyphs #:key glyph-file resources-dir output-dir)
+  (let* ((clean-dist-cmd (format #f "rm -rfv ~a" output-dir))
+         (mkdir-dist-cmd (format #f "mkdir -p ~a" output-dir)))
+    (log-info "executing: ~a" clean-dist-cmd)
+    (syscall clean-dist-cmd)
 
-  (display "\n>>= ggg is done generating images\n"))
+    (log-info "executing: ~a" mkdir-dist-cmd)
+    (syscall mkdir-dist-cmd)
+
+    (log-info "Start rendering glyphs")
+    (log-info "\tglyph-file: ~a" glyph-file)
+
+    ;; load user-supplied Scheme file
+    (load glyph-file)
+    (use-modules (ggg config))
+
+    (log-info "")
+    (log-info "Start producing SVG images")
+    (map (lambda (vector-image)
+           (log-info "\tproducing ~a/~a.svg" output-dir
+                     (assoc-ref vector-image
+                                'id))
+
+           (with-output-to-file (format #f "~a/~a.svg" output-dir
+                                        (assoc-ref vector-image
+                                                   'id))
+             (lambda ()
+               (sxml->xml (mk-readme-vector-image vector-image)))))
+         (get-setting 'ggg-readme-vector-images))
+
+    (log-info "")
+    (log-info "Start producing PNG images")
+    (map (lambda (vector-image)
+           (log-info "\tproducing ~a/~a.png" output-dir
+                     (assoc-ref vector-image
+                                'id))
+           (syscall (format #f
+                     "convert -quality 100 -density 1000 -background none -resize 10% ~a/~a.svg ~a/~a.png"
+                     output-dir
+                     (assoc-ref vector-image
+                                'id)
+                     output-dir
+                     (assoc-ref vector-image
+                                'id))))
+         (get-setting 'ggg-readme-vector-images))
+
+    (log-info "")
+    (log-info "GGG is done generating images\n")))
 
 (define* (main #:key (args (command-line)))
   
@@ -408,7 +434,7 @@ medium, or long to make the badge look better. It rounds the final width to a wh
          (glyph-file (option-ref options
                                  'glyph-file #f))
          (resources-dir (option-ref options
-                                 'resources-dir #f))         
+                                    'resources-dir #f))
          (output-dir (option-ref options
                                  'output-dir "./dist")))
     (log-info "GGG: Guile Glyph Generator")
