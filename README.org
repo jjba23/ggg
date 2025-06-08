@@ -59,15 +59,16 @@ Tired of bland, static status badges for your projects? Say hello to the *Guile 
 
 To use GGG, you'll need:
 
+- *Guix*: The Guix package manager will ensure a reproducible working software, and will manage all needed dependencies for you.
 -  *Guile Scheme:* Ensure you have Guile installed on your system.
 -  *ImageMagick:* If you want to generate PNG files, you'll need ImageMagick installed (specifically the ~convert~ command).
 
-Refer to the ~Makefile~ to understand more about running GGG. ~make run~ is the recommended way to run it. It is convenient to use the ~manifest.scm~ with Guix.
+Refer to the ~Makefile~ to understand more about running GGG. ~make run~ is the recommended way to run it. It is convenient to use the ~manifest.scm~ or the package definition of ~guix.scm~ with Guix.
 
-You should point ggg to your files:
+You should point ggg to your configuration file:
 
 #+begin_src shell
-guix shell -m manifest.scm -- guile --fresh-auto-compile src/ggg/main.scm glyphs/<your file>.scm
+ggg --glyph-file /home/joe/hacking/ggg/glyphs/jjba23.scm --output-dir ./dist
 #+end_src
 
 --------
