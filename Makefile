@@ -24,7 +24,7 @@ dev:
 
 run:
 	guix shell -f guix.scm -- \
-		ggg --glyph-file ./glyphs/jjba23.scm --output-dir ./dist
+		ggg --glyph-file $(realpath ./glyphs/jjba23.scm) --output-dir ./dist
 
 # Target to format source code files according to the style guide
 # Find all .scm files and format them using 'guix style'

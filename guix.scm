@@ -42,8 +42,8 @@
                                     (string-append share "/scripts/"))
                       (chmod (string-append bin "/ggg") #o755)))))))
   (build-system guile-build-system)
-  (native-inputs (list guile-next))
-  (inputs (list guile-next))
+  (native-inputs (list guile-3.0))
+  (inputs (list guile-3.0))
   (synopsis
    "Generate SVG images, Org/Markdown badges and more, from Guile Scheme")
   (description
