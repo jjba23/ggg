@@ -57,7 +57,7 @@ Tired of bland, static status badges for your projects? Say hello to the *Guile 
 
 * Getting started
 
-To use GGG, you'll need:
+ggg is officially distributed via the Guix package manager. You can alternatively choose to download it from source, useful for developing it or customizing it. In that case you'll need:
 
 - *Guix*: The Guix package manager will ensure a reproducible working software, and will manage all needed dependencies for you.
 -  *Guile Scheme:*  This entire program is written using the official GNU extension language, Guile Scheme.
