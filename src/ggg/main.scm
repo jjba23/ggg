@@ -70,8 +70,10 @@
 
 ;; ====== GGG ======
 
-(define (get-path-for-svg name)
-  (get-string-all (open-input-file (format #f "resources/svg-paths/~a" name))))
+(define* (get-path-for-svg name
+                           #:key resources-dir)
+  (get-string-all (open-input-file (format #f "~a/svg-paths/~a" resources-dir
+                                           name))))
 
 (define* (white-svg id
                     #:key resources-dir
@@ -93,7 +95,8 @@
          (path (@ (fill ,fill)
                   (fill-rule ,fill-rule)
                   (clip-rule ,clip-rule)
-                  (d ,(get-path-for-svg id))) ""))))
+                  (d ,(get-path-for-svg id
+                                        #:resources-dir resources-dir))) ""))))
 
 (define* (ggg-logos #:key resources-dir)
   `((emacs unquote
@@ -101,7 +104,8 @@
                       #:resources-dir resources-dir
                       #:view-box "0 0 24 26"))
     (lambda unquote
-      (white-svg 'lambda))
+      (white-svg 'lambda
+                 #:resources-dir resources-dir))
     (gnu unquote
          (white-svg 'gnu
                     #:resources-dir resources-dir
