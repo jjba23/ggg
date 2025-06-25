@@ -18,7 +18,8 @@
 dev-run:
 	guix shell -m manifest.scm -- \
 		guile -L ./src -c '((@(ggg main) main))' \
-		--glyph-file $(realpath ./glyphs/jjba23.scm) --output-dir ./dist
+		--glyph-file $(realpath ./glyphs/jjba23.scm) --output-dir ./dist \
+		--resources-dir ./resources
 dev:
 	watchexec -i "dist/**" -r -e scm,css,js -- "make dev-run"
 
