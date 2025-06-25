@@ -74,7 +74,8 @@
   (get-string-all (open-input-file (format #f "resources/svg-paths/~a" name))))
 
 (define* (white-svg id
-                    #:key (width 18)
+                    #:key resources-dir
+                    (width 18)
                     (height 18)
                     (view-box "0 0 18 20")
                     (fill "#ffffff")
@@ -94,38 +95,46 @@
                   (clip-rule ,clip-rule)
                   (d ,(get-path-for-svg id))) ""))))
 
-(define ggg-logos
+(define* (ggg-logos #:key resources-dir)
   `((emacs unquote
            (white-svg 'emacs
+                      #:resources-dir resources-dir
                       #:view-box "0 0 24 26"))
     (lambda unquote
       (white-svg 'lambda))
     (gnu unquote
          (white-svg 'gnu
+                    #:resources-dir resources-dir
                     #:view-box "0 0 24 26"))
     (scala unquote
            (white-svg 'scala
+                      #:resources-dir resources-dir
                       #:view-box "0 0 36 26"
                       #:y 3))
     (scales unquote
             (white-svg 'scales
+                       #:resources-dir resources-dir
                        #:view-box "0 0 20 20"))
     (paint unquote
            (white-svg 'paint
+                      #:resources-dir resources-dir
                       #:view-box "0 0 42 42"
                       #:y 7))
     (language unquote
               (white-svg 'language
+                         #:resources-dir resources-dir
                          #:view-box "0 0 20 24"
                          #:y 4))
     (hashtag unquote
              (white-svg 'hashtag
+                        #:resources-dir resources-dir
                         #:fill-rule "evenodd"
                         #:clip-rule "evenodd"
                         #:view-box "0 0 30 30"
                         #:y 6))
     (fish unquote
           (white-svg 'fish
+                     #:resources-dir resources-dir
                      #:view-box "0 0 250 100"))))
 
 (define (serialize-style alist)
@@ -179,8 +188,9 @@ medium, or long to make the badge look better. It rounds the final width to a wh
                               (* base-char-width text-length scaling-factor))))
     (round calculated-width)))
 
-(define (mk-readme-vector-image x)
-  (let* ((first-logo (assoc-ref ggg-logos
+(define* (mk-readme-vector-image x
+                                 #:key resources-dir)
+  (let* ((first-logo (assoc-ref (ggg-logos #:resources-dir resources-dir)
                                 (assoc-ref x
                                            'first-logo)))
          (first-text (assoc-ref x
@@ -399,7 +409,9 @@ medium, or long to make the badge look better. It rounds the final width to a wh
                                         (assoc-ref vector-image
                                                    'id))
              (lambda ()
-               (sxml->xml (mk-readme-vector-image vector-image)))))
+               (sxml->xml (mk-readme-vector-image vector-image
+                                                  #:resources-dir
+                                                  resources-dir)))))
          (get-setting 'ggg-readme-vector-images))
 
     (log-info "")

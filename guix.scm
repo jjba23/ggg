@@ -34,7 +34,7 @@
                       (mkdir-p (string-append share "/scripts"))
                       (mkdir-p (string-append share "/resources"))
                       (install-file "resources/help.txt"
-                                    (string-append share "/resources/help.txt"))
+                                    (string-append share "/resources"))
                       (copy-recursively "resources/svg-paths"
                                         (string-append share "/resources/svg-paths"))
                       (install-file "scripts/ggg" bin)
