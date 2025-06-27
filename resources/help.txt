@@ -6,7 +6,7 @@ GGG - Guile Glyph Generator:
 Usage: ggg [OPTIONS]
 
 Options:
-    -g, --glyph-file FILE        Specify the Scheme config - glyph file (required).
+    -g, --glyph-file FILE        Specify the Scheme config - absolute path to glyph file (required).
     -o, --output-dir DIRECTORY   Specify the output directory for the generated SVGs.
                                      Defaults to "./dist"
     -h, --help                   Display this help message and exit.
@@ -14,7 +14,7 @@ Options:
 Examples:
     ggg -g ~/documents/my-glyphs.scm -o ~/documents/dist
 
-    ggg --glyph-file ~/documents/my-glyphs.scm --output-dir ~/documents/dist
+    ggg --glyph-file /home/me/documents/my-glyphs.scm --output-dir /home/me/documents/dist
 
 
         
