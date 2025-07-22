@@ -136,6 +136,15 @@
                         #:clip-rule "evenodd"
                         #:view-box "0 0 30 30"
                         #:y 6))
+    (gear unquote
+          (white-svg 'gear
+                     #:resources-dir resources-dir
+                     #:view-box "0 0 640 640"
+                     #:y 6))    
+    (bull unquote
+          (white-svg 'bull
+                     #:resources-dir resources-dir
+                     #:view-box "0 0 30 30"))
     (fish unquote
           (white-svg 'fish
                      #:resources-dir resources-dir

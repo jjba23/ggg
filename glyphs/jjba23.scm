@@ -191,6 +191,12 @@
     (second-text . "v2.13")
     (second-color . "#fff")))
 
+(define ggg-badge-jointhefreeworld-org
+  `((id . jointhefreeworld-org) (first-background . "#555")
+    (first-text . "jointhefreeworld.org")
+    (first-color . "#fff")
+    (first-logo . gear)))
+
 (define ggg-readme-vector-images
   (list ggg-badge-pipeline-succeeded
         ggg-badge-gnu-guix
@@ -210,5 +216,6 @@
         ggg-badge-gnu-artanis
         ggg-badge-gnu-artanis-122
         ggg-badge-css-tailwind4
+        ggg-badge-jointhefreeworld-org
         ggg-badge-scala-213))
 
