@@ -140,6 +140,15 @@
     (second-text . "Fish")
     (second-color . "#fff")))
 
+(define ggg-badge-shell-bash
+  `((id . shell-bash) (first-background . "#555")
+    (first-text . "Shell")
+    (first-color . "#fff")
+    (first-logo . hashtag)
+    (second-background . "#407430")
+    (second-text . "Bash")
+    (second-color . "#fff")))
+
 (define ggg-badge-shell-eshell
   `((id . shell-eshell) (first-background . "#555")
     (first-text . "Shell")
@@ -212,6 +221,7 @@
         ggg-badge-license-agpl3+
         ggg-badge-license-fdl13+
         ggg-badge-shell-fish
+        ggg-badge-shell-bash
         ggg-badge-shell-eshell
         ggg-badge-gnu-artanis
         ggg-badge-gnu-artanis-122
