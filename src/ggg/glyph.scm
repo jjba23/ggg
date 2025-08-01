@@ -16,15 +16,13 @@
 ;; along with ggg.  If not, see <https://www.gnu.org/licenses/>.
 
 (define-module (ggg glyph)
-  #:declarative? #f
+  #:declarative? #t
   #:use-module (ice-9 format)
   #:use-module (ice-9 iconv)
   #:use-module (ice-9 match)
   #:use-module (ice-9 popen)
   #:use-module (ice-9 rdelim)
-  #:use-module (ice-9 regex)
   #:use-module (ice-9 string-fun)
-  #:use-module (ice-9 textual-ports)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-13)
   #:use-module (ice-9 getopt-long)

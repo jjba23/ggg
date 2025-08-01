@@ -22,14 +22,12 @@
   #:use-module (ice-9 match)
   #:use-module (ice-9 popen)
   #:use-module (ice-9 rdelim)
-  #:use-module (ice-9 regex)
   #:use-module (ice-9 string-fun)
   #:use-module (ice-9 textual-ports)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-13)
   #:use-module (ice-9 getopt-long)
   #:use-module (ggg sxml)
-  #:use-module (ggg svg)
   #:use-module (ggg prelude)
   #:use-module (ggg glyph)
   #:export (main render-glyphs))
@@ -50,7 +48,7 @@
     (load glyph-file)
     (use-modules (ggg config))
 
-    (log-info "")
+    (log-info "+-----------------------------------------+")
     (log-info "Start producing SVG images")
     (map (lambda (vector-image)
            (log-info "\tproducing ~a/~a.svg" output-dir
@@ -65,7 +63,7 @@
                                     #:resources-dir resources-dir)))))
          (get-setting 'ggg-readme-vector-images))
 
-    (log-info "")
+    (log-info "+-----------------------------------------+")
     (log-info "Start producing PNG images")
     (map (lambda (vector-image)
            (log-info "\tproducing ~a/~a.png" output-dir
@@ -81,7 +79,7 @@
                                 'id))))
          (get-setting 'ggg-readme-vector-images))
 
-    (log-info "")
+    (log-info "+-----------------------------------------+")
     (log-info "GGG is done generating images\n")))
 
 (define* (main #:key (args (command-line)))
