@@ -34,67 +34,69 @@
 
 set -euo pipefail
 
-SCRIPT_DIR=$(dirname "$0")
-STORE_DIR=$(readlink -f "$SCRIPT_DIR/..")
-SCHEME_SOURCES_DIR="$STORE_DIR/share/guile/site/3.0"
-RESOURCES_DIR="$STORE_DIR/share/resources"
-SCRIPTS_DIR="$STORE_DIR/share/scripts"
+script_dir=$(dirname "$0")
+store_dir=$(readlink -f "$script_dir/..")
+scheme_sources_dir="$store_dir/share/guile/site/3.0"
+resources_dir="$store_dir/share/resources"
+scripts_dir="$store_dir/share/scripts"
 
-source "$SCRIPTS_DIR/log.sh"
+source "$scripts_dir/log.sh"
 
-show-help() {
-    cat "$RESOURCES_DIR/help.txt"
+show_help() {
+  cat "$resources_dir/help.txt"
 }
 
-PARSED_OPTIONS=$(getopt -n "ggg" -o o:g:h --long output-dir:,glyph-file:,help -- "$@")
-eval set -- "$PARSED_OPTIONS"
+parsed_options=$(getopt -n "ggg" -o o:g:h --long output-dir:,glyph-file:,help -- "$@")
+eval set -- "$parsed_options"
 
-LOCALE=""
-OUTPUT_DIR=""
-GLYPH_FILE=""
+output_dir_arg=""
+glyph_file_arg=""
 
-while true; do
-  case "$1" in
-    -o|--output-dir)
-      OUTPUT_DIR="$2"
-      shift 2
-      ;;
-    -g|--glyph-file)
-      GLYPH_FILE="$2"
-      shift 2
-      ;;
-    -h|--help)
-      show-help
-      exit 0
-      ;;
-    --) 
-      shift
-      break
-      ;;
-    *)
-      log-error "Internal error: unrecognized option '$1'"
-      show-help
-      exit 1
-      ;;
-  esac
-done
-
-if [[ -z "$GLYPH_FILE" ]]; then
-  log-error "Error: The glyph file is required. Use -g or --glyph-file." >&2
-  show-help
-  exit 1
-fi
-
-GUILE_CMD_ARGS=(
-  "-L" "$SCHEME_SOURCES_DIR"
+guile_cmd_args=(
+  "-L" "${scheme_sources_dir}"
   "-c" "((@(ggg main) main))"
 )
 
-[[ -n "$LOCALE" ]] && GUILE_CMD_ARGS+=("--locale" "$LOCALE")
-[[ -n "$OUTPUT_DIR" ]] && GUILE_CMD_ARGS+=("--output-dir" "$OUTPUT_DIR")
+while true; do
+  case "${1}" in
+  -o | --output-dir)
+    output_dir_arg="${2}"
+    [[ -n "${output_dir_arg}" ]] && guile_cmd_args+=("--output-dir" "${output_dir_arg}")
+    shift 2
+    ;;
+  -g | --glyph-file)
+    glyph_file_arg="${2}"
+    shift 2
+    ;;
+  -h | --help)
+    show_help
+    exit 0
+    ;;
+  --)
+    shift
+    break
+    ;;
+  *)
+    log-error "Internal error: unrecognized option '${1}'"
+    show_help
+    exit 1
+    ;;
+  esac
+done
 
-GUILE_CMD_ARGS+=("--glyph-file" "$GLYPH_FILE")
-GUILE_CMD_ARGS+=("--resources-dir" "$RESOURCES_DIR")
+# The Glyph file
+if [[ -z "${glyph_file_arg}" ]]; then
+  log-error "Error: The glyph file is required. Use -g or --glyph-file." >&2
+  show_help
+  exit 1
+fi
 
-log-info "Running Guile command: guile ${GUILE_CMD_ARGS[*]}"
-exec guile "${GUILE_CMD_ARGS[@]}"
+guile_cmd_args+=("--glyph-file" "${glyph_file_arg}")
+
+# SVGs and other resources...
+guile_cmd_args+=("--resources-dir" "${resources_dir}")
+
+log-info "Starting Guile Glyph Generator: guile ${guile_cmd_args[*]}"
+
+# Run Guile application
+exec guile "${guile_cmd_args[@]}"
