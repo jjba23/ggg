@@ -17,7 +17,6 @@
 
 (define-module (ggg main)
   #:declarative? #f
-  #:use-module (ggg sxml)
   #:use-module (ice-9 format)
   #:use-module (ice-9 iconv)
   #:use-module (ice-9 match)
@@ -29,177 +28,10 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-13)
   #:use-module (ice-9 getopt-long)
-  #:export (main render-glyphs
-                 mk-readme-vector-image
-                 length-for-text
-                 get-short-commit-sha
-                 syscall
-                 assoc-ref-or
-                 serialize-style
-                 ggg-logos
-                 white-svg
-                 log-message
-                 log
-                 log-info
-                 log-error
-                 get-path-for-svg))
-
-(define preferred-strftime-format
-  (make-parameter "%Y-%m-%d %H:%M:%S%z"))
-
-(define (log-message msg)
-  (display (format #f "\n\x1b[1m~a\x1b[0m" msg)))
-
-(define (log msg . args)
-  (log-message (apply format
-                      (append (list #f msg) args))))
-
-(define (log-info msg . args)
-  (log-message (format #f "[INFO][~a] ~a"
-                       (strftime (preferred-strftime-format)
-                                 (localtime (current-time)))
-                       (apply format
-                              (append (list #f msg) args)))))
-
-(define (log-error msg . args)
-  (log-message (format #f "[ERROR][~a] ~a"
-                       (strftime (preferred-strftime-format)
-                                 (localtime (current-time)))
-                       (apply format
-                              (append (list #f msg) args)))))
-
-;; ====== GGG ======
-
-(define* (get-path-for-svg name
-                           #:key resources-dir)
-  (get-string-all (open-input-file (format #f "~a/svg-paths/~a" resources-dir
-                                           name))))
-
-(define* (white-svg id
-                    #:key resources-dir
-                    (width 18)
-                    (height 18)
-                    (view-box "0 0 18 20")
-                    (fill "#ffffff")
-                    (fill-rule 'nonzero)
-                    (clip-rule 'nonzero)
-                    (x 6)
-                    (y 5))
-  `((svg (@ (width ,width)
-            (height ,height)
-            (viewBox ,view-box)
-            (x ,x)
-            (y ,y)
-            (xmlns "http://www.w3.org/2000/svg")
-            (fill none))
-         (path (@ (fill ,fill)
-                  (fill-rule ,fill-rule)
-                  (clip-rule ,clip-rule)
-                  (d ,(get-path-for-svg id
-                                        #:resources-dir resources-dir))) ""))))
-
-(define* (ggg-logos #:key resources-dir)
-  `((emacs unquote
-           (white-svg 'emacs
-                      #:resources-dir resources-dir
-                      #:view-box "0 0 24 26"))
-    (lambda unquote
-      (white-svg 'lambda
-                 #:resources-dir resources-dir))
-    (gnu unquote
-         (white-svg 'gnu
-                    #:resources-dir resources-dir
-                    #:view-box "0 0 24 26"))
-    (scala unquote
-           (white-svg 'scala
-                      #:resources-dir resources-dir
-                      #:view-box "0 0 36 26"
-                      #:y 3))
-    (scales unquote
-            (white-svg 'scales
-                       #:resources-dir resources-dir
-                       #:view-box "0 0 20 20"))
-    (paint unquote
-           (white-svg 'paint
-                      #:resources-dir resources-dir
-                      #:view-box "0 0 42 42"
-                      #:y 7))
-    (language unquote
-              (white-svg 'language
-                         #:resources-dir resources-dir
-                         #:view-box "0 0 20 24"
-                         #:y 4))
-    (hashtag unquote
-             (white-svg 'hashtag
-                        #:resources-dir resources-dir
-                        #:fill-rule "evenodd"
-                        #:clip-rule "evenodd"
-                        #:view-box "0 0 30 30"
-                        #:y 6))
-    (gear unquote
-          (white-svg 'gear
-                     #:resources-dir resources-dir
-                     #:view-box "0 0 640 640"
-                     #:y 6))    
-    (bull unquote
-          (white-svg 'bull
-                     #:resources-dir resources-dir
-                     #:view-box "0 0 30 30"))
-    (fish unquote
-          (white-svg 'fish
-                     #:resources-dir resources-dir
-                     #:view-box "0 0 250 100"))))
-
-(define (serialize-style alist)
-  (string-join (map (lambda (p)
-                      (format #f "~a: ~a"
-                              (car p)
-                              (cdr p))) alist) ";"))
-
-(define (assoc-ref-or alist key default)
-  (let ((x (assoc-ref alist key)))
-    (if (not x) default x)))
-
-(define (syscall cmd)
-  (let* ((process (open-input-pipe cmd))
-         (process-output (get-string-all process)))
-    (close-pipe process) process-output))
-
-(define (get-short-commit-sha)
-  (syscall "git log --pretty=format:'%h' -n 1"))
-
-(define* (length-for-text text-length
-                          #:key (font-size 12))
-  "Estimates text container widths in pixels. It looks up a rough width per character based on the font size.
-Then, it multiplies this by the number of characters and adds some padding.
-Finally, it slightly adjusts the width based on whether the text is very short, short,
-medium, or long to make the badge look better. It rounds the final width to a whole number."
-  (let* ((base-char-width (case font-size
-                            ((10)
-                             8)
-                            ((11)
-                             9)
-                            ((12)
-                             9.5)
-                            ((14)
-                             10.5)
-                            ((16)
-                             11.5)
-                            (else 7)))
-         (horizontal-padding 16)
-         (scaling-factor (cond
-                           ((> text-length 7)
-                            0.8)
-                           ((> text-length 6)
-                            0.9)
-                           ((> text-length 5)
-                            1.0)
-                           ((< text-length 5)
-                            1.3)
-                           (else 1.0)))
-         (calculated-width (+ horizontal-padding
-                              (* base-char-width text-length scaling-factor))))
-    (round calculated-width)))
+  #:use-module (ggg sxml)
+  #:use-module (ggg svg)
+  #:use-module (ggg prelude)
+  #:export (main render-glyphs mk-readme-vector-image serialize-style))
 
 (define* (mk-readme-vector-image x
                                  #:key resources-dir)
@@ -385,15 +217,6 @@ medium, or long to make the badge look better. It rounds the final width to a wh
                 `(g (shape-rendering geometricPrecision)
                     ,first-logo)
                 '())))))
-
-(define-syntax-rule (get-setting setting)
-  "Get a setting for ggg, from glyph file."
-  (let* ((val (module-variable (resolve-module '(ggg config)) setting)))
-    (catch #t
-           (lambda ()
-             (variable-ref val))
-           (lambda (key . args)
-             #f))))
 
 (define* (render-glyphs #:key glyph-file resources-dir output-dir)
   (let* ((clean-dist-cmd (format #f "rm -rfv ~a" output-dir))
