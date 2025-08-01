@@ -77,7 +77,7 @@ while true; do
     break
     ;;
   *)
-    log-error "Internal error: unrecognized option '${1}'"
+    log_error "Internal error: unrecognized option '${1}'"
     show_help
     exit 1
     ;;
@@ -86,7 +86,7 @@ done
 
 # The Glyph file
 if [[ -z "${glyph_file_arg}" ]]; then
-  log-error "Error: The glyph file is required. Use -g or --glyph-file." >&2
+  log_error "Error: The glyph file is required. Use -g or --glyph-file." >&2
   show_help
   exit 1
 fi
@@ -96,7 +96,7 @@ guile_cmd_args+=("--glyph-file" "${glyph_file_arg}")
 # SVGs and other resources...
 guile_cmd_args+=("--resources-dir" "${resources_dir}")
 
-log-info "Starting Guile Glyph Generator: guile ${guile_cmd_args[*]}"
+log_info "Starting Guile Glyph Generator: guile ${guile_cmd_args[*]}"
 
 # Run Guile application
 exec guile "${guile_cmd_args[@]}"
