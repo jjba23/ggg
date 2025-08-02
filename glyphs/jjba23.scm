@@ -16,7 +16,7 @@
 ;; along with ggg.  If not, see <https://www.gnu.org/licenses/>.
 
 (define-module (ggg config)
-  #:export (ggg-glyphs))
+  #:declarative? #t)
 
 (define glyph-pipeline-succeeded
   `((sections ((background . "#555") (text . "pipeline")
