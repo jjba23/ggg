@@ -24,6 +24,9 @@ Usage: ggg [OPTIONS]
 Options:
     -f, --file FILE
         Specify the Scheme config - absolute path to glyph file (required).
+    -i, --stdin
+        Specify that ggg should read the glyph file from standard input
+        (stdin) commonly done with a pipe in *nix systems (|).
     -o, --output DIRECTORY
         Specify the output directory for the generated SVGs.
         Defaults to "./dist"
@@ -37,6 +40,9 @@ Examples:
     ggg -f ~/documents/my-glyphs.scm -o ~/documents/dist
 
     ggg --file /home/joe/documents/my-glyphs.scm --output /home/joe/glyphs
+
+    cat ./glyphs/jjba23.scm |
+        guix shell -f guix.scm -- ggg --stdin --output ./dist
 
 
 +----------------------------------------------------------------------------+

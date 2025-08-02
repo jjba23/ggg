@@ -47,6 +47,8 @@ In essence, the "magic" lies in the combination of:
 
 *Abstraction of layout* and view thanks to Lisp, handling all options gracefully.
 
+An important note is that your module where you define your glyphs should be ~(ggg config)~ as that is used to read config dynamically from. See ~glyphs/jjba23.scm~ for an example.
+
 
 ----------
 

@@ -32,21 +32,24 @@
   #:use-module (ggg glyph)
   #:export (main render-glyphs))
 
-(define* (render-glyphs #:key glyph-file resources-dir output-dir)
+(define* (render-glyphs #:key glyph-file resources-dir output-dir stdin)
   (let* ((clean-dist-cmd (format #f "rm -rfv ~a" output-dir))
          (mkdir-dist-cmd (format #f "mkdir -p ~a" output-dir)))
-    (log-info "executing: ~a" clean-dist-cmd)
+    (if stdin
+        ;; Read from stdin
+        (begin
+          (log-info "\tloading glyphs from stdin")
+          (eval-string (get-string-all (current-input-port))))
+        ;; Read from file
+        (begin
+          (log-info "\tloading glyphs file: ~a" glyph-file)
+          (load glyph-file)))
+
+    ;; Prepare dist
+    (log-info "\texecuting: ~a" clean-dist-cmd)
     (syscall clean-dist-cmd)
-
-    (log-info "executing: ~a" mkdir-dist-cmd)
+    (log-info "\texecuting: ~a" mkdir-dist-cmd)
     (syscall mkdir-dist-cmd)
-
-    (log-info "Start rendering glyphs")
-    (log-info "\tglyph-file: ~a" glyph-file)
-
-    ;; load user-supplied Scheme file
-    (load glyph-file)
-    (use-modules (ggg config))
 
     (log-info "+-----------------------------------------------+")
     (log-info "Start producing SVG images")
@@ -88,18 +91,24 @@
                                 (value #t))
                         (resources-dir (single-char #\r)
                                        (value #t))
+                        (stdin (single-char #\i)
+                               (value #f)
+                               (required? #f))
                         (file (single-char #\f)
                               (value #t)
-                              (required? #t))))
+                              (required? #f))))
          (options (getopt-long args option-spec))
          (file (option-ref options
                            'file #f))
+         (stdin (option-ref options
+                            'stdin #f))
          (resources-dir (option-ref options
                                     'resources-dir #f))
          (output-dir (option-ref options
                                  'output "./dist")))
     (log-info "GGG: Guile Glyph Generator")
     (render-glyphs #:glyph-file file
+                   #:stdin stdin
                    #:resources-dir resources-dir
                    #:output-dir output-dir)))
 
