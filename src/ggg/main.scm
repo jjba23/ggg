@@ -48,7 +48,7 @@
     (load glyph-file)
     (use-modules (ggg config))
 
-    (log-info "+-----------------------------------------+")
+    (log-info "+-----------------------------------------------+")
     (log-info "Start producing SVG images")
     (map (lambda (vector-image)
            (log-info "\tproducing ~a/~a.svg" output-dir
@@ -63,7 +63,7 @@
                                     #:resources-dir resources-dir)))))
          (get-setting 'ggg-readme-vector-images))
 
-    (log-info "+-----------------------------------------+")
+    (log-info "+-----------------------------------------------+")
     (log-info "Start producing PNG images")
     (map (lambda (vector-image)
            (log-info "\tproducing ~a/~a.png" output-dir
@@ -79,7 +79,7 @@
                                 'id))))
          (get-setting 'ggg-readme-vector-images))
 
-    (log-info "+-----------------------------------------+")
+    (log-info "+-----------------------------------------------+")
     (log-info "GGG is done generating images\n")))
 
 (define* (main #:key (args (command-line)))
