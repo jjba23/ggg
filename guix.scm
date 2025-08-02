@@ -40,7 +40,7 @@
                                           (string-append share
                                            "/resources/svg-paths"))
                         (install-file "scripts/ggg" bin)
-                        (install-file "scripts/log.sh"
+                        (install-file "scripts/log.bash"
                                       (string-append share "/scripts/"))
                         (chmod (string-append bin "/ggg") #o755)))))))
     (build-system guile-build-system)

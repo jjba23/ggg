@@ -40,7 +40,7 @@ scheme_sources_dir="$store_dir/share/guile/site/3.0"
 resources_dir="$store_dir/share/resources"
 scripts_dir="$store_dir/share/scripts"
 
-source "$scripts_dir/log.sh"
+source "$scripts_dir/log.bash"
 
 show_help() {
   cat "$resources_dir/help.txt"
