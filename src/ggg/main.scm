@@ -61,7 +61,7 @@
              (lambda ()
                (sxml->xml (mk-glyph vector-image
                                     #:resources-dir resources-dir)))))
-         (get-setting 'ggg-readme-vector-images))
+         (get-setting 'ggg-glyphs))
 
     (log-info "+-----------------------------------------------+")
     (log-info "Start producing PNG images")
@@ -77,7 +77,7 @@
                      output-dir
                      (assoc-ref vector-image
                                 'id))))
-         (get-setting 'ggg-readme-vector-images))
+         (get-setting 'ggg-glyphs))
 
     (log-info "+-----------------------------------------------+")
     (log-info "GGG is done generating images\n")))

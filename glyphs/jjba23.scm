@@ -16,35 +16,32 @@
 ;; along with ggg.  If not, see <https://www.gnu.org/licenses/>.
 
 (define-module (ggg config)
-  #:export (ggg-readme-vector-images))
+  #:export (ggg-glyphs))
 
-;; (define ggg-badge-pipeline-succeeded
-;;   `((id . pipeline-succeeded) (first-background . "#555")
-;;     (first-text . "pipeline")
-;;     (first-color . "#fff")
-;;     (second-background . "#407430")
-;;     (second-text . "succeeded")
-;;     (second-color . "#fff")))
+(define glyph-pipeline-succeeded
+  `((sections ((background . "#555") (text . "pipeline")
+               (color . "#fff"))
+              ((background . "#407430") (text . "succeeded")
+               (color . "#fff")))
+    (id . pipeline-succeeded)))
 
-;; (define ggg-badge-gnu-guix
-;;   `((id . gnu-guix) (first-background . "#555")
-;;     (first-text . "GNU")
-;;     (first-color . "#fff")
-;;     (first-logo . gnu)
-;;     (second-background . "#FFBF01")
-;;     (second-text . "Guix")
-;;     (second-color . "#000")))
+(define glyph-gnu-guix
+  `((sections ((background . "#555") (text . "GNU")
+               (color . "#fff")
+               (logo . gnu))
+              ((background . "#FFBF01") (text . "Guix")
+               (color . "#000")))
+    (id . gnu-guix)))
 
-;; (define ggg-badge-scheme-guile
-;;   `((id . scheme-guile) (first-background . "#555")
-;;     (first-text . "Scheme")
-;;     (first-color . "#fff")
-;;     (first-logo . lambda)
-;;     (second-background . "#d0730f")
-;;     (second-text . "Guile")
-;;     (second-color . "#fff")))
+(define glyph-scheme-guile
+  `((sections ((background . "#555") (text . "Scheme")
+               (color . "#fff")
+               (logo . lambda))
+              ((background . "#d0730f") (text . "Guile")
+               (color . "#fff")))
+    (id . scheme-guile)))
 
-;; (define ggg-badge-haskell-ghc910
+;; (define glyph-haskell-ghc910
 ;;   `((id . haskell-ghc910) (first-background "#555")
 ;;     (first-text . "Haskell")
 ;;     (first-color . "#fff")
@@ -53,7 +50,7 @@
 ;;     (second-text . "GHC 9.10")
 ;;     (second-color . "#fff")))
 
-;; (define ggg-badge-gnu-make
+;; (define glyph-gnu-make
 ;;   `((id . gnu-make) (first-background . "#555")
 ;;     (first-text . "GNU")
 ;;     (first-color . "#fff")
@@ -62,7 +59,7 @@
 ;;     (second-text . "Make")
 ;;     (second-color . "#fff")))
 
-;; (define ggg-badge-i18n-gnu-gettext
+;; (define glyph-i18n-gnu-gettext
 ;;   `((id . i18n-gnu-gettext) (first-background . "#555")
 ;;     (first-text . "i18n")
 ;;     (first-color . "#fff")
@@ -71,7 +68,7 @@
 ;;     (second-text . "GNU gettext")
 ;;     (second-color . "#fff")))
 
-;; (define ggg-badge-gnu-emacs
+;; (define glyph-gnu-emacs
 ;;   `((id . gnu-emacs) (first-background . "#555")
 ;;     (first-text . "GNU")
 ;;     (first-color . "#fff")
@@ -80,13 +77,13 @@
 ;;     (second-text . "Emacs")
 ;;     (second-color . "#fff")))
 
-;; (define ggg-badge-gnu-emacs-single
+;; (define glyph-gnu-emacs-single
 ;;   `((id . gnu-emacs-single) (first-background . "#555")
 ;;     (first-text . "GNU Emacs")
 ;;     (first-color . "#fff")
 ;;     (first-logo . emacs)))
 
-;; (define ggg-badge-emacs-lisp
+;; (define glyph-emacs-lisp
 ;;   `((id . emacs-lisp) (first-background . "#555")
 ;;     (first-text . "Emacs")
 ;;     (first-color . "#fff")
@@ -95,7 +92,7 @@
 ;;     (second-text . "Lisp")
 ;;     (second-color . "#fff")))
 
-;; (define ggg-badge-license-gpl3+
+;; (define glyph-license-gpl3+
 ;;   `((id . license-gpl3+) (first-background . "#555")
 ;;     (first-text . "license")
 ;;     (first-color . "#fff")
@@ -104,7 +101,7 @@
 ;;     (second-text . "GPL v3+")
 ;;     (second-color . "#fff")))
 
-;; (define ggg-badge-license-lgpl3+
+;; (define glyph-license-lgpl3+
 ;;   `((id . license-lgpl3+) (first-background . "#555")
 ;;     (first-text . "license")
 ;;     (first-color . "#fff")
@@ -113,7 +110,7 @@
 ;;     (second-text . "LGPL v3+")
 ;;     (second-color . "#fff")))
 
-;; (define ggg-badge-license-agpl3+
+;; (define glyph-license-agpl3+
 ;;   `((id . license-agpl3+) (first-background . "#555")
 ;;     (first-text . "license")
 ;;     (first-color . "#fff")
@@ -122,7 +119,7 @@
 ;;     (second-text . "AGPL v3+")
 ;;     (second-color . "#fff")))
 
-;; (define ggg-badge-license-fdl13+
+;; (define glyph-license-fdl13+
 ;;   `((id . license-fdl13+) (first-background . "#555")
 ;;     (first-text . "license")
 ;;     (first-color . "#fff")
@@ -131,7 +128,7 @@
 ;;     (second-text . "GFDL v1.3+")
 ;;     (second-color . "#fff")))
 
-;; (define ggg-badge-shell-fish
+;; (define glyph-shell-fish
 ;;   `((id . shell-fish) (first-background . "#555")
 ;;     (first-text . "Shell")
 ;;     (first-color . "#fff")
@@ -140,7 +137,7 @@
 ;;     (second-text . "Fish")
 ;;     (second-color . "#fff")))
 
-;; (define ggg-badge-shell-bash
+;; (define glyph-shell-bash
 ;;   `((id . shell-bash) (first-background . "#555")
 ;;     (first-text . "Shell")
 ;;     (first-color . "#fff")
@@ -149,7 +146,7 @@
 ;;     (second-text . "Bash")
 ;;     (second-color . "#fff")))
 
-;; (define ggg-badge-shell-eshell
+;; (define glyph-shell-eshell
 ;;   `((id . shell-eshell) (first-background . "#555")
 ;;     (first-text . "Shell")
 ;;     (first-color . "#fff")
@@ -158,7 +155,7 @@
 ;;     (second-text . "EShell")
 ;;     (second-color . "#fff")))
 
-;; (define ggg-badge-gnu-artanis
+;; (define glyph-gnu-artanis
 ;;   `((id . gnu-artanis) (first-background . "#555")
 ;;     (first-text . "GNU")
 ;;     (first-color . "#fff")
@@ -180,7 +177,7 @@
                (font-weight . 900)))
     (id . gnu-artanis-122)))
 
-;; (define ggg-badge-css-tailwind4
+;; (define glyph-css-tailwind4
 ;;   `((id . css-tailwind4) (first-background . "#555")
 ;;     (first-text . "CSS")
 ;;     (first-color . "#fff")
@@ -189,7 +186,7 @@
 ;;     (second-text . "Tailwind v4")
 ;;     (second-color . "#111")))
 
-;; (define ggg-badge-scala-213
+;; (define glyph-scala-213
 ;;   `((id . scala-213) (sections ((background . "#555") (text . "Scala")
 ;;                                 (color . "#fff")
 ;;                                 (logo . scala))
@@ -202,28 +199,27 @@
                (logo . gear)))
     (id . jointhefreeworld-org)))
 
-(define ggg-readme-vector-images
-  (list
-   ;; ggg-badge-pipeline-succeeded
-   ;; ggg-badge-gnu-guix
-   ;; ggg-badge-scheme-guile
-   ;; ggg-badge-haskell-ghc910
-   ;; ggg-badge-gnu-make
-   ;; ggg-badge-gnu-emacs
-   ;; ggg-badge-gnu-emacs-single
-   ;; ggg-badge-emacs-lisp
-   ;; ggg-badge-i18n-gnu-gettext
-   ;; ggg-badge-license-gpl3+
-   ;; ggg-badge-license-lgpl3+
-   ;; ggg-badge-license-agpl3+
-   ;; ggg-badge-license-fdl13+
-   ;; ggg-badge-shell-fish
-   ;; ggg-badge-shell-bash
-   ;; ggg-badge-shell-eshell
-   ;; ggg-badge-gnu-artanis
-   glyph-gnu-artanis-122
-   ;; ggg-badge-css-tailwind4
-   glyph-jointhefreeworld-org
-   ;; ggg-badge-scala-213
-   ))
+(define ggg-glyphs
+  (list glyph-pipeline-succeeded
+        glyph-gnu-guix
+        glyph-scheme-guile
+        ;; glyph-haskell-ghc910
+        ;; glyph-gnu-make
+        ;; glyph-gnu-emacs
+        ;; glyph-gnu-emacs-single
+        ;; glyph-emacs-lisp
+        ;; glyph-i18n-gnu-gettext
+        ;; glyph-license-gpl3+
+        ;; glyph-license-lgpl3+
+        ;; glyph-license-agpl3+
+        ;; glyph-license-fdl13+
+        ;; glyph-shell-fish
+        ;; glyph-shell-bash
+        ;; glyph-shell-eshell
+        ;; glyph-gnu-artanis
+        glyph-gnu-artanis-122
+        ;; glyph-css-tailwind4
+        glyph-jointhefreeworld-org
+        ;; glyph-scala-213
+        ))
 
