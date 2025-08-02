@@ -129,11 +129,10 @@
     (id . shell-fish)))
 
 (define glyph-shell-bash
-  `((sections (((background . "#555") (text . "Shell")
-                (color . "#fff")
-                (logo . hashtag))
-               (background . "#407430")
-               (text . "Bash")
+  `((sections ((background . "#555") (text . "Shell")
+               (color . "#fff")
+               (logo . hashtag))
+              ((background . "#407430") (text . "Bash")
                (color . "#fff")))
     (id . shell-bash)))
 
