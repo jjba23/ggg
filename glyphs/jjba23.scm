@@ -209,6 +209,5 @@
         glyph-gnu-artanis-122
         glyph-css-tailwind4
         glyph-jointhefreeworld-org
-        glyph-scala-213
-        ))
+        glyph-scala-213))
 
