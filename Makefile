@@ -18,14 +18,14 @@
 dev-run:
 	guix shell -m manifest.scm -- \
 		guile -L ./src -c '((@(ggg main) main))' \
-		--glyph-file $(realpath ./glyphs/jjba23.scm) --output-dir ./dist \
+		--file $(realpath ./glyphs/jjba23.scm) --output-dir ./dist \
 		--resources-dir ./resources
 dev:
 	watchexec -i "dist/**" -r -e scm,css,js -- "make dev-run"
 
 run:
 	guix shell -f guix.scm -- \
-		ggg --glyph-file $(realpath ./glyphs/jjba23.scm) --output-dir ./dist
+		ggg --file $(realpath ./glyphs/jjba23.scm) --output-dir ./dist
 
 # Target to format source code files according to the style guide
 # Find all .scm files and format them using 'guix style'

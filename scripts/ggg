@@ -46,11 +46,11 @@ show_help() {
   cat "$resources_dir/help.txt"
 }
 
-parsed_options=$(getopt -n "ggg" -o o:g:h --long output-dir:,glyph-file:,help -- "$@")
+parsed_options=$(getopt -n "ggg" -o o:f:h --long output-dir:,file:,help -- "$@")
 eval set -- "$parsed_options"
 
 output_dir_arg=""
-glyph_file_arg=""
+file_arg=""
 
 guile_cmd_args=(
   "-L" "${scheme_sources_dir}"
@@ -64,8 +64,8 @@ while true; do
     [[ -n "${output_dir_arg}" ]] && guile_cmd_args+=("--output-dir" "${output_dir_arg}")
     shift 2
     ;;
-  -g | --glyph-file)
-    glyph_file_arg="${2}"
+  -f | --file)
+    file_arg="${2}"
     shift 2
     ;;
   -h | --help)
@@ -85,13 +85,13 @@ while true; do
 done
 
 # The Glyph file
-if [[ -z "${glyph_file_arg}" ]]; then
-  log_error "Error: The glyph file is required. Use -g or --glyph-file." >&2
+if [[ -z "${file_arg}" ]]; then
+  log_error "Error: The glyph file is required. Use -f or --file." >&2
   show_help
   exit 1
 fi
 
-guile_cmd_args+=("--glyph-file" "${glyph_file_arg}")
+guile_cmd_args+=("--file" "${file_arg}")
 
 # SVGs and other resources...
 guile_cmd_args+=("--resources-dir" "${resources_dir}")

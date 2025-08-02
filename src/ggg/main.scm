@@ -88,18 +88,18 @@
                                     (value #t))
                         (resources-dir (single-char #\r)
                                        (value #t))
-                        (glyph-file (single-char #\g)
+                        (file (single-char #\f)
                                     (value #t)
                                     (required? #t))))
          (options (getopt-long args option-spec))
-         (glyph-file (option-ref options
-                                 'glyph-file #f))
+         (file (option-ref options
+                                 'file #f))
          (resources-dir (option-ref options
                                     'resources-dir #f))
          (output-dir (option-ref options
                                  'output-dir "./dist")))
     (log-info "GGG: Guile Glyph Generator")
-    (render-glyphs #:glyph-file glyph-file
+    (render-glyphs #:glyph-file file
                    #:resources-dir resources-dir
                    #:output-dir output-dir)))
 
