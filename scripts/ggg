@@ -46,10 +46,10 @@ show_help() {
   cat "$resources_dir/help.txt"
 }
 
-parsed_options=$(getopt -n "ggg" -o o:f:h --long output-dir:,file:,help -- "$@")
+parsed_options=$(getopt -n "ggg" -o o:f:h --long output:,file:,help -- "$@")
 eval set -- "$parsed_options"
 
-output_dir_arg=""
+output_arg=""
 file_arg=""
 
 guile_cmd_args=(
@@ -59,9 +59,9 @@ guile_cmd_args=(
 
 while true; do
   case "${1}" in
-  -o | --output-dir)
-    output_dir_arg="${2}"
-    [[ -n "${output_dir_arg}" ]] && guile_cmd_args+=("--output-dir" "${output_dir_arg}")
+  -o | --output)
+    output_arg="${2}"
+    [[ -n "${output_arg}" ]] && guile_cmd_args+=("--output" "${output_arg}")
     shift 2
     ;;
   -f | --file)

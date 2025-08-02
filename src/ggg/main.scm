@@ -84,20 +84,20 @@
 
 (define* (main #:key (args (command-line)))
   
-  (let* ((option-spec '((output-dir (single-char #\o)
-                                    (value #t))
+  (let* ((option-spec '((output (single-char #\o)
+                                (value #t))
                         (resources-dir (single-char #\r)
                                        (value #t))
                         (file (single-char #\f)
-                                    (value #t)
-                                    (required? #t))))
+                              (value #t)
+                              (required? #t))))
          (options (getopt-long args option-spec))
          (file (option-ref options
-                                 'file #f))
+                           'file #f))
          (resources-dir (option-ref options
                                     'resources-dir #f))
          (output-dir (option-ref options
-                                 'output-dir "./dist")))
+                                 'output "./dist")))
     (log-info "GGG: Guile Glyph Generator")
     (render-glyphs #:glyph-file file
                    #:resources-dir resources-dir
