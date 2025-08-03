@@ -28,7 +28,8 @@
   #:use-module (ice-9 getopt-long)
   #:use-module (ggg svg)
   #:use-module (ggg prelude)
-  #:export (mk-glyph))
+  #:export (mk-glyph logo-width separator-width text-vertical-center
+                     first-padding separator-x-offset))
 
 (define logo-width
   (make-parameter 18))
@@ -46,19 +47,19 @@
   (make-parameter 6))
 
 (define* (mk-glyph x
-                   #:key resources-dir)
+                   #:key resources)
   (let* ((sections (assoc-ref x
                               'sections))
          (first-section (if (> (length sections) 0)
                             (car sections)
                             '()))
          (second-section (if (> (length sections) 1)
-                            (cadr sections)
-                            '()))
+                             (cadr sections)
+                             '()))
          (third-section (if (> (length sections) 2)
                             (caddr sections)
                             '()))
-         (first-logo (assoc-ref (ggg-logos #:resources-dir resources-dir)
+         (first-logo (assoc-ref (ggg-logos #:resources resources)
                                 (assoc-ref first-section
                                            'logo)))
          (first-text (assoc-ref first-section

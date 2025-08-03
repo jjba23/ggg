@@ -31,12 +31,12 @@
   #:export (get-path-for-svg mk-simple-svg ggg-logos length-for-text))
 
 (define* (get-path-for-svg name
-                           #:key resources-dir)
-  (get-string-all (open-input-file (format #f "~a/svg-paths/~a" resources-dir
+                           #:key resources)
+  (get-string-all (open-input-file (format #f "~a/svg-paths/~a" resources
                                            name))))
 
 (define* (mk-simple-svg id
-                        #:key resources-dir
+                        #:key resources
                         (width 18)
                         (height 18)
                         (view-box "0 0 18 20")
@@ -56,7 +56,7 @@
                   (fill-rule ,fill-rule)
                   (clip-rule ,clip-rule)
                   (d ,(get-path-for-svg id
-                                        #:resources-dir resources-dir))) ""))))
+                                        #:resources resources))) ""))))
 
 (define* (length-for-text text-length
                           #:key (font-size 12))
@@ -91,54 +91,54 @@ medium, or long to make the badge look better. It rounds the final width to a wh
                               (* base-char-width text-length scaling-factor))))
     (round calculated-width)))
 
-(define* (ggg-logos #:key resources-dir)
+(define* (ggg-logos #:key resources)
   `((emacs unquote
            (mk-simple-svg 'emacs
-                          #:resources-dir resources-dir
+                          #:resources resources
                           #:view-box "0 0 24 26"))
     (lambda unquote
       (mk-simple-svg 'lambda
-                     #:resources-dir resources-dir))
+                     #:resources resources))
     (gnu unquote
          (mk-simple-svg 'gnu
-                        #:resources-dir resources-dir
+                        #:resources resources
                         #:view-box "0 0 24 26"))
     (scala unquote
            (mk-simple-svg 'scala
-                          #:resources-dir resources-dir
+                          #:resources resources
                           #:view-box "0 0 36 26"
                           #:y 3))
     (scales unquote
             (mk-simple-svg 'scales
-                           #:resources-dir resources-dir
+                           #:resources resources
                            #:view-box "0 0 20 20"))
     (paint unquote
            (mk-simple-svg 'paint
-                          #:resources-dir resources-dir
+                          #:resources resources
                           #:view-box "0 0 42 42"
                           #:y 7))
     (language unquote
               (mk-simple-svg 'language
-                             #:resources-dir resources-dir
+                             #:resources resources
                              #:view-box "0 0 20 24"
                              #:y 4))
     (hashtag unquote
              (mk-simple-svg 'hashtag
-                            #:resources-dir resources-dir
+                            #:resources resources
                             #:fill-rule "evenodd"
                             #:clip-rule "evenodd"
                             #:view-box "0 0 30 30"
                             #:y 6))
     (gear unquote
           (mk-simple-svg 'gear
-                         #:resources-dir resources-dir
+                         #:resources resources
                          #:view-box "0 0 640 640"
                          #:y 6))
     (bull unquote
           (mk-simple-svg 'bull
-                         #:resources-dir resources-dir
+                         #:resources resources
                          #:view-box "0 0 30 30"))
     (fish unquote
           (mk-simple-svg 'fish
-                         #:resources-dir resources-dir
+                         #:resources resources
                          #:view-box "0 0 250 100"))))

@@ -35,7 +35,7 @@ Options:
         Defaults to "./dist" but shouldn't be used if also using stdout.
     -c, --convert
         Specify that ggg should convert the SVG images to PNGs after
-        generation, using ImageMagick.
+        generation, using ImageMagick. Cannot be used with stdout.
     -h, --help
         Display this help message and exit.
 

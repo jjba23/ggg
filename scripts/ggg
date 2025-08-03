@@ -53,11 +53,12 @@ destination_arg=""
 file_arg=""
 stdin_arg=""
 stdout_arg=""
+convert_arg=""
 
 guile_cmd_args=(
   "-L" "${scheme_sources_dir}"
   "-c" "((@(ggg main) main))"
-  "--resources-dir" "${resources_dir}"
+  "--resources" "${resources_dir}"
 )
 
 while true; do
@@ -79,6 +80,7 @@ while true; do
     ;;
   -c | --convert)
     guile_cmd_args+=("--convert")
+    convert_arg="true"
     shift 1
     ;;
   -f | --file)
@@ -95,7 +97,7 @@ while true; do
     break
     ;;
   *)
-    log_error "Internal error: unrecognized option '${1}'"
+    log_error "Error: unrecognized option '${1}' !"
     show_help
     exit 1
     ;;
@@ -103,20 +105,28 @@ while true; do
 done
 
 if [[ (-z "${file_arg}") && (-z "${stdin_arg}") ]]; then
-  log_error "Error: Either the file or stdin options are required." >&2
+  log_error "Error: Either the file or stdin options are required!" >&2
   log_error "Use -f / --file or alternatively -i / --stdin." >&2
   show_help
   exit 1
 fi
 
 if [[ (-z "${stdout_arg}") && (-z "${destination_arg}") ]]; then
-  log_error "Error: Either the destination or stdout options are required." >&2
+  log_error "Error: Either the destination or stdout options are required!" >&2
   log_error "Use -d / --destination or alternatively -o / --stdout." >&2
   show_help
   exit 1
 fi
 
-log_info "Starting Guile Glyph Generator: guile ${guile_cmd_args[*]}"
+if [[ (-n "${stdout_arg}") && (-n "${convert_arg}") ]]; then
+  log_error "Error: Cannot combine stdout and convert options!" >&2
+  show_help
+  exit 1
+fi
+
+if [[ -z "${stdout_arg}" ]]; then
+  log_info "Starting Guile Glyph Generator: guile ${guile_cmd_args[*]}"
+fi
 
 # Run Guile application
 exec guile "${guile_cmd_args[@]}"
