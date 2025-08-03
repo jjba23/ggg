@@ -18,14 +18,30 @@
 dev-run:
 	guix shell -m manifest.scm -- \
 		guile -L ./src -c '((@(ggg main) main))' \
-		--file $(realpath ./glyphs/jjba23.scm) --output ./dist \
+		--file $(realpath ./glyphs/jjba23.scm) --destination ./dist \
 		--resources-dir ./resources
 dev:
 	watchexec -i "dist/**" -r -e scm,css,js -- "make dev-run"
 
 run:
 	guix shell -f guix.scm -- \
-		ggg --file $(realpath ./glyphs/jjba23.scm) --output ./dist
+		ggg --file $(realpath ./glyphs/jjba23.scm) --destination ./dist
+
+run-convert:
+	guix shell -f guix.scm -- \
+		ggg --file $(realpath ./glyphs/jjba23.scm) --destination ./dist --convert
+
+run-stdin:
+	cat glyphs/jjba23.scm | guix shell -f guix.scm -- \
+		ggg --destination ./dist
+
+run-stdout:
+	guix shell -f guix.scm -- \
+		ggg --file $(realpath ./glyphs/jjba23.scm) --stdout
+
+run-stdin-stdout:
+	cat ./glyphs/jjba23.scm | guix shell -f guix.scm -- \
+		ggg -i -o
 
 help:
 	guix shell -f guix.scm -- ggg --help

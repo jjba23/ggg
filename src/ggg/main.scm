@@ -32,18 +32,23 @@
   #:use-module (ggg glyph)
   #:export (main render-glyphs))
 
-(define* (render-glyphs #:key glyph-file resources-dir output-dir stdin)
-  (let* ((clean-dist-cmd (format #f "rm -rfv ~a" output-dir))
-         (mkdir-dist-cmd (format #f "mkdir -p ~a" output-dir)))
-    (if stdin
+(define* (render-glyphs #:key file
+                        resources-dir
+                        destination-dir
+                        with-stdin?
+                        with-convert?
+                        with-stdout?)
+  (let* ((clean-dist-cmd (format #f "rm -rfv ~a" destination-dir))
+         (mkdir-dist-cmd (format #f "mkdir -p ~a" destination-dir)))
+    (if with-stdin?
         ;; Read from stdin
         (begin
           (log-info "\tloading glyphs from stdin")
           (eval-string (get-string-all (current-input-port))))
         ;; Read from file
         (begin
-          (log-info "\tloading glyphs file: ~a" glyph-file)
-          (load glyph-file)))
+          (log-info "\tloading glyphs file: ~a" file)
+          (load file)))
 
     ;; Prepare dist
     (log-info "\texecuting: ~a" clean-dist-cmd)
@@ -53,62 +58,89 @@
 
     (log-info "+-----------------------------------------------+")
     (log-info "Start producing SVG images")
-    (map (lambda (vector-image)
-           (log-info "\tproducing ~a/~a.svg" output-dir
-                     (assoc-ref vector-image
-                                'id))
+    (define produce-svg-to-file
+      (lambda (vector-image)
+        (log-info "\tproducing ~a/~a.svg" destination-dir
+                  (assoc-ref vector-image
+                             'id))
 
-           (with-output-to-file (format #f "~a/~a.svg" output-dir
-                                        (assoc-ref vector-image
-                                                   'id))
-             (lambda ()
-               (sxml->xml (mk-glyph vector-image
-                                    #:resources-dir resources-dir)))))
-         (get-setting 'ggg-glyphs))
+        (with-output-to-file (format #f "~a/~a.svg" destination-dir
+                                     (assoc-ref vector-image
+                                                'id))
+          (lambda ()
+            (sxml->xml (mk-glyph vector-image
+                                 #:resources-dir resources-dir))))))
 
-    (log-info "+-----------------------------------------------+")
-    (log-info "Start producing PNG images")
-    (map (lambda (vector-image)
-           (log-info "\tproducing ~a/~a.png" output-dir
-                     (assoc-ref vector-image
-                                'id))
-           (syscall (format #f
-                     "convert -quality 100 -density 1000 -background none -resize 10% ~a/~a.svg ~a/~a.png"
-                     output-dir
-                     (assoc-ref vector-image
-                                'id)
-                     output-dir
-                     (assoc-ref vector-image
-                                'id))))
-         (get-setting 'ggg-glyphs))
+    (define produce-svg-to-stdout
+      (lambda (vector-image)
+        (newline)
+        (newline)
+        (sxml->xml (mk-glyph vector-image
+                                      #:resources-dir resources-dir)
+                   (current-output-port))
+        (newline)
+        (newline)))
+
+    (if with-stdout?
+        (for-each produce-svg-to-stdout
+                  (get-setting 'ggg-glyphs))
+        (for-each produce-svg-to-file
+                  (get-setting 'ggg-glyphs)))
+
+    (when with-convert?
+      (log-info "+-----------------------------------------------+")
+      (log-info "Start producing PNG images")
+      (map (lambda (vector-image)
+             (log-info "\tproducing ~a/~a.png" destination-dir
+                       (assoc-ref vector-image
+                                  'id))
+             (syscall (format #f
+                       "convert -quality 100 -density 1000 -background none -resize 10% ~a/~a.svg ~a/~a.png"
+                       destination-dir
+                       (assoc-ref vector-image
+                                  'id)
+                       destination-dir
+                       (assoc-ref vector-image
+                                  'id))))
+           (get-setting 'ggg-glyphs)))
 
     (log-info "+-----------------------------------------------+")
     (log-info "GGG is done generating images\n")))
 
 (define* (main #:key (args (command-line)))
   
-  (let* ((option-spec '((output (single-char #\o)
-                                (value #t))
+  (let* ((option-spec '((destination (single-char #\d)
+                                     (value #t)
+                                     (required? #f))
                         (resources-dir (single-char #\r)
                                        (value #t))
                         (stdin (single-char #\i)
                                (value #f)
                                (required? #f))
+                        (stdout (single-char #\o)
+                                (value #f)
+                                (required? #f))
+                        (convert (single-char #\c)
+                                 (value #f)
+                                 (required? #f))
                         (file (single-char #\f)
                               (value #t)
                               (required? #f))))
          (options (getopt-long args option-spec))
          (file (option-ref options
                            'file #f))
-         (stdin (option-ref options
-                            'stdin #f))
          (resources-dir (option-ref options
                                     'resources-dir #f))
-         (output-dir (option-ref options
-                                 'output "./dist")))
+         (destination-dir (option-ref options
+                                      'destination "./dist")))
     (log-info "GGG: Guile Glyph Generator")
-    (render-glyphs #:glyph-file file
-                   #:stdin stdin
+    (render-glyphs #:file file
+                   #:with-stdin? (option-ref options
+                                             'stdin #f)
+                   #:with-stdout? (option-ref options
+                                              'stdout #f)
+                   #:with-convert? (option-ref options
+                                               'convert #f)
                    #:resources-dir resources-dir
-                   #:output-dir output-dir)))
+                   #:destination-dir destination-dir)))
 

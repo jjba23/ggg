@@ -27,9 +27,15 @@ Options:
     -i, --stdin
         Specify that ggg should read the glyph file from standard input
         (stdin) commonly done with a pipe in *nix systems (|).
-    -o, --output DIRECTORY
-        Specify the output directory for the generated SVGs.
-        Defaults to "./dist"
+    -o, --stdout
+        Specify that ggg should output the generated glyphs to stdout
+        instead of to files (typically to console).
+    -d, --destination DIRECTORY
+        Specify the destination directory for the generated SVGs.
+        Defaults to "./dist" but shouldn't be used if also using stdout.
+    -c, --convert
+        Specify that ggg should convert the SVG images to PNGs after
+        generation, using ImageMagick.
     -h, --help
         Display this help message and exit.
 
