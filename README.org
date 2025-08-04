@@ -1,6 +1,7 @@
 #+title: GGG: Guile Glyph Generator
 #+author: Josep Bigorra
 #+email: jjbigorra@gmail.com
+#+language: en
 
 [[https://jointhefreeworld.org/ggg/dist/scheme-guile.svg]]  [[https://jointhefreeworld.org/ggg/dist/gnu-guix.svg]]  [[https://jointhefreeworld.org/ggg/dist/gnu-make.svg]]  [[https://jointhefreeworld.org/ggg/dist/license-agpl3+.svg]]  [[https://jointhefreeworld.org/ggg/dist/license-fdl13+.svg]]
 [[https://jointhefreeworld.org/ggg/dist/jointhefreeworld-org.svg]] 
@@ -19,36 +20,24 @@ If you like my work, please support me by [[https://bmc.link/jjbigorra][buying m
 
 Through SVG generation from Lisp (Guile Scheme) we leverage a beautiful DSL (Domain-Specific Language) and apply some mathematical knowledge to build pixel perfect badges.
 
-The SVG (Scalable Vector Graphics) can then be easily converted without quality loss to any desired format.
+The SVG (Scalable Vector Graphics) can then be easily converted without quality loss to any desired format. Create your badges programatically with a polished aesthetic!
 
-Create your badges programatically with a polished aesthetic!
+-  Scheme Powered :: Built with the expressive and functional Guile Scheme, ensuring a concise and maintainable codebase.
+-  Vector Graphics (SVG) :: Generates crisp and scalable SVG images, perfect for any screen resolution.
+-  Raster Images (PNG) :: Also produces PNG versions for broader compatibility.
+-  Highly Customizable :: Customize the text, background colors, text colors, logos, etc.
+-  Simple Definition :: Badge configurations are defined in an easy-to-understand data structure within the Scheme code.
 
--  *Scheme Powered:* Built with the expressive and functional Guile Scheme, ensuring a concise and maintainable codebase.
--  *Vector Graphics (SVG):* Generates crisp and scalable SVG images, perfect for any screen resolution.
--  *Raster Images (PNG):* Also produces PNG versions for broader compatibility.
--  *Highly Customizable:* Define the text, background colors, and text colors for both the left and right sections of your badge.
--  *Simple Definition:* Badge configurations are defined in an easy-to-understand data structure within the Scheme code.
+ggg dynamically estimates text width for the elements, specially text, looking up a rough width per character based on the font size. Then, multiplies this by the number of characters and add some padding. Finally, we slightly adjust the width based on whether the text is very short, short, medium, or long to make the badge look better.
 
-We dynamically estimate text width for the elements, specially text, looking up a rough width per character based on the font size. Then, we multiply this by the number of characters and add some padding. Finally, we slightly adjust the width based on whether the text is very short, short, medium, or long to make the badge look better.
+ggg tries to provide sensible defaults to every option, but allow customization. We construct the SVG structure using SXML (S-expressions representing XML). This makes it easy to define the SVG elements and their attributes programmatically. 
 
-We try to provide sensible defaults to every option, but allow customization.
+We choose for ~geometricPrecision~ in SVG to allow highest quality and fidelity, to prioritize geometric accuracy over rendering speed. This is often desirable for crisp, clean vector graphics like badges. In essence, the "magic" lies in the combination of:
 
-We construct the SVG structure using SXML (S-expressions representing XML). This makes it easy to define the SVG elements and their attributes programmatically. 
-
-We choose for ~geometricPrecision~ in SVG to allow highest quality and fidelity, to prioritize geometric accuracy over rendering speed. This is often desirable for crisp, clean vector graphics like badges.
-
-In essence, the "magic" lies in the combination of:
-
-*Data-driven generation* The badge is created based on the input data.
-
-*Careful calculations* The dimensions and positions of elements are precisely calculated to achieve the desired layout.
-
-*Using SVG features effectively* Standard SVG elements and attributes are used in a structured way to create the visual appearance.
-
-*Abstraction of layout* and view thanks to Lisp, handling all options gracefully.
-
-An important note is that your module where you define your glyphs should be ~(ggg config)~ as that is used to read config dynamically from. See ~glyphs/jjba23.scm~ for an example.
-
+- Data-driven generation :: The badge is created based on the input data.
+- Precise calculations :: The dimensions and positions of elements are precisely calculated to achieve the desired layout.
+- Using SVG effectively :: Standard SVG elements and attributes are used in a structured way to create the visual appearance.
+- Abstraction :: of layout and view thanks to Lisp, handling all options gracefully.
 
 ----------
 
@@ -60,6 +49,37 @@ Tired of bland, static status badges for your projects? Say hello to the *Guile 
 [[https://jointhefreeworld.org/ggg/dist/css-tailwind4.svg]]  [[https://jointhefreeworld.org/ggg/dist/gnu-artanis.svg]] [[https://jointhefreeworld.org/ggg/dist/gnu-emacs-single.svg]] [[https://jointhefreeworld.org/ggg/dist/gnu-artanis-122.svg]] [[https://jointhefreeworld.org/ggg/dist/i18n-gnu-gettext.svg]]  
 
 --------
+
+* How to define a glyph?
+
+The module where you define your glyphs should be ~(ggg config)~ as that is used to read config dynamically from. See ~glyphs/jjba23.scm~ for an example.
+
+#+begin_src scheme
+(define-module (ggg config)
+  #:declarative? #t)
+#+end_src
+
+Defining your glyphs is simple and only requires very basic knowledge of Lisp/Scheme:
+
+#+begin_src scheme
+(define my-scheme-guile-glyph
+  `((sections ((background . "#555") (text . "Scheme")
+               (color . "#fff")
+               (logo . lambda))
+              ((background . "#d0730f") (text . "Guile")
+               (color . "#fff")))
+    (id . scheme-guile)))
+
+#+end_src
+
+Then to ensure that ggg will read your glyphs from the file, you need to export them in the ~ggg-glyphs~ list:
+
+#+begin_src scheme
+(define ggg-glyphs
+  (list my-scheme-guile-glyph))
+#+end_src
+
+As for the ~logo~ value, ggg has a selection of free-licensed logo data in the ~resources/svg-paths~ directory, feel free to contribute new ones!
 
 * Getting started
 
