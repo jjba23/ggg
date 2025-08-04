@@ -35,11 +35,11 @@ OPTIONS:
 
 +----------------------------------------------------------------------------+
 EXAMPLES:
-    ggg -f ~/documents/my-glyphs.scm -o ~/documents/dist
+    ggg -f ~/documents/my-glyphs.scm -d ~/documents/dist
 
-    ggg --file /home/joe/documents/my-glyphs.scm --output /home/joe/glyphs
+    ggg --file /home/joe/documents/my-glyphs.scm --destination /home/joe/glyphs
 
     cat ./glyphs/jjba23.scm |
-        guix shell -f guix.scm -- ggg --stdin --output ./dist
+        guix shell -f guix.scm -- ggg --stdin --destination ./dist
 
 +----------------------------------------------------------------------------+
