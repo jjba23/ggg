@@ -1,20 +1,54 @@
 
-GGG - Guile Glyph Generator:
-    Generate SVG images for handy useful glyphs, Org/Markdown badges and more, from Guile Scheme
-    See more at: https://codeberg.org/jjba23/ggg
-    
-Usage: ggg [OPTIONS]
++----------------------------------------------------------------------------+
 
+GGG - Guile Glyph Generator
+    Generate SVG images for useful glyphs, Org/Markdown badges and more,
+    leveraging the power of Lisp (Guile Scheme).
+
+    See more at: https://codeberg.org/jjba23/ggg
+
+    With flexible support for badges between ONE and THREE parts.
+
+What is this black magic?
+
+     Through SVG generation from Lisp (Guile Scheme) we leverage
+     a beautiful and expressive DSL (Domain-Specific Language) and apply
+     some mathematical knowledge to build pixel perfect badges.
+
+     The SVG (Scalable Vector Graphics) can then be
+     easily converted without quality loss to any desired format.
+
+     Create your badges programatically with a polished aesthetic!
+
+Usage: ggg [OPTIONS]
 Options:
-    -g, --glyph-file FILE        Specify the Scheme config - absolute path to glyph file (required).
-    -o, --output-dir DIRECTORY   Specify the output directory for the generated SVGs.
-                                     Defaults to "./dist"
-    -h, --help                   Display this help message and exit.
+    -f, --file FILE
+        Specify the Scheme config - absolute path to glyph file (required).
+    -i, --stdin
+        Specify that ggg should read the glyph file from standard input
+        (stdin) commonly done with a pipe in *nix systems (|).
+    -o, --stdout
+        Specify that ggg should output the generated glyphs to stdout
+        instead of to files (typically to console).
+    -d, --destination DIRECTORY
+        Specify the destination directory for the generated SVGs.
+        Defaults to "./dist" but shouldn't be used if also using stdout.
+    -c, --convert
+        Specify that ggg should convert the SVG images to PNGs after
+        generation, using ImageMagick. Cannot be used with stdout.
+    -h, --help
+        Display this help message and exit.
+
++----------------------------------------------------------------------------+
 
 Examples:
-    ggg -g ~/documents/my-glyphs.scm -o ~/documents/dist
 
-    ggg --glyph-file /home/me/documents/my-glyphs.scm --output-dir /home/me/documents/dist
+    ggg -f ~/documents/my-glyphs.scm -o ~/documents/dist
+
+    ggg --file /home/joe/documents/my-glyphs.scm --output /home/joe/glyphs
+
+    cat ./glyphs/jjba23.scm |
+        guix shell -f guix.scm -- ggg --stdin --output ./dist
 
 
-        
++----------------------------------------------------------------------------+

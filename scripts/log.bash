@@ -15,30 +15,30 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with ggg. If not, see <https://www.gnu.org/licenses/>.
 
-set -euo pipefail;
+set -euo pipefail
 
-BOLD='\033[1m'
-RED='\033[0;31m'
-RESET='\033[0m'
+bold_text='\033[1m'
+red_text='\033[0;31m'
+reset_text='\033[0m'
 
-get-timestamp() {
+get_timestamp() {
   date '+%Y-%m-%d %H:%M:%S%:z'
 }
 
-log-error() {
-  if [ -z "$1" ]; then
-    log-error "log-error was called without a message."
+log_error() {
+  if [ -z "${1}" ]; then
+    log_error "log-error was called without a message."
     return 1
   fi
 
-  echo -e "${RED}[ERROR][$(get-timestamp)] $1${RESET}" >&2
+  echo -e "${red_text}[ERROR][$(get_timestamp)] ${1}${reset_text}" >&2
 }
 
-log-info() {
-  if [ -z "$1" ]; then
-    log-error "log-info was called without a message."
+log_info() {
+  if [ -z "${1}" ]; then
+    log_error "log-info was called without a message."
     return 1
   fi
-  
-  echo -e "${BOLD}[INFO][$(get-timestamp)] $1${RESET}"
+
+  echo -e "${bold_text}[INFO][$(get_timestamp)] ${1}${reset_text}"
 }

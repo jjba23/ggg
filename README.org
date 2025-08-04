@@ -5,20 +5,23 @@
 [[https://jointhefreeworld.org/ggg/dist/scheme-guile.svg]]  [[https://jointhefreeworld.org/ggg/dist/gnu-guix.svg]]  [[https://jointhefreeworld.org/ggg/dist/gnu-make.svg]]  [[https://jointhefreeworld.org/ggg/dist/license-agpl3+.svg]]  [[https://jointhefreeworld.org/ggg/dist/license-fdl13+.svg]]
 [[https://jointhefreeworld.org/ggg/dist/jointhefreeworld-org.svg]] 
 
-/Generate SVG images for handy useful glyphs, Org/Markdown badges and more, from Lisp (Guile Scheme)/
+/Generate SVG images for handy useful glyphs, Org/Markdown badges and more, leveraging the power of Lisp (Guile Scheme)/
 
-Be proud and appreciate technologies and techniques you use, distinguish clearly supported versions of things, etc. With flexible support for badges between one and three parts.
+Be proud and appreciate technologies and techniques you use, distinguish clearly supported versions of things, etc.
+
+With flexible support for badges between ONE and THREE parts.
 
 If you like my work, please support me by [[https://bmc.link/jjbigorra][buying me a cup of coffee ☕]] so I can continue with a lot of motivation.
-
 
 ------
 
 * What is this black magic? 🪄
 
-Through SVG generation from Lisp (Guile Scheme) we leverage a beautiful DSL and apply some mathematical knowledge to build pixel perfect badges. These SVG can then be easily converted without quality loss to any desired format.
+Through SVG generation from Lisp (Guile Scheme) we leverage a beautiful DSL (Domain-Specific Language) and apply some mathematical knowledge to build pixel perfect badges.
 
-With GGG, you have the power to create your own badges and images with a consistent and clean aesthetic.
+The SVG (Scalable Vector Graphics) can then be easily converted without quality loss to any desired format.
+
+Create your badges programatically with a polished aesthetic!
 
 -  *Scheme Powered:* Built with the expressive and functional Guile Scheme, ensuring a concise and maintainable codebase.
 -  *Vector Graphics (SVG):* Generates crisp and scalable SVG images, perfect for any screen resolution.
@@ -43,6 +46,8 @@ In essence, the "magic" lies in the combination of:
 *Using SVG features effectively* Standard SVG elements and attributes are used in a structured way to create the visual appearance.
 
 *Abstraction of layout* and view thanks to Lisp, handling all options gracefully.
+
+An important note is that your module where you define your glyphs should be ~(ggg config)~ as that is used to read config dynamically from. See ~glyphs/jjba23.scm~ for an example.
 
 
 ----------
@@ -69,7 +74,7 @@ Check the ~Makefile~ and the ~guix.scm~ and  ~manifest.scm~ for more details.
 ggg offers a ~--help~ / ~-h~ flag which will explain all options (also visible in ~resources/help.txt~). You should point ggg to the absolute path to your configuration file:
 
 #+begin_src shell
-ggg --glyph-file /home/joe/hacking/ggg/glyphs/jjba23.scm --output-dir ./dist
+ggg --file /home/joe/hacking/ggg/glyphs/jjba23.scm --output ./dist
 #+end_src
 
 --------

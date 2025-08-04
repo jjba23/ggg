@@ -9,6 +9,7 @@
              (gnu packages)
              (gnu packages bash)
              (gnu packages guile)
+             (gnu packages imagemagick)
              (gnu packages guile-xyz))
 
 (define %source-dir
@@ -17,7 +18,7 @@
 (define-public ggg
   (package
     (name "ggg")
-    (version "0.3.13")
+    (version "0.4.0")
     (source
      (local-file %source-dir
                  #:recursive? #t
@@ -39,12 +40,13 @@
                                           (string-append share
                                            "/resources/svg-paths"))
                         (install-file "scripts/ggg" bin)
-                        (install-file "scripts/log.sh"
+                        (install-file "scripts/log.bash"
                                       (string-append share "/scripts/"))
                         (chmod (string-append bin "/ggg") #o755)))))))
     (build-system guile-build-system)
     (native-inputs (list guile-3.0))
     (inputs (list guile-3.0 bash-minimal))
+    (propagated-inputs (list imagemagick))
     (synopsis "GGG is a SVG image generator for project and web badges")
     (description
      "GGG (Guile Glyph Generator) is a command-line utility

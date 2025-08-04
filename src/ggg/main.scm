@@ -17,453 +17,153 @@
 
 (define-module (ggg main)
   #:declarative? #f
-  #:use-module (ggg sxml)
   #:use-module (ice-9 format)
   #:use-module (ice-9 iconv)
   #:use-module (ice-9 match)
   #:use-module (ice-9 popen)
   #:use-module (ice-9 rdelim)
-  #:use-module (ice-9 regex)
   #:use-module (ice-9 string-fun)
   #:use-module (ice-9 textual-ports)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-13)
   #:use-module (ice-9 getopt-long)
-  #:export (main render-glyphs
-                 mk-readme-vector-image
-                 length-for-text
-                 get-short-commit-sha
-                 syscall
-                 assoc-ref-or
-                 serialize-style
-                 ggg-logos
-                 white-svg
-                 log-message
-                 log
-                 log-info
-                 log-error
-                 get-path-for-svg))
+  #:use-module (ggg sxml)
+  #:use-module (ggg prelude)
+  #:use-module (ggg glyph)
+  #:export (main render-glyphs))
 
-(define preferred-strftime-format
-  (make-parameter "%Y-%m-%d %H:%M:%S%z"))
+(define* (render-glyphs #:key file
+                        resources
+                        destination
+                        with-stdin?
+                        with-convert?
+                        with-stdout?)
+  (let* ((clean-dist-cmd (format #f "rm -rfv ~a" destination))
+         (mkdir-dist-cmd (format #f "mkdir -p ~a" destination)))
+    (if with-stdin?
+        ;; Read from stdin
+        (begin
+          (unless with-stdout?
+            (log-info "\tloading glyphs from stdin"))
+          (eval-string (get-string-all (current-input-port))))
+        ;; Read from file
+        (begin
+          (unless with-stdout?
+            (log-info "\tloading glyphs file: ~a" file))
+          (load file)))
 
-(define (log-message msg)
-  (display (format #f "\n\x1b[1m~a\x1b[0m" msg)))
+    ;; Prepare dist
+    (unless with-stdout?
+      (log-info "\texecuting: ~a" clean-dist-cmd)
+      (syscall clean-dist-cmd))
+    (unless with-stdout?
+      (log-info "\texecuting: ~a" mkdir-dist-cmd)
+      (syscall mkdir-dist-cmd))
 
-(define (log msg . args)
-  (log-message (apply format
-                      (append (list #f msg) args))))
+    (unless with-stdout?
+      (log-info "+-----------------------------------------------+")
+      (log-info "Start producing SVG images"))
 
-(define (log-info msg . args)
-  (log-message (format #f "[INFO][~a] ~a"
-                       (strftime (preferred-strftime-format)
-                                 (localtime (current-time)))
-                       (apply format
-                              (append (list #f msg) args)))))
+    (define produce-svg-to-file
+      (lambda (vector-image)
+        (log-info "\tproducing ~a/~a.svg" destination
+                  (assoc-ref vector-image
+                             'id))
 
-(define (log-error msg . args)
-  (log-message (format #f "[ERROR][~a] ~a"
-                       (strftime (preferred-strftime-format)
-                                 (localtime (current-time)))
-                       (apply format
-                              (append (list #f msg) args)))))
+        (with-output-to-file (format #f "~a/~a.svg" destination
+                                     (assoc-ref vector-image
+                                                'id))
+          (lambda ()
+            (sxml->xml (mk-glyph vector-image
+                                 #:resources resources))))))
 
-;; ====== GGG ======
+    (define produce-svg-to-stdout
+      (lambda (vector-image)
+        (newline)
+        (newline)
+        (sxml->xml (mk-glyph vector-image
+                             #:resources resources)
+                   (current-output-port))
+        (newline)
+        (newline)))
 
-(define* (get-path-for-svg name
-                           #:key resources-dir)
-  (get-string-all (open-input-file (format #f "~a/svg-paths/~a" resources-dir
-                                           name))))
+    (if with-stdout?
+        (for-each produce-svg-to-stdout
+                  (get-setting 'ggg-glyphs))
+        (for-each produce-svg-to-file
+                  (get-setting 'ggg-glyphs)))
 
-(define* (white-svg id
-                    #:key resources-dir
-                    (width 18)
-                    (height 18)
-                    (view-box "0 0 18 20")
-                    (fill "#ffffff")
-                    (fill-rule 'nonzero)
-                    (clip-rule 'nonzero)
-                    (x 6)
-                    (y 5))
-  `((svg (@ (width ,width)
-            (height ,height)
-            (viewBox ,view-box)
-            (x ,x)
-            (y ,y)
-            (xmlns "http://www.w3.org/2000/svg")
-            (fill none))
-         (path (@ (fill ,fill)
-                  (fill-rule ,fill-rule)
-                  (clip-rule ,clip-rule)
-                  (d ,(get-path-for-svg id
-                                        #:resources-dir resources-dir))) ""))))
+    (when with-convert?
+      (log-info "+-----------------------------------------------+")
+      (log-info "Start producing PNG images")
+      (map (lambda (vector-image)
+             (log-info "\tproducing ~a/~a.png" destination
+                       (assoc-ref vector-image
+                                  'id))
+             (syscall (format #f
+                       "convert -quality 100 -density 1000 -background none -resize 10% ~a/~a.svg ~a/~a.png"
+                       destination
+                       (assoc-ref vector-image
+                                  'id)
+                       destination
+                       (assoc-ref vector-image
+                                  'id))))
+           (get-setting 'ggg-glyphs)))
 
-(define* (ggg-logos #:key resources-dir)
-  `((emacs unquote
-           (white-svg 'emacs
-                      #:resources-dir resources-dir
-                      #:view-box "0 0 24 26"))
-    (lambda unquote
-      (white-svg 'lambda
-                 #:resources-dir resources-dir))
-    (gnu unquote
-         (white-svg 'gnu
-                    #:resources-dir resources-dir
-                    #:view-box "0 0 24 26"))
-    (scala unquote
-           (white-svg 'scala
-                      #:resources-dir resources-dir
-                      #:view-box "0 0 36 26"
-                      #:y 3))
-    (scales unquote
-            (white-svg 'scales
-                       #:resources-dir resources-dir
-                       #:view-box "0 0 20 20"))
-    (paint unquote
-           (white-svg 'paint
-                      #:resources-dir resources-dir
-                      #:view-box "0 0 42 42"
-                      #:y 7))
-    (language unquote
-              (white-svg 'language
-                         #:resources-dir resources-dir
-                         #:view-box "0 0 20 24"
-                         #:y 4))
-    (hashtag unquote
-             (white-svg 'hashtag
-                        #:resources-dir resources-dir
-                        #:fill-rule "evenodd"
-                        #:clip-rule "evenodd"
-                        #:view-box "0 0 30 30"
-                        #:y 6))
-    (gear unquote
-          (white-svg 'gear
-                     #:resources-dir resources-dir
-                     #:view-box "0 0 640 640"
-                     #:y 6))    
-    (bull unquote
-          (white-svg 'bull
-                     #:resources-dir resources-dir
-                     #:view-box "0 0 30 30"))
-    (fish unquote
-          (white-svg 'fish
-                     #:resources-dir resources-dir
-                     #:view-box "0 0 250 100"))))
-
-(define (serialize-style alist)
-  (string-join (map (lambda (p)
-                      (format #f "~a: ~a"
-                              (car p)
-                              (cdr p))) alist) ";"))
-
-(define (assoc-ref-or alist key default)
-  (let ((x (assoc-ref alist key)))
-    (if (not x) default x)))
-
-(define (syscall cmd)
-  (let* ((process (open-input-pipe cmd))
-         (process-output (get-string-all process)))
-    (close-pipe process) process-output))
-
-(define (get-short-commit-sha)
-  (syscall "git log --pretty=format:'%h' -n 1"))
-
-(define* (length-for-text text-length
-                          #:key (font-size 12))
-  "Estimates text container widths in pixels. It looks up a rough width per character based on the font size.
-Then, it multiplies this by the number of characters and adds some padding.
-Finally, it slightly adjusts the width based on whether the text is very short, short,
-medium, or long to make the badge look better. It rounds the final width to a whole number."
-  (let* ((base-char-width (case font-size
-                            ((10)
-                             8)
-                            ((11)
-                             9)
-                            ((12)
-                             9.5)
-                            ((14)
-                             10.5)
-                            ((16)
-                             11.5)
-                            (else 7)))
-         (horizontal-padding 16)
-         (scaling-factor (cond
-                           ((> text-length 7)
-                            0.8)
-                           ((> text-length 6)
-                            0.9)
-                           ((> text-length 5)
-                            1.0)
-                           ((< text-length 5)
-                            1.3)
-                           (else 1.0)))
-         (calculated-width (+ horizontal-padding
-                              (* base-char-width text-length scaling-factor))))
-    (round calculated-width)))
-
-(define* (mk-readme-vector-image x
-                                 #:key resources-dir)
-  (let* ((first-logo (assoc-ref (ggg-logos #:resources-dir resources-dir)
-                                (assoc-ref x
-                                           'first-logo)))
-         (first-text (assoc-ref x
-                                'first-text))
-         (second-text (assoc-ref x
-                                 'second-text))
-         (third-text (assoc-ref x
-                                'third-text))
-         (first-background (assoc-ref x
-                                      'first-background))
-         (second-background (assoc-ref x
-                                       'second-background))
-         (third-background (assoc-ref x
-                                      'third-background))
-         (first-color (assoc-ref x
-                                 'first-color))
-         (second-color (assoc-ref x
-                                  'second-color))
-         (third-color (assoc-ref x
-                                 'third-color))
-         (badge-id (assoc-ref x
-                              'id))
-         (height (assoc-ref-or x
-                               'height 26))
-         (border-radius (assoc-ref-or x
-                                      'border-radius 6))
-         (first-font-family (assoc-ref-or x
-                                          'first-font-family "sans-serif"))
-         (second-font-family (assoc-ref-or x
-                                           'second-font-family "sans-serif"))
-         (third-font-family (assoc-ref-or x
-                                          'third-font-family "sans-serif"))
-         (first-font-size (assoc-ref-or x
-                                        'first-font-size 12))
-         (second-font-size (assoc-ref-or x
-                                         'second-font-size 12))
-         (third-font-size (assoc-ref-or x
-                                        'third-font-size 12))
-
-         (first-font-weight (assoc-ref-or x
-                                          'first-font-weight 500))
-         (second-font-weight (assoc-ref-or x
-                                           'second-font-weight 500))
-         (third-font-weight (assoc-ref-or x
-                                          'third-font-weight 500))
-
-         ;; --- Layout Constants ---
-         (default-logo-width 18)
-         (text-padding 4)
-         (separator-width 8)
-         (text-vertical-center 17)
-         (default-first-padding 2)
-         (separator-x-offset 6)
-
-         ;; --- Calculated Dimensions ---
-         (has-first-logo? (not (nil? first-logo)))
-         (first-logo-effective-width (if has-first-logo? default-logo-width 0))
-
-         (first-text-width (length-for-text (string-length first-text)))
-         (second-text-width (if (not second-text) 0
-                                (length-for-text (string-length second-text))))
-         (third-text-width (if (not third-text) 0
-                               (length-for-text (string-length third-text))))
-
-         (first-area-width (+ first-logo-effective-width default-first-padding
-                              first-text-width))
-
-         (total-badge-width (+ first-area-width
-                               (if (not second-text-width) 0 second-text-width)
-                               (if (not third-text-width) 0 third-text-width)))
-
-         (first-separator-x (- first-area-width separator-x-offset))
-         (second-separator-x first-area-width)
-
-         (third-separator-x (- (+ first-area-width second-text-width)
-                               separator-x-offset))
-         (fourth-separator-x (+ first-area-width second-text-width))
-
-         (second-x first-area-width)
-         (third-x (+ first-area-width second-text-width))
-         (first-text-x (round (+ first-logo-effective-width
-                                 (/ first-text-width 2)))) ;Center text in first area
-         (second-text-x (round (+ second-x
-                                  (/ second-text-width 2)))) ;Center text in second area
-         (third-text-x (round (+ third-x
-                                 (/ third-text-width 2)))) ;Center text in third area
-         )
-    `((svg (@ (id ,badge-id)
-              (xmlns "http://www.w3.org/2000/svg")
-              (width ,total-badge-width)
-              (height ,height)
-              (viewBox ,(format #f "0 0 ~a ~a" total-badge-width height)))
-           (g (@ (shape-rendering geometricPrecision))
-              (rect (@ (x 0)
-                       (width ,first-area-width)
-                       (height ,height)
-                       (fill ,first-background)
-                       (rx ,border-radius)
-                       (ry ,border-radius)) "")
-              ,(if (not second-text)
-                   '()
-                   `(rect (@ (x ,second-x)
-                             (width ,second-text-width)
-                             (height ,height)
-                             (fill ,second-background)
-                             (rx ,border-radius)
-                             (ry ,border-radius)) ""))
-              ,(if (not third-text)
-                   '()
-                   `(rect (@ (x ,third-x)
-                             (width ,third-text-width)
-                             (height ,height)
-                             (fill ,third-background)
-                             (rx ,border-radius)
-                             (ry ,border-radius)) ""))
-              ,(if (not second-text)
-                   '()
-                   `(rect (@ (x ,first-separator-x)
-                             (width ,separator-width)
-                             (height ,height)
-                             (fill ,first-background)
-                             (rx 0)
-                             (ry 0)) ""))
-              ,(if (not second-text)
-                   '()
-                   `(rect (@ (x ,second-separator-x)
-                             (width ,separator-width)
-                             (height ,height)
-                             (fill ,second-background)
-                             (rx 0)
-                             (ry 0)) ""))
-              ,(if (not third-text)
-                   '()
-                   `(rect (@ (x ,third-separator-x)
-                             (width ,separator-width)
-                             (height ,height)
-                             (fill ,second-background)
-                             (rx 0)
-                             (ry 0)) ""))
-              ,(if (not third-text)
-                   '()
-                   `(rect (@ (x ,fourth-separator-x)
-                             (width ,separator-width)
-                             (height ,height)
-                             (fill ,third-background)
-                             (rx 0)
-                             (ry 0)) "")))
-           (g (@ (text-anchor middle)
-                 (shape-rendering geometricPrecision))
-              (text (@ (fill ,first-color)
-                       (font-size ,first-font-size)
-                       (font-family ,first-font-family)
-                       (style ,(serialize-style `((font-weight unquote
-                                                   first-font-weight))))
-                       (x ,first-text-x)
-                       (y ,text-vertical-center))
-                    ,first-text)
-              ,(if (not second-text)
-                   '()
-                   `(text (@ (fill ,second-color)
-                             (font-size ,second-font-size)
-                             (font-family ,second-font-family)
-                             (style ,(serialize-style `((font-weight unquote
-                                                         second-font-weight))))
-                             (x ,second-text-x)
-                             (y ,text-vertical-center))
-                          ,second-text))
-              ,(if (not third-text)
-                   '()
-                   `(text (@ (fill ,third-color)
-                             (font-size ,third-font-size)
-                             (font-family ,third-font-family)
-                             (style ,(serialize-style `((font-weight unquote
-                                                         third-font-weight))))
-                             (x ,third-text-x)
-                             (y ,text-vertical-center))
-                          ,third-text)))
-           ,(if first-logo
-                `(g (shape-rendering geometricPrecision)
-                    ,first-logo)
-                '())))))
-
-(define-syntax-rule (get-setting setting)
-  "Get a setting for ggg, from glyph file."
-  (let* ((val (module-variable (resolve-module '(ggg config)) setting)))
-    (catch #t
-           (lambda ()
-             (variable-ref val))
-           (lambda (key . args)
-             #f))))
-
-(define* (render-glyphs #:key glyph-file resources-dir output-dir)
-  (let* ((clean-dist-cmd (format #f "rm -rfv ~a" output-dir))
-         (mkdir-dist-cmd (format #f "mkdir -p ~a" output-dir)))
-    (log-info "executing: ~a" clean-dist-cmd)
-    (syscall clean-dist-cmd)
-
-    (log-info "executing: ~a" mkdir-dist-cmd)
-    (syscall mkdir-dist-cmd)
-
-    (log-info "Start rendering glyphs")
-    (log-info "\tglyph-file: ~a" glyph-file)
-
-    ;; load user-supplied Scheme file
-    (load glyph-file)
-    (use-modules (ggg config))
-
-    (log-info "")
-    (log-info "Start producing SVG images")
-    (map (lambda (vector-image)
-           (log-info "\tproducing ~a/~a.svg" output-dir
-                     (assoc-ref vector-image
-                                'id))
-
-           (with-output-to-file (format #f "~a/~a.svg" output-dir
-                                        (assoc-ref vector-image
-                                                   'id))
-             (lambda ()
-               (sxml->xml (mk-readme-vector-image vector-image
-                                                  #:resources-dir
-                                                  resources-dir)))))
-         (get-setting 'ggg-readme-vector-images))
-
-    (log-info "")
-    (log-info "Start producing PNG images")
-    (map (lambda (vector-image)
-           (log-info "\tproducing ~a/~a.png" output-dir
-                     (assoc-ref vector-image
-                                'id))
-           (syscall (format #f
-                     "convert -quality 100 -density 1000 -background none -resize 10% ~a/~a.svg ~a/~a.png"
-                     output-dir
-                     (assoc-ref vector-image
-                                'id)
-                     output-dir
-                     (assoc-ref vector-image
-                                'id))))
-         (get-setting 'ggg-readme-vector-images))
-
-    (log-info "")
-    (log-info "GGG is done generating images\n")))
+    (unless with-stdout?
+      (log-info "+-----------------------------------------------+")
+      (log-info "GGG is done generating images\n"))))
 
 (define* (main #:key (args (command-line)))
   
-  (let* ((option-spec '((output-dir (single-char #\o)
-                                    (value #t))
-                        (resources-dir (single-char #\r)
-                                       (value #t))
-                        (glyph-file (single-char #\g)
-                                    (value #t)
-                                    (required? #t))))
+  (let* ((option-spec '((destination (single-char #\d)
+                                     (value #t)
+                                     (required? #f))
+                        (resources (single-char #\r)
+                                   (value #t))
+                        (stdin (single-char #\i)
+                               (value #f)
+                               (required? #f))
+                        (stdout (single-char #\o)
+                                (value #f)
+                                (required? #f))
+                        (convert (single-char #\c)
+                                 (value #f)
+                                 (required? #f))
+                        (file (single-char #\f)
+                              (value #t)
+                              (required? #f))))
          (options (getopt-long args option-spec))
-         (glyph-file (option-ref options
-                                 'glyph-file #f))
-         (resources-dir (option-ref options
-                                    'resources-dir #f))
-         (output-dir (option-ref options
-                                 'output-dir "./dist")))
-    (log-info "GGG: Guile Glyph Generator")
-    (render-glyphs #:glyph-file glyph-file
-                   #:resources-dir resources-dir
-                   #:output-dir output-dir)))
+         (file (option-ref options
+                           'file #f))
+         (resources (option-ref options
+                                'resources #f))
+         (destination (option-ref options
+                                  'destination "./dist"))
+         (with-convert? (option-ref options
+                                    'convert #f))
+         (with-stdout? (option-ref options
+                                   'stdout #f))
+         (with-stdin? (option-ref options
+                                  'stdin #f)))
+    (when (and (not file)
+               (not with-stdin?))
+      (error "Either the file or stdin options are required!"))
+
+    (when (and (not with-stdout?)
+               (not destination))
+      (error "Either the file or stdin options are required!"))
+
+    (when (and with-stdout? with-convert?)
+      (error "Cannot combine stdout and convert options!"))
+
+    (unless with-stdout?
+      (log-info "GGG: Guile Glyph Generator"))
+
+    (render-glyphs #:file file
+                   #:with-stdin? with-stdin?
+                   #:with-stdout? with-stdout?
+                   #:with-convert? with-convert?
+                   #:resources resources
+                   #:destination destination)))
 
