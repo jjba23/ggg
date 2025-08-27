@@ -21,11 +21,11 @@
 
 ;; ====== Maak constants ======
 
-;; The absolute path to the directory where the main project files will be deployed.
+;; The path to the directory where the main project files will be deployed.
 (define deploy-dir
   "/srv/http/jointhefreeworld.org")
 
-;; The absolute URL for the CSS stylesheet used to style API documentation.
+;; The URL for the CSS stylesheet used to style API documentation.
 (define api-docs-css-url
   "https://jointhefreeworld.org/static-assets/api-docs/css/style.css")
 

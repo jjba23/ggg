@@ -12,7 +12,7 @@ GGG: Guile Glyph Generator
 USAGE: ggg [OPTIONS]
 OPTIONS:
     -f, --file FILE
-        Specify the Scheme config - absolute path to glyph file (required).
+        Specify the path to the glyph file (Scheme config) (required).
 
     -d, --destination DIRECTORY
         Specify the destination directory for the generated SVGs.
