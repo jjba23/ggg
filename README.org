@@ -83,18 +83,34 @@ As for the ~logo~ value, ggg has a selection of free-licensed logo data in the ~
 
 * Getting started
 
-ggg is officially distributed via the Guix package manager. You can alternatively choose to download it from source, useful for developing it or customizing it. In that case you'll need:
+ggg is officially distributed via the Guix package manager and via Docker/Podman images. You can alternatively choose to download it from source, useful for developing it or customizing it. In that case you'll need:
 
 - *Guix*: The Guix package manager will ensure a reproducible working software, and will manage all needed dependencies for you.
 -  *Guile Scheme:*  This entire program is written using the official GNU extension language, Guile Scheme.
 -  *ImageMagick:* If you want to generate PNG files, you'll need ImageMagick (specifically the ~convert~ command).
 
-Check the ~Makefile~ and the ~guix.scm~ and  ~manifest.scm~ for more details.
+Check the ~maak.scm~,  ~Makefile~ and the ~guix.scm~ and  ~manifest.scm~ for more details.
 
 ggg offers a ~--help~ / ~-h~ flag which will explain all options (also visible in ~resources/help.txt~). You should point ggg to the absolute path to your configuration file:
 
 #+begin_src shell
 ggg --file /home/joe/hacking/ggg/glyphs/jjba23.scm --destination ./dist
+#+end_src
+
+** On Podman/Docker
+
+ggg is also available as a Docker container, from DockerHub (also compatible with Podman).
+
+https://hub.docker.com/repository/docker/jjba23/ggg/general
+
+You can also build images of maak yourself, using ~guix pack~. See the ~maak.scm~ file for more.
+To load these tarball images, you can do ~podman load < my.tar.gz~
+
+Then you can run ggg from the container, and bind your local filesystem to give access, for example:
+
+#+begin_src shell
+ docker container run -v /home/joe:/home/joe \
+     docker.io/jjba23/ggg:latest ggg --file /home/joe/glyphs.scm --destination ./dist
 #+end_src
 
 --------

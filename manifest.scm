@@ -20,6 +20,7 @@
              (guix utils)
              (guix git-download)
              (guix download)
+             (gnu packages admin)
              (gnu packages guile)
              (gnu packages nss)
              (gnu packages gnupg)
@@ -37,5 +38,8 @@
 (packages->manifest (list (specification->package "make")
                           guile-3.0
                           imagemagick
+                          direvent
+                          guile-documenta
+                          texinfo
                           guile-ares-rs))
 

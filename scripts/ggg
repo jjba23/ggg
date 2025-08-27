@@ -85,7 +85,7 @@ while true; do
     ;;
   -f | --file)
     file_arg="${2}"
-    guile_cmd_args+=("--file" "${file_arg}")
+    guile_cmd_args+=("--file" "$(realpath "${file_arg}")")
     shift 2
     ;;
   -h | --help)

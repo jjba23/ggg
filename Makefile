@@ -64,3 +64,7 @@ deploy:
 	mkdir -p /srv/http/jointhefreeworld.org/ggg
 	rm -rfv /srv/http/jointhefreeworld.org/ggg/dist
 	mv -v dist /srv/http/jointhefreeworld.org/ggg/dist
+
+package-docker:
+	guix pack --file=./guix.scm --format=docker \
+		--image-tag=ggg -S /bin=bin bash coreutils util-linux-with-udev guile imagemagick
