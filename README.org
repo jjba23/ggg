@@ -81,6 +81,10 @@ Then to ensure that ggg will read your glyphs from the file, you need to export 
 
 As for the ~logo~ value, ggg has a selection of free-licensed logo data in the ~resources/svg-paths~ directory, feel free to contribute new ones!
 
+Find the technical Guile Scheme API documentation for GGG here:
+
+https://jointhefreeworld.org/api-docs/ggg/API.html
+
 * Getting started
 
 ggg is officially distributed via the Guix package manager and via Docker/Podman images. You can alternatively choose to download it from source, useful for developing it or customizing it. In that case you'll need:
