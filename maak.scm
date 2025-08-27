@@ -69,9 +69,9 @@
   (mv "dist"
       (~ "~a/ggg/dist" deploy-dir))
   ;; Deploy API docs
-  (remkdir-p (~ "~a/api-docs/maak" deploy-dir))
+  (remkdir-p (~ "~a/api-docs/~a" deploy-dir project-name))
   (mv "doc/api-dist/*"
-      (~ "~a/api-docs/maak" deploy-dir))
+      (~ "~a/api-docs/~a" deploy-dir project-name))
   (delete-file-recursively "doc"))
 
 (define (package-docker)
