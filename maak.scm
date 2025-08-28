@@ -81,8 +81,8 @@
 
 (define (dev-run)
   (manifest-shell '("guile -L ./src -c '((@(ggg main) main))'"
-                    "--file ./glyphs/jjba23.scm" "--destination ./dist"
-                    "--resources-dir ./resources")))
+                    "--file /home/joe/hacking/ggg/glyphs/jjba23.scm"
+                    "--destination ./dist" "--resources ./resources")))
 
 (define (run)
   (program-shell '("ggg --file ./glyphs/jjba23.scm" "--destination ./dist")))
