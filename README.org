@@ -89,7 +89,7 @@ Also, find the technical Guile Scheme API documentation for GGG here:
 
 https://jointhefreeworld.org/api-docs/ggg/API.html
 
-You can see the program's help by invoking Maak with the ~--help~ argument or looking at ~resources/help.txt~. 
+You can see the program's help by invoking it with the ~--help~ argument or looking at ~resources/help.txt~. 
 
 * Installing
 
@@ -121,7 +121,7 @@ ggg is also available as a Docker container, from DockerHub (also compatible wit
 
 https://hub.docker.com/repository/docker/jjba23/ggg/general
 
-You can also build images of maak yourself, using ~guix pack~. See the ~maak.scm~ file for more.
+You can also build images of ggg yourself, using ~guix pack~. See the ~maak.scm~ file for more.
 To load these tarball images, you can do ~podman load < my.tar.gz~
 
 Then you can run ggg from the container, and bind your local filesystem to give access, for example:
