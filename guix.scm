@@ -35,7 +35,7 @@
 (define-public ggg
   (package
     (name "ggg")
-    (version "0.4.0")
+    (version "dev")
     (source
      (local-file %source-dir
                  #:recursive? #t
@@ -62,8 +62,7 @@
                         (chmod (string-append bin "/ggg") #o755)))))))
     (build-system guile-build-system)
     (native-inputs (list guile-3.0))
-    (inputs (list guile-3.0 bash-minimal))
-    (propagated-inputs (list imagemagick))
+    (inputs (list guile-3.0 bash-minimal imagemagick))
     (synopsis "GGG is a SVG image generator for project and web badges")
     (description
      "GGG (Guile Glyph Generator) is a command-line utility
