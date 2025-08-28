@@ -49,8 +49,6 @@
                                                 "/bin"))
                             (share (string-append (assoc-ref outputs "out")
                                                   "/share")))
-                        (mkdir-p (string-append share "/scripts"))
-                        (mkdir-p (string-append share "/resources"))
                         (install-file "resources/help.txt"
                                       (string-append share "/resources"))
                         (copy-recursively "resources/svg-paths"

@@ -27,10 +27,12 @@
 
 ;; The URL for the CSS stylesheet used to style API documentation.
 (define api-docs-css-url
-  "https://jointhefreeworld.org/static-assets/api-docs/css/style.css")
+  "https://jointhefreeworld.org/static/css/jointhefreeworld.css")
 
 (define project-name
   'ggg)
+
+(define hot-reload-file-types '(scm))
 
 ;; ====== Maak tasks ======
 
@@ -100,3 +102,21 @@
 
 (define (run-stdin-stdout)
   ($ '("cat ./glyphs/jjba23.scm |" "guix shell -f guix.scm --" "ggg -i -o")))
+
+(define (hot-reload)
+  "Hot-reloading developer's setup."
+  (manifest-shell (list "watchexec 'maak run'"
+                        "--clear"
+                        (~ "--exts ~a"
+                           (string-join (map symbol->string
+                                             hot-reload-file-types) ","))
+                        "--on-busy-update=restart"
+                        "--shell bash"
+                        "--watch .")))
+
+(define (hr)
+  (hot-reload))
+
+(define (dev)
+  (hot-reload))
+

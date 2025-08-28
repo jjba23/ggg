@@ -32,13 +32,14 @@
              (gnu packages compression)
              (gnu packages texinfo)
              (gnu packages autotools)
+             (gnu packages rust-apps)
              ((guix licenses)
               #:prefix license:))
 
 (packages->manifest (list (specification->package "make")
                           guile-3.0
                           imagemagick
-                          direvent
+                          watchexec
                           guile-documenta
                           texinfo
                           guile-ares-rs))
