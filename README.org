@@ -3,8 +3,8 @@
 #+email: jjbigorra@gmail.com
 #+language: en
 
-[[https://jointhefreeworld.org/ggg/dist/scheme-guile.svg]]  [[https://jointhefreeworld.org/ggg/dist/gnu-guix.svg]]   [[https://jointhefreeworld.org/ggg/dist/license-agpl3+.svg]]  [[https://jointhefreeworld.org/ggg/dist/license-fdl13+.svg]]
-[[https://jointhefreeworld.org/ggg/dist/jointhefreeworld-org.svg]] 
+[[./dist/scheme-guile.svg]]  [[./dist/gnu-guix.svg]]   [[./dist/license-agpl3+.svg]]  [[./dist/license-fdl13+.svg]]
+[[./dist/jointhefreeworld-org.svg]]
 
 /Generate SVG images for handy useful glyphs, Org/Markdown badges and more, leveraging the power of Lisp (Guile Scheme)/
 
@@ -45,8 +45,8 @@ We choose for ~geometricPrecision~ in SVG to allow highest quality and fidelity,
 
 Tired of bland, static status badges for your projects? Say hello to the *Guile Glyph Generator (GGG)*, a small but mighty tool crafted in the elegant Scheme programming language. Based on the provided configuration, GGG will produce something like the following badges (1-3 part) (as both SVG and PNG files):
 
-[[https://jointhefreeworld.org/ggg/dist/haskell-ghc910.svg]] [[https://jointhefreeworld.org/ggg/dist/gnu-emacs.svg]]  [[https://jointhefreeworld.org/ggg/dist/pipeline-succeeded.svg]] [[https://jointhefreeworld.org/ggg/dist/scala-213.svg]]  [[https://jointhefreeworld.org/ggg/dist/shell-fish.svg]]  [[https://jointhefreeworld.org/ggg/dist/shell-eshell.svg]] 
-[[https://jointhefreeworld.org/ggg/dist/css-tailwind4.svg]]  [[https://jointhefreeworld.org/ggg/dist/gnu-artanis.svg]] [[https://jointhefreeworld.org/ggg/dist/gnu-emacs-single.svg]] [[https://jointhefreeworld.org/ggg/dist/gnu-artanis-122.svg]] [[https://jointhefreeworld.org/ggg/dist/i18n-gnu-gettext.svg]]  
+[[./dist/haskell-ghc910.svg]] [[./dist/gnu-emacs.svg]]  [[./dist/pipeline-succeeded.svg]] [[./dist/scala-213.svg]]  [[./dist/shell-fish.svg]]  [[./dist/shell-eshell.svg]]
+[[./dist/css-tailwind4.svg]]  [[./dist/gnu-artanis.svg]] [[./dist/gnu-emacs-single.svg]] [[./dist/gnu-artanis-122.svg]] [[./dist/i18n-gnu-gettext.svg]]
 
 --------
 
