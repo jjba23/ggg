@@ -46,6 +46,10 @@ show_help() {
   cat "$resources_dir/help.txt"
 }
 
+point_to_help() {
+  log_error "Try 'ggg --help' for more information."
+}
+
 parsed_options=$(getopt -n "ggg" -o d:f:ioch --long destination:,file:,stdin,stdout,convert,help -- "$@")
 eval set -- "$parsed_options"
 
@@ -98,7 +102,7 @@ while true; do
     ;;
   *)
     log_error "Error: unrecognized option '${1}' !"
-    show_help
+    point_to_help
     exit 1
     ;;
   esac
@@ -107,20 +111,20 @@ done
 if [[ (-z "${file_arg}") && (-z "${stdin_arg}") ]]; then
   log_error "Error: Either the file or stdin options are required!" >&2
   log_error "Use -f / --file or alternatively -i / --stdin." >&2
-  show_help
+  point_to_help
   exit 1
 fi
 
 if [[ (-z "${stdout_arg}") && (-z "${destination_arg}") ]]; then
   log_error "Error: Either the destination or stdout options are required!" >&2
   log_error "Use -d / --destination or alternatively -o / --stdout." >&2
-  show_help
+  point_to_help
   exit 1
 fi
 
 if [[ (-n "${stdout_arg}") && (-n "${convert_arg}") ]]; then
   log_error "Error: Cannot combine stdout and convert options!" >&2
-  show_help
+  point_to_help
   exit 1
 fi
 
