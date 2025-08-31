@@ -109,9 +109,14 @@ ggg is officially distributed via:
 
 Check the ~maak.scm~, ~Makefile~ and the ~guix.scm~ and ~manifest.scm~ for more details.
 
-For example, you can use:
+For example, to enter an environment shell with ggg temporarily you can use:
 #+begin_src shell
 guix shell -f guix.scm
+#+end_src
+
+You can also chain commands to it:
+#+begin_src shell
+guix shell -f guix.scm -- ggg --help
 #+end_src
 
 ggg offers a ~--help~ / ~-h~ flag which will explain all options (also visible in ~resources/help.txt~). You should point ggg to the path to your configuration file:
@@ -129,7 +134,7 @@ https://hub.docker.com/repository/docker/jjba23/ggg/general
 You can also build images of ggg yourself, using ~guix pack~. See the ~maak.scm~ file for more.
 To load these tarball images, you can do ~podman load < my.tar.gz~
 
-Then you can run ggg from the container, and bind your local filesystem to give access, for example:
+You can run ggg from the container, and bind your local filesystem to give access, for example:
 
 #+begin_src shell
  docker container run -v /home/joe:/home/joe \
