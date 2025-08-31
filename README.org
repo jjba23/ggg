@@ -107,7 +107,12 @@ ggg is officially distributed via:
 -  *Guile Scheme:*  This entire program is written using the official GNU extension language, Guile Scheme.
 -  *ImageMagick:* If you want to generate PNG files, you'll need ImageMagick (specifically the ~convert~ command).
 
-Check the ~maak.scm~,  ~Makefile~ and the ~guix.scm~ and  ~manifest.scm~ for more details.
+Check the ~maak.scm~, ~Makefile~ and the ~guix.scm~ and ~manifest.scm~ for more details.
+
+For example, you can use:
+#+begin_src shell
+guix shell -f guix.scm
+#+end_src
 
 ggg offers a ~--help~ / ~-h~ flag which will explain all options (also visible in ~resources/help.txt~). You should point ggg to the path to your configuration file:
 
