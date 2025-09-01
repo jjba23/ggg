@@ -17,6 +17,8 @@
 
 (define-module (maak)
   #:use-module (maak maak)
+  #:use-module (ice-9 textual-ports)
+  #:use-module (ice-9 popen)
   #:declarative? #t)
 
 ;; ====== Maak constants ======
@@ -32,7 +34,15 @@
 (define project-name
   'ggg)
 
-(define hot-reload-file-types '(scm))
+(define hot-reload-file-types
+  '(scm))
+
+;; ====== Maak abstractions ======
+
+(define (syscall-with-output cmd)
+  (let* ((process (open-input-pipe cmd))
+         (process-output (get-string-all process)))
+    (close-pipe process) process-output))
 
 ;; ====== Maak tasks ======
 
@@ -79,7 +89,22 @@
 (define (package-docker)
   "Create a Docker image for GGG."
   ($ '("guix pack --file=./guix.scm" "--format=docker" "--image-tag=ggg"
-       "-S /bin=bin" "bash coreutils util-linux-with-udev guile imagemagick")))
+       "-S /bin=bin" "bash coreutils util-linux-with-udev guile imagemagick")
+     #:verbose? #t))
+
+(define (push-docker-latest)
+  "Push the latest locally generated Docker image to Dockerhub."
+  ($ (list (~ "podman push localhost/~a:latest" project-name)
+           (~ "docker.io/jjba23/~a:latest" project-name))
+     #:verbose? #t))
+
+(define (push-docker-tag)
+  "Push the locally generated Docker image to Dockerhub."
+  ($ '("git fetch --all"))
+  (let* ((latest-tag (syscall-with-output "git describe --tags --abbrev=0")))
+    ($ (list (~ "podman push localhost/~a:latest" project-name)
+             (~ "docker.io/jjba23/~a:~a" project-name latest-tag))
+       #:verbose? #t)))
 
 (define (dev-run)
   (manifest-shell '("guile -L ./src -c '((@(ggg main) main))'"
