@@ -14,8 +14,19 @@ With flexible support for badges between ONE and THREE parts.
 
 If you like my work, please support me by [[https://bmc.link/jjbigorra][buying me a cup of coffee ☕]] so I can continue with a lot of motivation.
 
-------
+---------------
 
+[[./dist/haskell-ghc910.svg]] [[./dist/gnu-emacs.svg]]  [[./dist/pipeline-succeeded.svg]] [[./dist/scala-213.svg]]  [[./dist/shell-fish.svg]]  [[./dist/shell-eshell.svg]]
+[[./dist/css-tailwind4.svg]]  [[./dist/gnu-artanis.svg]] [[./dist/gnu-emacs-single.svg]] [[./dist/gnu-artanis-122.svg]] [[./dist/i18n-gnu-gettext.svg]]
+
+
+/Tired of bland, static status badges for your projects?/
+
+Say hello to the *Guile Glyph Generator (GGG)*, a small but mighty tool crafted in the elegant λ Lisp (Guile Scheme) programming language.
+
+Based on the provided Lisp configuration, GGG will produce something like the following badges (1-3 part) (as both SVG and PNG files).
+
+----------
 * What is this black magic? 🪄
 
 Through SVG generation from Lisp (Guile Scheme) we leverage a beautiful DSL (Domain-Specific Language) and apply some mathematical knowledge to build pixel perfect badges.
@@ -40,15 +51,6 @@ We choose for ~geometricPrecision~ in SVG to allow highest quality and fidelity,
 - Abstraction :: of layout and view thanks to Lisp, handling all options gracefully.
 
 ----------
-
-* Example Badges Generated
-
-Tired of bland, static status badges for your projects? Say hello to the *Guile Glyph Generator (GGG)*, a small but mighty tool crafted in the elegant Scheme programming language. Based on the provided configuration, GGG will produce something like the following badges (1-3 part) (as both SVG and PNG files):
-
-[[./dist/haskell-ghc910.svg]] [[./dist/gnu-emacs.svg]]  [[./dist/pipeline-succeeded.svg]] [[./dist/scala-213.svg]]  [[./dist/shell-fish.svg]]  [[./dist/shell-eshell.svg]]
-[[./dist/css-tailwind4.svg]]  [[./dist/gnu-artanis.svg]] [[./dist/gnu-emacs-single.svg]] [[./dist/gnu-artanis-122.svg]] [[./dist/i18n-gnu-gettext.svg]]
-
---------
 
 * How to define a glyph?
 
