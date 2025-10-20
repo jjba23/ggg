@@ -187,6 +187,28 @@
                (logo . gear)))
     (id . jointhefreeworld-org)))
 
+
+(define glyph-sbt
+  `((sections ((background . "#555") (text . "build")
+               (color . "#fff")
+               (logo . gear))
+              ((background . "#A50021") (text . "sbt")
+               (color . "#fff")))
+    (id . sbt)))
+
+
+(define glyph-justfile
+  `((sections ((background . "#555") (text . "Justfile")
+               (color . "#fff")
+               (logo . gear)))
+    (id . justfile)))
+
+(define glyph-env
+  `((sections ((background . "#555") (text . ".env")
+               (color . "#fff")
+               (logo . gear)))
+    (id . justfile)))
+
 (define ggg-glyphs
   (list glyph-pipeline-succeeded
         glyph-gnu-guix
@@ -208,5 +230,8 @@
         glyph-gnu-artanis-122
         glyph-css-tailwind4
         glyph-jointhefreeworld-org
-        glyph-scala-213))
+        glyph-scala-213
+        glyph-justfile
+        glyph-sbt
+        glyph-env))
 
