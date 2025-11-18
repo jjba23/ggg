@@ -200,16 +200,16 @@
   `((sections ((background . "#555") (text . "Rust")
                (color . "#fff")
                (logo . rust))
-              ((background . "#b7410e") (text . "1.85+")
-               (color . "#fff")))
+              ((background . "#e89444") (text . "1.85+")
+               (color . "#000")))
     (id . rust-185+)))
 
 (define glyph-cargo
   `((sections ((background . "#555") (text . "build")
                (color . "#fff")
                (logo . rust))
-              ((background . "#b7410e") (text . "cargo")
-               (color . "#fff")))
+              ((background . "#e89444") (text . "cargo")
+               (color . "#000")))
     (id . cargo)))
 
 (define glyph-justfile
