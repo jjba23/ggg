@@ -134,6 +134,11 @@ medium, or long to make the badge look better. It rounds the final width to a wh
                          #:resources resources
                          #:view-box "0 0 640 640"
                          #:y 6))
+    (rust unquote
+          (mk-simple-svg 'rust
+                         #:resources resources
+                         #:view-box "0 0 30 30"
+                         #:y 3))
     (bull unquote
           (mk-simple-svg 'bull
                          #:resources resources

@@ -196,6 +196,21 @@
                (color . "#fff")))
     (id . sbt)))
 
+(define glyph-rust-185+
+  `((sections ((background . "#555") (text . "Rust")
+               (color . "#fff")
+               (logo . rust))
+              ((background . "#b7410e") (text . "1.85+")
+               (color . "#fff")))
+    (id . rust-185+)))
+
+(define glyph-cargo
+  `((sections ((background . "#555") (text . "build")
+               (color . "#fff")
+               (logo . rust))
+              ((background . "#b7410e") (text . "cargo")
+               (color . "#fff")))
+    (id . cargo)))
 
 (define glyph-justfile
   `((sections ((background . "#555") (text . "Justfile")
@@ -207,7 +222,7 @@
   `((sections ((background . "#555") (text . ".env")
                (color . "#fff")
                (logo . gear)))
-    (id . justfile)))
+    (id . env)))
 
 (define ggg-glyphs
   (list glyph-pipeline-succeeded
@@ -233,5 +248,7 @@
         glyph-scala-213
         glyph-justfile
         glyph-sbt
+        glyph-rust-185+
+        glyph-cargo
         glyph-env))
 
