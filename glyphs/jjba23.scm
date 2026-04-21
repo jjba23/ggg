@@ -58,6 +58,12 @@
                (color . "#fff")))
     (id . gnu-make)))
 
+(define glyph-maak
+  `((sections ((background . "#555") (text . "Maak")
+               (color . "#fff")
+               (logo . lambda)))
+    (id . maak)))
+
 (define glyph-i18n-gnu-gettext
   `((sections ((background . "#555") (text . "i18n")
                (color . "#fff")
@@ -250,5 +256,6 @@
         glyph-sbt
         glyph-rust-185+
         glyph-cargo
+        glyph-maak
         glyph-env))
 
