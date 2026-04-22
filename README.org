@@ -4,7 +4,7 @@
 #+language: en
 
 [[./dist/scheme-guile.svg]]  [[./dist/gnu-guix.svg]]   [[./dist/license-agpl3+.svg]]  [[./dist/license-fdl13+.svg]]
-[[./dist/jointhefreeworld-org.svg]]
+[[./dist/jointhefreeworld-org.svg]] [[./dist/maak.svg]]
 
 /Generate SVG images for handy useful glyphs, Org/Markdown badges and more, leveraging the power of Lisp (Guile Scheme)/
 
@@ -16,15 +16,15 @@ If you like my work, please support me by [[https://bmc.link/jjbigorra][buying m
 
 ---------------
 
-[[./dist/haskell-ghc910.svg]] [[./dist/gnu-emacs.svg]]  [[./dist/pipeline-succeeded.svg]] [[./dist/scala-213.svg]]  [[./dist/shell-fish.svg]]  [[./dist/shell-eshell.svg]]
-[[./dist/css-tailwind4.svg]]  [[./dist/gnu-artanis.svg]] [[./dist/gnu-emacs-single.svg]] [[./dist/gnu-artanis-122.svg]] [[./dist/i18n-gnu-gettext.svg]]
-
-
 /Tired of bland, static status badges for your projects?/
 
 Say hello to the *Guile Glyph Generator (GGG)*, a small but mighty tool crafted in the elegant λ Lisp (Guile Scheme) programming language.
 
 Based on the provided Lisp configuration, GGG will produce something like the following badges (1-3 part) (as both SVG and PNG files).
+
+[[./dist/haskell-ghc910.svg]] [[./dist/gnu-emacs.svg]]  [[./dist/pipeline-succeeded.svg]] [[./dist/scala-213.svg]]  [[./dist/shell-fish.svg]]  [[./dist/shell-eshell.svg]]
+[[./dist/css-tailwind4.svg]]  [[./dist/gnu-artanis.svg]] [[./dist/gnu-emacs-single.svg]] [[./dist/gnu-artanis-122.svg]] [[./dist/i18n-gnu-gettext.svg]]
+
 
 ----------
 * What is this black magic? 🪄
