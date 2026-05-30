@@ -41,7 +41,7 @@ The SVG (Scalable Vector Graphics) can then be easily converted without quality 
 
 ggg dynamically estimates text width for the elements, specially text, looking up a rough width per character based on the font size. Then, multiplies this by the number of characters and add some padding. Finally, we slightly adjust the width based on whether the text is very short, short, medium, or long to make the badge look better.
 
-ggg tries to provide sensible defaults to every option, but allow customization. We construct the SVG structure using SXML (S-expressions representing XML). This makes it easy to define the SVG elements and their attributes programmatically. 
+ggg tries to provide sensible defaults to every option, but allow customization. We construct the SVG structure using SXML (S-expressions representing XML). This makes it easy to define the SVG elements and their attributes programmatically.
 
 We choose for ~geometricPrecision~ in SVG to allow highest quality and fidelity, to prioritize geometric accuracy over rendering speed. This is often desirable for crisp, clean vector graphics like badges. In essence, the "magic" lies in the combination of:
 
@@ -91,7 +91,7 @@ Also, find the technical Guile Scheme API documentation for GGG here:
 
 https://jointhefreeworld.org/api-docs/ggg/API.html
 
-You can see the program's help by invoking it with the ~--help~ argument or looking at ~resources/help.txt~. 
+You can see the program's help by invoking it with the ~--help~ argument or looking at ~resources/help.txt~.
 
 * Installing
 
@@ -99,7 +99,7 @@ ggg is officially distributed via:
 - Guix package manager
 - Podman/Docker images.
 
-/That being said, feel free to use it as you wish, within the terms of the GNU Affero General Public License v3 or newer./  
+/That being said, feel free to use it as you wish, within the terms of the GNU Affero General Public License v3 or newer./
 
 ** On Guix
 
@@ -156,6 +156,15 @@ The documentation and examples, including this document, which are provided with
 
 https://www.gnu.org/licenses/fdl-1.3.html
 
+----------------------
+
+* AI Policy
+
+This project adheres to the jointhefreeworld AI policy. Find it here:
+
+https://jointhefreeworld.org/blog/articles/personal/jointhefreeworld-ai-policy/index.html
+
+In summary, AI should assist human creativity and problem-solving, never replace human reasoning. We strongly favor human-authored code. While tools like Large Language Models (LLMs) and interactive chatbots can be beneficial for reviewing, refactoring small functions, or acting as a sounding board, they should be used with moderation. Contributors must maintain a deep, comprehensive understanding of the task at hand.
 
 ---------
 
@@ -197,4 +206,3 @@ Find here the Backlog and Kanban boards for ggg: https://lucidplan.jointhefreewo
 
 
 -------
-
