@@ -36,11 +36,9 @@
              ((guix licenses)
               #:prefix license:))
 
-(packages->manifest (list (specification->package "make")
-                          guile-3.0
+(packages->manifest (list guile-3.0
                           imagemagick
                           watchexec
                           guile-documenta
                           texinfo
                           guile-ares-rs))
-

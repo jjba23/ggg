@@ -48,7 +48,7 @@
 
 (define (help)
   "Display program help screen."
-  (program-shell '("ggg --help")))
+  (time-machine-program-shell '("ggg --help")))
 
 (define (default)
   "Default task to run, call program's help."
@@ -61,13 +61,13 @@
 
 (define (repl)
   "Development REPL."
-  (manifest-shell '("guile -L ./src"
+  (time-machine-manifest-shell '("guile -L ./src"
                     "-c '((@ (ares server) run-nrepl-server))'")))
 
 (define (docs)
   "Generate technical API documentation for Maak."
   (delete-file-recursively "doc")
-  (manifest-shell (list (~ "documenta api ./src/~a && " project-name)
+  (time-machine-manifest-shell (list (~ "documenta api ./src/~a && " project-name)
                         (~ "texi2any -v --html --css-ref=~a" api-docs-css-url)
                         "./doc/api/index.texi"))
   (mv "./index" "./doc/api-dist"))
@@ -107,15 +107,15 @@
        #:verbose? #t)))
 
 (define (dev-run)
-  (manifest-shell '("guile -L ./src -c '((@(ggg main) main))'"
-                    "--file /home/joe/hacking/ggg/glyphs/jjba23.scm"
+  (time-machine-manifest-shell '("guile -L ./src -c '((@(ggg main) main))'"
+                    "--file /home/joe/Hacking/ggg/glyphs/jjba23.scm"
                     "--destination ./dist" "--resources ./resources")))
 
 (define (run)
-  (program-shell '("ggg --file ./glyphs/jjba23.scm" "--destination ./dist")))
+  (time-machine-program-shell '("ggg --file ./glyphs/jjba23.scm" "--destination ./dist")))
 
 (define (run-convert)
-  (program-shell '("ggg --file ./glyphs/jjba23.scm" "--destination ./dist"
+  (time-machine-program-shell '("ggg --file ./glyphs/jjba23.scm" "--destination ./dist"
                    "--convert")))
 
 (define (run-stdin)
@@ -123,25 +123,26 @@
        "ggg -i -d ./dist")))
 
 (define (run-stdout)
-  (program-shell '("ggg --file ./glyphs/jjba23.scm --stdout")))
+  (time-machine-program-shell '("ggg --file ./glyphs/jjba23.scm --stdout")))
 
 (define (run-stdin-stdout)
   ($ '("cat ./glyphs/jjba23.scm |" "guix shell -f guix.scm --" "ggg -i -o")))
 
 (define (hot-reload)
   "Hot-reloading developer's setup."
-  (manifest-shell (list "watchexec 'maak run'"
-                        "--clear"
-                        (~ "--exts ~a"
-                           (string-join (map symbol->string
-                                             hot-reload-file-types) ","))
-                        "--on-busy-update=restart"
-                        "--shell bash"
-                        "--watch .")))
+  (time-machine-manifest-shell (list "watchexec"
+                                     "--clear"
+                                     (~ "--exts ~a"
+                                        (string-join (map symbol->string
+                                                      hot-reload-file-types)
+                                                     ","))
+                                     "--on-busy-update=restart"
+                                     "--shell bash"
+                                     "--watch . --"
+                                     "maak run")))
 
 (define (hr)
   (hot-reload))
 
 (define (dev)
   (hot-reload))
-
