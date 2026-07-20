@@ -28,7 +28,7 @@
 (define glyph-gnu-guix
   `((sections ((background . "#555") (text . "GNU")
                (color . "#fff")
-               (logo . guix))
+               (logo . gnu))
               ((background . "#FFBF01") (text . "Guix")
                (color . "#000")))
     (id . gnu-guix)))

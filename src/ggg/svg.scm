@@ -32,8 +32,7 @@
 
 (define* (get-path-for-svg name
                            #:key resources)
-  (get-string-all (open-input-file (format #f "~a/svg-paths/~a" resources
-                                           name))))
+  (get-string-all (open-input-file (format #f "~a/svg-paths/~a" resources name))))
 
 (define* (mk-simple-svg id
                         #:key resources
@@ -103,6 +102,26 @@ medium, or long to make the badge look better. It rounds the final width to a wh
          (mk-simple-svg 'gnu
                         #:resources resources
                         #:view-box "0 0 24 26"))
+    (guix unquote
+          (mk-simple-svg 'guix
+                         #:resources resources
+                         #:view-box "0 0 24 26"))
+    (code unquote
+          (mk-simple-svg 'code
+                         #:resources resources
+                         #:view-box "0 0 24 26"))
+    (cube unquote
+          (mk-simple-svg 'cube
+                         #:resources resources
+                         #:view-box "0 0 24 26"))
+    (java unquote
+          (mk-simple-svg 'java
+                         #:resources resources
+                         #:view-box "0 0 24 26"))
+    (snowflake unquote
+               (mk-simple-svg 'snowflake
+                              #:resources resources
+                              #:view-box "0 0 24 24"))
     (scala unquote
            (mk-simple-svg 'scala
                           #:resources resources
