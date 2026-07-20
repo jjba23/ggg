@@ -28,7 +28,7 @@
 (define glyph-gnu-guix
   `((sections ((background . "#555") (text . "GNU")
                (color . "#fff")
-               (logo . gnu))
+               (logo . guix))
               ((background . "#FFBF01") (text . "Guix")
                (color . "#000")))
     (id . gnu-guix)))
@@ -230,6 +230,102 @@
                (logo . gear)))
     (id . env)))
 
+(define glyph-java-25
+  `((sections ((background . "#555") (text . "Java")
+               (color . "#fff")
+               (logo . java))
+              ((background . "#ea2d2e") (text . "OpenJDK 25")
+               (color . "#fff")))
+    (id . java-25)))
+
+(define glyph-kotlin-2
+  `((sections ((background . "#555") (text . "Kotlin")
+               (color . "#fff")
+               (logo . code))
+              ((background . "#7F52FF") (text . "v2.0+")
+               (color . "#fff")))
+    (id . kotlin-2)))
+
+(define glyph-scala-3
+  `((sections ((background . "#555") (text . "Scala")
+               (color . "#fff")
+               (logo . scala))
+              ((background . "#DE3423") (text . "v3.x")
+               (color . "#fff")))
+    (id . scala-3)))
+
+(define glyph-build-gradle
+  `((sections ((background . "#555") (text . "build")
+               (color . "#fff")
+               (logo . gear))
+              ((background . "#02303a") (text . "Gradle")
+               (color . "#fff")))
+    (id . build-gradle)))
+
+(define glyph-build-maven
+  `((sections ((background . "#555") (text . "build")
+               (color . "#fff")
+               (logo . gear))
+              ((background . "#c71a36") (text . "Maven")
+               (color . "#fff")))
+    (id . build-maven)))
+
+(define glyph-lisp-sbcl
+  `((sections ((background . "#555") (text . "Lisp")
+               (color . "#fff")
+               (logo . lambda))
+              ((background . "#e15639") (text . "SBCL")
+               (color . "#fff")))
+    (id . lisp-sbcl)))
+
+(define glyph-scheme-racket
+  `((sections ((background . "#555") (text . "Scheme")
+               (color . "#fff")
+               (logo . lambda))
+              ((background . "#3c5c99") (text . "Racket")
+               (color . "#fff")))
+    (id . scheme-racket)))
+
+(define glyph-clojure
+  `((sections ((background . "#555") (text . "Lisp")
+               (color . "#fff")
+               (logo . lambda))
+              ((background . "#63b132") (text . "Clojure")
+               (color . "#fff")))
+    (id . clojure)))
+
+(define glyph-emacs-org
+  `((sections ((background . "#555") (text . "Emacs")
+               (color . "#fff")
+               (logo . emacs))
+              ((background . "#77aa99") (text . "Org-mode")
+               (color . "#fff")))
+    (id . emacs-org)))
+
+(define glyph-emacs-magit
+  `((sections ((background . "#555") (text . "Emacs")
+               (color . "#fff")
+               (logo . emacs))
+              ((background . "#aa2233") (text . "Magit")
+               (color . "#fff")))
+    (id . emacs-magit)))
+
+(define glyph-dev-docker
+  `((sections ((background . "#555") (text . "Docker")
+               (color . "#fff")
+               (logo . cube))
+              ((background . "#2496ed") (text . "ready")
+               (color . "#fff")))
+    (id . dev-docker)))
+
+(define glyph-nix-flake
+  `((sections ((background . "#555") (text . "Nix")
+               (color . "#fff")
+               (logo . snowflake))
+              ((background . "#5277c3") (text . "flake")
+               (color . "#fff")))
+    (id . nix-flake)))
+
 (define ggg-glyphs
   (list glyph-pipeline-succeeded
         glyph-gnu-guix
@@ -257,5 +353,16 @@
         glyph-rust-185+
         glyph-cargo
         glyph-maak
+        glyph-java-25
+        glyph-kotlin-2
+        glyph-scala-3
+        glyph-build-gradle
+        glyph-build-maven
+        glyph-lisp-sbcl
+        glyph-scheme-racket
+        glyph-clojure
+        glyph-emacs-org
+        glyph-emacs-magit
+        glyph-dev-docker
+        glyph-nix-flake
         glyph-env))
-
