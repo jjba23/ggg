@@ -76,7 +76,16 @@
                           ("realpath " "realpath" "~s ")
                           ("dirname " "dirname" "~s ")
                           ("getopt " "getopt" "~s ")
-                          ("exec guile " "guile" "exec ~s "))))))))
+                          ("exec guile " "guile" "exec ~s ")))
+              (for-each (match-lambda
+                          ((pattern program format-string)
+                           (substitute* "src/ggg/main.scm"
+                             ((pattern)
+                              (format #f format-string
+                                      (search-input-file inputs
+                                                         (string-append "bin/"
+                                                          program)))))))
+                        '(("convert -quality 100" "convert" "~a -quality 100"))))))))
     (inputs (list guile-3.0 bash-minimal imagemagick coreutils util-linux))
     (synopsis "GGG is a SVG image generator for project and web badges")
     (description
