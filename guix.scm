@@ -49,7 +49,6 @@
       #:modules '((guix build guile-build-system)
                   (guix build utils)
                   (ice-9 match))
-
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'install-program-files
