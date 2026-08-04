@@ -330,7 +330,7 @@
   `((sections ((background . "#555") (text . "C")
                (color . "#fff")
                (logo . code))
-              ((background . "#00599C") (text . "C17")
+              ((background . "#00599C") (text . "17")
                (color . "#fff")))
     (id . lang-c)))
 
@@ -338,7 +338,7 @@
   `((sections ((background . "#555") (text . "GTK")
                (color . "#fff")
                (logo . gear))
-              ((background . "#3584e4") (text . "v4.x")
+              ((background . "#3584e4") (text . "v4")
                (color . "#fff")))
     (id . gtk4)))
 
