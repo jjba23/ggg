@@ -326,6 +326,30 @@
                (color . "#fff")))
     (id . nix-flake)))
 
+(define glyph-lang-c
+  `((sections ((background . "#555") (text . "C")
+               (color . "#fff")
+               (logo . code))
+              ((background . "#00599C") (text . "C17")
+               (color . "#fff")))
+    (id . lang-c)))
+
+(define glyph-gtk4
+  `((sections ((background . "#555") (text . "GTK")
+               (color . "#fff")
+               (logo . gear))
+              ((background . "#3584e4") (text . "v4.x")
+               (color . "#fff")))
+    (id . gtk4)))
+
+(define glyph-build-meson
+  `((sections ((background . "#555") (text . "build")
+               (color . "#fff")
+               (logo . gear))
+              ((background . "#008080") (text . "Meson")
+               (color . "#fff")))
+    (id . build-meson)))
+
 (define ggg-glyphs
   (list glyph-pipeline-succeeded
         glyph-gnu-guix
@@ -365,4 +389,7 @@
         glyph-emacs-magit
         glyph-dev-docker
         glyph-nix-flake
+        glyph-build-meson
+        glyph-gtk4
+        glyph-lang-c
         glyph-env))
