@@ -1,58 +1,83 @@
-{ pkgs ? import <nixpkgs> {} }:
+# ggg: guile glyph generator
 
-pkgs.stdenv.mkDerivation (finalAttrs: {
+# Copyright © Josep Bigorra <jjbigorra@gmail.com>
+
+# ggg is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# ggg is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+
+# You should have received a copy of the GNU Affero General Public License
+# along with ggg.  If not, see <https://www.gnu.org/licenses/>.
+
+{ pkgs ? import <nixpkgs> {}
+, lib ? pkgs.lib
+, stdenv ? pkgs.stdenv
+, guile ? pkgs.guile
+, imagemagick ? pkgs.imagemagick
+, coreutils ? pkgs.coreutils
+, util-linux ? pkgs.util-linux
+, bash ? pkgs.bash
+, makeWrapper ? pkgs.makeWrapper
+}:
+
+stdenv.mkDerivation {
   pname = "ggg";
   version = "0.1.0-dev";
 
   src = ./.;
 
   nativeBuildInputs = [
-    pkgs.guile
-    pkgs.makeWrapper
+    guile
+    makeWrapper
   ];
 
   buildInputs = [
-    pkgs.guile
-  ];
-
-  # Tools required by ggg at runtime:
-  # - guile: to run the scheme application
-  # - imagemagick: provides 'convert' for PNG rendering
-  # - coreutils: 'date', 'realpath', 'dirname'
-  # - util-linux: 'getopt'
-  pathInputs = [
-    pkgs.guile
-    pkgs.imagemagick
-    pkgs.coreutils
-    pkgs.util-linux
+    guile
+    imagemagick
+    coreutils
+    util-linux
+    bash
   ];
 
   buildPhase = ''
     runHook preBuild
 
-    # Create directories for Guile source (.scm) and bytecode (.go)
-    mkdir -p build/site/3.0
-    mkdir -p build/site-cc/3.0
+    SITE_DIR="$out/share/guile/site/3.0"
+    CCACHE_DIR="$out/lib/guile/3.0/site-ccache"
 
-    # Copy scheme modules into place
+    mkdir -p "$SITE_DIR" "$CCACHE_DIR"
+
+    # 1. Copy Scheme modules into $SITE_DIR/ggg preserving module hierarchy
     if [ -d "src/ggg" ]; then
-      cp -r src/ggg build/site/3.0/
+      cp -r src/ggg "$SITE_DIR/"
+    elif [ -d "src" ]; then
+      mkdir -p "$SITE_DIR/ggg"
+      cp -r src/* "$SITE_DIR/ggg/"
+    elif [ -d "ggg" ]; then
+      cp -r ggg "$SITE_DIR/"
     else
-      mkdir -p build/site/3.0/ggg
-      cp *.scm build/site/3.0/ggg/
+      mkdir -p "$SITE_DIR/ggg"
+      find . -maxdepth 1 -name "*.scm" -exec cp {} "$SITE_DIR/ggg/" \;
     fi
 
-    # Compile Scheme modules into bytecode
-    find build/site/3.0 -name "*.scm" | while read -r scm_file; do
-      rel_path="''${scm_file#build/site/3.0/}"
-      go_file="build/site-cc/3.0/''${rel_path%.scm}.go"
-      mkdir -p "$(dirname "$go_file")"
+    # 2. Export load paths so guild compile can resolve cross-module imports
+    export GUILE_LOAD_PATH="$SITE_DIR:$GUILE_LOAD_PATH"
+    export GUILE_LOAD_COMPILED_PATH="$CCACHE_DIR:$GUILE_LOAD_COMPILED_PATH"
 
-      guild compile \
-        -L build/site/3.0 \
-        -o "$go_file" \
-        "$scm_file"
+    # 3. Dynamically byte-compile all Scheme files (.scm -> .go)
+    cd "$SITE_DIR"
+    find ggg -name "*.scm" | while read -r scm_file; do
+      go_file="$CCACHE_DIR/''${scm_file%.scm}.go"
+      mkdir -p "$(dirname "$go_file")"
+      guild compile -L "$SITE_DIR" -o "$go_file" "$scm_file" || true
     done
+    cd -
 
     runHook postBuild
   '';
@@ -60,22 +85,16 @@ pkgs.stdenv.mkDerivation (finalAttrs: {
   installPhase = ''
     runHook preInstall
 
-    # 1. Install Guile source modules and bytecode
-    mkdir -p "$out/share/guile/site/3.0"
-    mkdir -p "$out/share/guile/site-cc/3.0"
-    cp -r build/site/3.0/* "$out/share/guile/site/3.0/"
-    cp -r build/site-cc/3.0/* "$out/share/guile/site-cc/3.0/"
-
-    # 2. Install resource files
-    mkdir -p "$out/share/resources"
+    # 1. Install resource files (help text, SVG paths, assets)
+    mkdir -p "$out/share/resources/svg-paths"
     if [ -f "resources/help.txt" ]; then
       cp resources/help.txt "$out/share/resources/"
     fi
     if [ -d "resources/svg-paths" ]; then
-      cp -r resources/svg-paths "$out/share/resources/"
+      cp -r resources/svg-paths/* "$out/share/resources/svg-paths/" 2>/dev/null || true
     fi
 
-    # 3. Install executable script
+    # 2. Install main executable script
     mkdir -p "$out/bin"
     if [ -f "scripts/ggg" ]; then
       cp scripts/ggg "$out/bin/ggg"
@@ -84,20 +103,40 @@ pkgs.stdenv.mkDerivation (finalAttrs: {
     fi
     chmod +x "$out/bin/ggg"
 
-    # 4. Wrap the ggg executable with runtime dependencies & Guile search paths
+    # 3. Helper to copy completion scripts if present
+    copy_completion() {
+      local src_file=$1
+      local dest_path=$2
+      if [ -f "scripts/$src_file" ]; then
+        cp "scripts/$src_file" "$dest_path"
+      elif [ -f "$src_file" ]; then
+        cp "$src_file" "$dest_path"
+      fi
+    }
+
+    # Install shell completions
+    mkdir -p "$out/share/bash-completion/completions"
+    mkdir -p "$out/share/fish/vendor_completions.d"
+    mkdir -p "$out/share/zsh/site-functions"
+
+    copy_completion "ggg-completion.bash" "$out/share/bash-completion/completions/ggg"
+    copy_completion "ggg-completion.fish" "$out/share/fish/vendor_completions.d/ggg.fish"
+    copy_completion "ggg-completion.zsh" "$out/share/zsh/site-functions/_ggg"
+
+    # 4. Wrap executable with runtime PATH and standard Guile load paths
     wrapProgram "$out/bin/ggg" \
-      --prefix PATH : ${pkgs.lib.makeBinPath finalAttrs.pathInputs} \
+      --prefix PATH : ${lib.makeBinPath [ guile imagemagick coreutils util-linux bash ]} \
       --prefix GUILE_LOAD_PATH : "$out/share/guile/site/3.0" \
-      --prefix GUILE_LOAD_COMPILED_PATH : "$out/share/guile/site-cc/3.0"
+      --prefix GUILE_LOAD_COMPILED_PATH : "$out/lib/guile/3.0/site-ccache"
 
     runHook postInstall
   '';
 
-  meta = with pkgs.lib; {
+  meta = with lib; {
     description = "Guile Glyph Generator (GGG) - SVG badge generator written in Guile Scheme";
     homepage = "https://codeberg.org/jjbigorra/ggg";
     license = licenses.agpl3Plus;
-    platforms = platforms.all;
+    platforms = platforms.linux ++ platforms.darwin;
     mainProgram = "ggg";
   };
-})
+}
