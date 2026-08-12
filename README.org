@@ -143,6 +143,22 @@ You can run ggg from the container, and bind your local filesystem to give acces
      docker.io/jjba23/ggg:latest ggg --file /home/joe/glyphs.scm --destination ./dist
 #+end_src
 
+** On Nix
+
+~ggg~ also is packaged via Nix.
+
+#+begin_src shell
+# Building via legacy Nix
+nix-build default.nix
+
+# Testing the result
+./result/bin/ggg --help
+
+# Building via Nix Flakes
+nix build
+./result/bin/ggg --file ./glyphs/jjba23.scm -d ./dist
+#+end_src
+
 --------
 
 * Licensing
