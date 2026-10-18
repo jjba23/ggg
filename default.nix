@@ -85,13 +85,13 @@ stdenv.mkDerivation {
   installPhase = ''
     runHook preInstall
 
-    # 1. Install resource files (help text, SVG paths, assets)
-    mkdir -p "$out/share/resources/svg-paths"
+    # 1. Install resource files (help text, logos, assets)
+    mkdir -p "$out/share/resources/logos"
     if [ -f "resources/help.txt" ]; then
       cp resources/help.txt "$out/share/resources/"
     fi
-    if [ -d "resources/svg-paths" ]; then
-      cp -r resources/svg-paths/* "$out/share/resources/svg-paths/" 2>/dev/null || true
+    if [ -d "resources/logos" ]; then
+      cp -r resources/logos/* "$out/share/resources/logos/" 2>/dev/null || true
     fi
 
     # 2. Install main executable script

@@ -18,44 +18,9 @@
 (define-module (ggg svg)
   #:declarative? #t
   #:use-module (ice-9 format)
-  #:use-module (ice-9 iconv)
-  #:use-module (ice-9 match)
-  #:use-module (ice-9 popen)
-  #:use-module (ice-9 rdelim)
-  #:use-module (ice-9 regex)
-  #:use-module (ice-9 string-fun)
-  #:use-module (ice-9 textual-ports)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-13)
-  #:use-module (ice-9 getopt-long)
-  #:export (get-path-for-svg mk-simple-svg ggg-logos length-for-text))
-
-(define* (get-path-for-svg name
-                           #:key resources)
-  (get-string-all (open-input-file (format #f "~a/svg-paths/~a" resources name))))
-
-(define* (mk-simple-svg id
-                        #:key resources
-                        (width 18)
-                        (height 18)
-                        (view-box "0 0 18 20")
-                        (fill "#ffffff")
-                        (fill-rule 'nonzero)
-                        (clip-rule 'nonzero)
-                        (x 6)
-                        (y 5))
-  `((svg (@ (width ,width)
-            (height ,height)
-            (viewBox ,view-box)
-            (x ,x)
-            (y ,y)
-            (xmlns "http://www.w3.org/2000/svg")
-            (fill none))
-         (path (@ (fill ,fill)
-                  (fill-rule ,fill-rule)
-                  (clip-rule ,clip-rule)
-                  (d ,(get-path-for-svg id
-                                        #:resources resources))) ""))))
+  #:export (length-for-text))
 
 (define* (length-for-text text-length
                           #:key (font-size 12))
@@ -89,80 +54,3 @@ medium, or long to make the badge look better. It rounds the final width to a wh
          (calculated-width (+ horizontal-padding
                               (* base-char-width text-length scaling-factor))))
     (round calculated-width)))
-
-(define* (ggg-logos #:key resources)
-  `((emacs unquote
-           (mk-simple-svg 'emacs
-                          #:resources resources
-                          #:view-box "0 0 24 26"))
-    (lambda unquote
-      (mk-simple-svg 'lambda
-                     #:resources resources))
-    (gnu unquote
-         (mk-simple-svg 'gnu
-                        #:resources resources
-                        #:view-box "0 0 24 26"))
-    (guix unquote
-          (mk-simple-svg 'guix
-                         #:resources resources
-                         #:view-box "0 0 24 26"))
-    (code unquote
-          (mk-simple-svg 'code
-                         #:resources resources
-                         #:view-box "0 0 24 26"))
-    (cube unquote
-          (mk-simple-svg 'cube
-                         #:resources resources
-                         #:view-box "0 0 24 26"))
-    (java unquote
-          (mk-simple-svg 'java
-                         #:resources resources
-                         #:view-box "0 0 24 26"))
-    (snowflake unquote
-               (mk-simple-svg 'snowflake
-                              #:resources resources
-                              #:view-box "0 0 24 24"))
-    (scala unquote
-           (mk-simple-svg 'scala
-                          #:resources resources
-                          #:view-box "0 0 36 26"
-                          #:y 3))
-    (scales unquote
-            (mk-simple-svg 'scales
-                           #:resources resources
-                           #:view-box "0 0 20 20"))
-    (paint unquote
-           (mk-simple-svg 'paint
-                          #:resources resources
-                          #:view-box "0 0 42 42"
-                          #:y 7))
-    (language unquote
-              (mk-simple-svg 'language
-                             #:resources resources
-                             #:view-box "0 0 20 24"
-                             #:y 4))
-    (hashtag unquote
-             (mk-simple-svg 'hashtag
-                            #:resources resources
-                            #:fill-rule "evenodd"
-                            #:clip-rule "evenodd"
-                            #:view-box "0 0 30 30"
-                            #:y 6))
-    (gear unquote
-          (mk-simple-svg 'gear
-                         #:resources resources
-                         #:view-box "0 0 640 640"
-                         #:y 6))
-    (rust unquote
-          (mk-simple-svg 'rust
-                         #:resources resources
-                         #:view-box "0 0 30 30"
-                         #:y 3))
-    (bull unquote
-          (mk-simple-svg 'bull
-                         #:resources resources
-                         #:view-box "0 0 30 30"))
-    (fish unquote
-          (mk-simple-svg 'fish
-                         #:resources resources
-                         #:view-box "0 0 250 100"))))

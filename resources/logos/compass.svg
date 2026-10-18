@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ggg original logo, licensed AGPL-3.0-or-later -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <title>Compass</title>
+  <circle cx="12" cy="12" r="9.3" fill="none" stroke="#ffffff" stroke-width="1.6" />
+  <path fill="#e89444" d="m16.4 7.6-2.2 6-6 2.8 2.2-6z" />
+  <circle cx="12" cy="12" r="1.2" fill="#ffffff" />
+</svg>

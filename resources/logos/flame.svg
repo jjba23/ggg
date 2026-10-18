@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ggg original logo, licensed AGPL-3.0-or-later -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <title>Flame</title>
+  <defs>
+    <linearGradient id="flame-heat" x1="12" y1="23" x2="12" y2="3" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#e89444" />
+      <stop offset="1" stop-color="#ffffff" />
+    </linearGradient>
+  </defs>
+  <path fill="url(#flame-heat)" d="M12 2.4c3.2 3.5 6.4 6.3 6.4 10.4a6.4 6.4 0 0 1-12.8 0c0-4.1 3.2-6.9 6.4-10.4z" />
+  <path fill="#ffffff" d="M12 10.6c1.9 2.1 3.4 3.6 3.4 5.6a3.4 3.4 0 0 1-6.8 0c0-2 1.5-3.5 3.4-5.6z" />
+</svg>

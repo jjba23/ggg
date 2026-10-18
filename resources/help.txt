@@ -1,4 +1,3 @@
-
 +----------------------------------------------------------------------------+
 GGG: Guile Glyph Generator
     Generate SVG images for useful glyphs, Org/Markdown badges and more,
@@ -28,10 +27,42 @@ OPTIONS:
 
     -c, --convert
         Specify that ggg should convert the SVG images to PNGs after
-        generation, using ImageMagick. Cannot be used with stdout.
+        generation, using ImageMagick and falling back to Inkscape.
+        Cannot be used with stdout.
+
+    -k, --keep
+        Keep the files already present in the destination directory
+        instead of clearing it. Useful to render several glyph files
+        into the same directory, for example glyphs/jjba23.scm and
+        glyphs/showcase.scm.
+
+        --list-colors
+        List the named colors that glyph files can use, then exit.
+
+        --list-logos
+        List the logos available in the resources directory, then exit.
+
+        --gallery FILE
+        Write a self-contained HTML gallery showing every logo with its
+        name, then exit. Handy for browsing the logo library.
 
     -h, --help
         Display this help message and exit.
+
++----------------------------------------------------------------------------+
+CONFIGURING YOUR GLYPHS:
+    Colors can be raw hex strings (e.g. "#555") or names from the built-in
+    palette (e.g. badge-gray, white, guix-yellow). Run "ggg --list-colors".
+
+    Logos are full SVG documents in the resources/logos/ directory, so they
+    may contain several paths, groups, gradients, etc. ggg ships a large
+    library of tech logos; see resources/logos/CREDITS.md for their sources.
+    Run "ggg --list-logos" to see the names, or "ggg --gallery
+    ./gallery.html" to browse them visually.
+
+    Your glyph file is validated before anything is generated: problems such
+    as unknown color or logo names are reported with a hint, instead of
+    producing broken images.
 
 +----------------------------------------------------------------------------+
 EXAMPLES:
@@ -41,5 +72,11 @@ EXAMPLES:
 
     cat ./glyphs/jjba23.scm |
         guix shell -f guix.scm -- ggg --stdin --destination ./dist
+
+    ggg --list-colors
+
+    ggg --gallery ./test/gallery.html
+
+    ggg -f ./glyphs/showcase.scm -d ./dist -k -c
 
 +----------------------------------------------------------------------------+

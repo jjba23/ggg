@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ggg original logo, licensed AGPL-3.0-or-later -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <title>Shield check</title>
+  <defs>
+    <linearGradient id="shield-metal" x1="5" y1="3" x2="19" y2="21" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff" />
+      <stop offset="1" stop-color="#4f677f" />
+    </linearGradient>
+  </defs>
+  <path fill="none" stroke="url(#shield-metal)" stroke-width="1.7" stroke-linejoin="round" d="M12 2.6 4.6 5.4v6.9c0 4.6 3 8.3 7.4 9.4 4.4-1.1 7.4-4.8 7.4-9.4V5.4z" />
+  <path fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="m8.8 12 2.3 2.3 4.2-4.6" />
+</svg>

@@ -57,8 +57,8 @@
                     (share (string-append #$output "/share")))
                 (install-file "resources/help.txt"
                               (string-append share "/resources"))
-                (copy-recursively "resources/svg-paths"
-                                  (string-append share "/resources/svg-paths"))
+                (copy-recursively "resources/logos"
+                                  (string-append share "/resources/logos"))
                 (install-file "scripts/ggg" bin)
                 (chmod (string-append bin "/ggg") #o755))))
           (add-after 'unpack 'fix-paths
@@ -84,7 +84,7 @@
                                       (search-input-file inputs
                                                          (string-append "bin/"
                                                           program)))))))
-                        '(("convert -quality 100" "convert" "~a -quality 100"))))))))
+                        '(("\"convert\"" "convert" "~s"))))))))
     (inputs (list guile-3.0 bash-minimal imagemagick coreutils-minimal util-linux))
     (synopsis "GGG is a SVG image generator for project and web badges")
     (description

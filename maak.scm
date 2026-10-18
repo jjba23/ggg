@@ -64,6 +64,14 @@
   (time-machine-manifest-shell '("guile -L ./src"
                     "-c '((@ (ares server) run-nrepl-server))'")))
 
+(define (test)
+  "Run ggg's test suite."
+  (time-machine-manifest-shell '("guile -L ./src ./test/ggg-tests.scm")))
+
+(define (gallery)
+  "Generate the HTML gallery of every logo."
+  (time-machine-program-shell '("ggg --gallery ./test/gallery.html")))
+
 (define (docs)
   "Generate technical API documentation for Maak."
   (delete-file-recursively "doc")
@@ -112,11 +120,23 @@
                     "--destination ./dist" "--resources ./resources")))
 
 (define (run)
-  (time-machine-program-shell '("ggg --file ./glyphs/jjba23.scm" "--destination ./dist")))
+  "Generate every badge into ./dist, including the logo showcase."
+  (time-machine-program-shell '("ggg --file ./glyphs/jjba23.scm" "--destination ./dist"))
+  ;; ggg clears the destination directory, so the second file has to keep it.
+  (time-machine-program-shell '("ggg --file ./glyphs/showcase.scm" "--destination ./dist"
+                                "--keep")))
 
 (define (run-convert)
+  "Like run, but also write a PNG next to every SVG."
   (time-machine-program-shell '("ggg --file ./glyphs/jjba23.scm" "--destination ./dist"
-                   "--convert")))
+                                "--convert"))
+  (time-machine-program-shell '("ggg --file ./glyphs/showcase.scm" "--destination ./dist"
+                                "--keep" "--convert")))
+
+(define (showcase)
+  "Generate only the badges of the popular-logo showcase into ./dist."
+  (time-machine-program-shell '("ggg --file ./glyphs/showcase.scm" "--destination ./dist"
+                                "--keep")))
 
 (define (run-stdin)
   ($ '("cat ./glyphs/jjba23.scm |" "guix shell -f guix.scm --"

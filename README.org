@@ -37,6 +37,10 @@ The SVG (Scalable Vector Graphics) can then be easily converted without quality 
 -  Vector Graphics (SVG) :: Generates crisp and scalable SVG images, perfect for any screen resolution.
 -  Raster Images (PNG) :: Also produces PNG versions for broader compatibility.
 -  Highly Customizable :: Customize the text, background colors, text colors, logos, etc.
+-  Named Colors :: Use readable names (~badge-gray~, ~guix-yellow~, ~emacs-magenta~, ...) instead of raw hex codes.
+-  Full SVG Logos :: Save logos as complete ~<svg>~ elements, allowing multiple paths, groups and gradients.
+-  Logo Library :: Ships hundreds of ready-to-use logos, browsable in a generated gallery page.
+-  Helpful Errors :: Invalid glyph files are reported with actionable messages before anything is generated.
 -  Simple Definition :: Badge configurations are defined in an easy-to-understand data structure within the Scheme code.
 
 ggg dynamically estimates text width for the elements, specially text, looking up a rough width per character based on the font size. Then, multiplies this by the number of characters and add some padding. Finally, we slightly adjust the width based on whether the text is very short, short, medium, or long to make the badge look better.
@@ -65,11 +69,11 @@ Defining your glyphs is simple and only requires very basic knowledge of Lisp/Sc
 
 #+begin_src scheme
 (define my-scheme-guile-glyph
-  `((sections ((background . "#555") (text . "Scheme")
-               (color . "#fff")
+  `((sections ((background . badge-gray) (text . "Scheme")
+               (color . white)
                (logo . lambda))
-              ((background . "#d0730f") (text . "Guile")
-               (color . "#fff")))
+              ((background . guix-orange) (text . "Guile")
+               (color . white)))
     (id . scheme-guile)))
 
 #+end_src
@@ -81,7 +85,95 @@ Then to ensure that ggg will read your glyphs from the file, you need to export 
   (list my-scheme-guile-glyph))
 #+end_src
 
-As for the ~logo~ value, ggg has a selection of free-licensed logo data in the ~resources/svg-paths~ directory, feel free to contribute new ones!
+** Colors
+
+Backgrounds and text colors can be written as raw hex strings (e.g. ~"#555"~) or as names from the built-in palette, which is easier to read and typo-proof:
+
+#+begin_src scheme
+(background . badge-gray)    ;; #555, the usual first-section background
+(background . guix-yellow)   ;; #FFBF01
+(background . emacs-magenta) ;; #c4609e
+(color . white)              ;; #fff
+#+end_src
+
+Run ~ggg --list-colors~ to see every available name. Hex strings are still validated, so ~"#ggg"~ or ~"#12345"~ are rejected with a message instead of producing a broken badge.
+
+** Logos
+
+Logos are full SVG documents stored as ~resources/logos/<name>.svg~ and are referenced by name:
+
+#+begin_src scheme
+(sections ((background . badge-gray)
+           (text . "Project")
+           (color . white)
+           (logo . sparkle)))
+#+end_src
+
+Because the whole ~<svg>~ element is kept, a logo can use as many paths, groups, gradients, transforms or filters as it needs. Only the outer ~<svg>~ element has to provide a ~viewBox~ (so ggg can scale the logo to the badge height); width, height, x and y are managed by ggg. Editor metadata such as the ~inkscape~ or ~sodipodi~ namespaces is dropped when the logo is inlined.
+
+#+begin_src xml
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <defs>
+    <linearGradient id="sparkle-gradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset="1" stop-color="#80aadf"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#sparkle-gradient)" d="M12 2 2 12h6v10h8V12h6z"/>
+  <circle cx="18" cy="6" r="3" fill="#fff"/>
+</svg>
+#+end_src
+
+A logo is a single SVG document, so there is nothing else to configure: give the file a ~viewBox~ and ggg scales and places it inside the badge.
+
+*** The logo library
+
+ggg ships several hundred logos, so most badges can be written without drawing anything:
+
+- the original ggg logos (GNU, Guix, Emacs, Rust, Scala, ...),
+- a curated set of tech logos from the [[https://simpleicons.org/][Simple Icons]] collection (CC0-1.0), covering languages, frameworks, databases, editors, distributions, cloud providers, CI systems and more,
+- hand-authored logos such as ~sparkle~, ~flame~, ~planet~, ~leaf~, ~shield-check~, ~database-stack~, ~terminal-prompt~, ~atom-orbit~, ~compass~, ~anchor~, ~bolt~ and ~heart~ that show gradients, groups and multi-shape drawings.
+
+~resources/logos/CREDITS.md~ lists every logo with where it comes from and its license, and notes which brand marks were deliberately left out because their upstream license is not a free one.
+
+** Browsing the logos
+
+Run ~ggg --list-logos~ for the names, or generate the gallery, a single self-contained HTML page that inlines every logo with its name and the snippet to use:
+
+#+begin_src shell
+ggg --gallery ./test/gallery.html
+#+end_src
+
+[[./test/gallery.html][test/gallery.html]] is that page, and ~maak gallery~ regenerates it. It is regenerated from scratch, so it always matches the logos in ~resources/logos/~.
+
+** The badge showcase
+
+~glyphs/showcase.scm~ is a second glyph file that ships one ready-made badge for each of the most popular logos in the library, grouped by what the project is (languages, web frameworks, databases, infrastructure, cloud, observability, distributions, editors, shells, AI, testing, media, chat). Every badge reads ~<logo> Name | category~, uses the project's brand color for the second section, and chooses black or white text, whichever contrasts more with that color.
+
+#+begin_src scheme
+(define glyph-postgresql
+  (badge 'postgresql "PostgreSQL" 'postgresql "database" "#4169E1"))
+#+end_src
+
+These badges are part of ~dist/~. Because ggg clears its destination directory, the second file has to be rendered with ~-k~ / ~--keep~:
+
+#+begin_src shell
+maak run            # renders both glyph files into ./dist
+maak run-convert    # ... and also writes a PNG next to each SVG
+maak showcase       # renders only the showcase into ./dist
+#+end_src
+
+Use this file as a starting point: copy the badge you need into your own glyph file, or point ggg at it directly with ~ggg -f ./glyphs/showcase.scm -d ./dist -k -c~.
+
+** Adding a logo
+
+Drop a full SVG document into ~resources/logos/<name>.svg~ and reference it with ~(logo . name)~. Only the ~<svg>~ element and its ~viewBox~ are required; ~title~ elements are picked up by the gallery as the logo's display name. Please also add a line to ~resources/logos/CREDITS.md~ with the source and license of the logo.
+
+Older projects may still have the removed ~resources/svg-paths/~ directory, which held only the data of a path's ~d~ attribute. It is not read anymore, and ggg stops with an explanation and the list of files if it finds one: wrap each file in an SVG document at ~resources/logos/<name>.svg~.
+
+** Validation and errors
+
+Before generating anything, ggg validates your whole glyph file and reports *every* problem it finds, with a hint on how to fix it: unknown color or logo names (with a suggestion when a name is close), missing ~text~, sections without colors, malformed ~(key value)~ pairs that should be ~(key . value)~, duplicate or unusable glyph ~id~s, more than three sections, and so on. Nothing is written to the destination directory when the configuration is invalid.
 
 * Help
 
@@ -92,6 +184,15 @@ Also, find the technical Guile Scheme API documentation for GGG here:
 https://jointhefreeworld.org/api-docs/ggg/API.html
 
 You can see the program's help by invoking it with the ~--help~ argument or looking at ~resources/help.txt~.
+
+Useful helpers while working on glyphs:
+
+- ~ggg --list-colors~ :: list the named colors available to glyph files.
+- ~ggg --list-logos~ :: list the logos found in the resources directory.
+- ~ggg --gallery FILE~ :: write an HTML gallery of every logo (see [[./test/gallery.html][test/gallery.html]]).
+- ~ggg -k~ / ~--keep~ :: render a second glyph file into a destination directory without clearing it first.
+- ~maak showcase~ :: regenerate the popular-logo badges of [[./glyphs/showcase.scm][glyphs/showcase.scm]] in ~dist/~.
+- ~maak test~ (or ~guile -L ./src ./test/ggg-tests.scm~) :: run the test suite, which covers color resolution, both logo formats and glyph validation.
 
 * Installing
 
@@ -107,7 +208,7 @@ ggg is officially distributed via:
 
 - *Guix*: The Guix package manager will ensure a reproducible working software, and will manage all needed dependencies for you.
 -  *Guile Scheme:*  This entire program is written using the official GNU extension language, Guile Scheme.
--  *ImageMagick:* If you want to generate PNG files, you'll need ImageMagick (specifically the ~convert~ command).
+-  *ImageMagick:* If you want to generate PNG files, you'll need ImageMagick (specifically the ~convert~ command). If ImageMagick cannot read SVG files (some distributions disable that in its security policy), ggg falls back to *Inkscape*.
 
 Check the ~maak.scm~, ~Makefile~ and the ~guix.scm~ and ~manifest.scm~ for more details.
 

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ggg original logo, licensed AGPL-3.0-or-later -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <title>Terminal prompt</title>
+  <rect x="2.6" y="4" width="18.8" height="16" rx="3" fill="none" stroke="#ffffff" stroke-width="1.6" />
+  <path fill="none" stroke="#80aadf" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="m7 9.6 3 2.4-3 2.4" />
+  <path fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" d="M12.6 15h4.4" />
+</svg>

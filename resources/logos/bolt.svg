@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ggg original logo, licensed AGPL-3.0-or-later -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <title>Bolt</title>
+  <defs>
+    <linearGradient id="bolt-charge" x1="6" y1="2" x2="18" y2="22" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff" />
+      <stop offset="1" stop-color="#FFBF01" />
+    </linearGradient>
+  </defs>
+  <path fill="url(#bolt-charge)" d="M13.6 2 5 13.6h4.7L10.4 22 19 10.4h-4.7z" />
+</svg>

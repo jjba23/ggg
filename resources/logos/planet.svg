@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ggg original logo, licensed AGPL-3.0-or-later -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <title>Planet</title>
+  <defs>
+    <linearGradient id="planet-limb" x1="5" y1="5" x2="19" y2="19" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff" />
+      <stop offset="1" stop-color="#5277c3" />
+    </linearGradient>
+  </defs>
+  <circle cx="12" cy="11.4" r="6.4" fill="url(#planet-limb)" />
+  <ellipse cx="12" cy="12.6" rx="10.4" ry="3.4" fill="none" stroke="#ffffff" stroke-width="1.3" transform="rotate(-18 12 12.6)" />
+  <circle cx="19.4" cy="4.8" r="1.4" fill="#ffffff" />
+</svg>
