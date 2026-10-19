@@ -28,23 +28,24 @@
                      logo-width separator-width text-vertical-center
                      first-padding separator-x-offset))
 
-;; Badge geometry follows the compact 20px-high look of shields.io badges:
-;; a 14px logo inset by 3px, 11px text, 5px of padding on each side of a text
-;; run and 3px rounded corners.
+;; Badge geometry follows the compact look of shields.io badges -- a 14px logo
+;; inset by 3px, 11px text, 5px of padding on each side of a text run and 3px
+;; rounded corners -- drawn at (scaled ...), that is 6% larger than those
+;; numbers. See `badge-scale' in (ggg svg).
 (define logo-width
-  (make-parameter 14))
+  (make-parameter (scaled 14)))
 
 (define separator-width
-  (make-parameter 6))
+  (make-parameter (scaled 6)))
 
 (define text-vertical-center
-  (make-parameter 14))
+  (make-parameter (scaled 14)))
 
 (define first-padding
-  (make-parameter 3))
+  (make-parameter (scaled 3)))
 
 (define separator-x-offset
-  (make-parameter 3))
+  (make-parameter (scaled 3)))
 
 ;; ====== Reading a glyph definition ======
 
@@ -133,16 +134,19 @@
       (background . ,(section-color section 'background glyph-id index))
       (color . ,(section-color section 'color glyph-id index))
       (font-family . ,(section-font-family section glyph-id index))
-      (font-size . ,font-size)
+      ;; The measured width is taken at the unscaled font size, so that the
+      ;; per-size character widths in (ggg svg) stay calibrated; the scale is
+      ;; applied there.
+      (font-size . ,(scaled font-size))
       (font-weight . ,(section-number section 'font-weight 500 glyph-id index))
       (logo . ,logo)
       ;; The first text area starts after the logo box and the gap that keeps
       ;; the label from touching the logo. Other sections have no logo.
-      (text-area-start . ,(if logo (+ (logo-width) (first-padding)) 0))
+      (text-area-start . ,(rounded (if logo (+ (logo-width) (first-padding)) 0)))
       (text-width . ,(length-for-text text #:font-size font-size)))))
 
 (define (section-full-width section)
-  (+ (lookup section 'text-area-start) (lookup section 'text-width)))
+  (rounded (+ (lookup section 'text-area-start) (lookup section 'text-width))))
 
 (define* (mk-glyph x
                    #:key resources)
@@ -154,8 +158,8 @@
     (when (zero? section-count)
       (fail (format #f "glyph '~a' has no sections" badge-id)
             #:hint "Add at least one section with a text label and colors."))
-    (let* ((height (glyph-number x 'height 20))
-           (border-radius (glyph-number x 'border-radius 3))
+    (let* ((height (glyph-number x 'height (scaled 20)))
+           (border-radius (glyph-number x 'border-radius (scaled 3)))
            (resolved (map (lambda (section index)
                             (resolve-section section index badge-id
                                              #:resources resources))
@@ -167,8 +171,8 @@
            (positions (let loop ((rest widths) (x 0) (acc '()))
                         (if (null? rest)
                             (reverse acc)
-                            (loop (cdr rest) (+ x (car rest)) (cons x acc)))))
-           (total-badge-width (fold + 0 widths))
+                            (loop (cdr rest) (rounded (+ x (car rest))) (cons x acc)))))
+           (total-badge-width (rounded (fold + 0 widths)))
            (first-section (car resolved))
            (first-logo (lookup first-section 'logo)))
       `((svg (@ (id ,badge-id)
@@ -189,7 +193,7 @@
                 ;; one strip of each background color around every boundary.
                 ,@(append-map (lambda (previous next boundary)
                                 (list
-                                 `(rect (@ (x ,(- boundary (separator-x-offset)))
+                                 `(rect (@ (x ,(rounded (- boundary (separator-x-offset))))
                                            (width ,(separator-width))
                                            (height ,height)
                                            (fill ,(lookup previous 'background))

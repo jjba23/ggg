@@ -20,7 +20,24 @@
   #:use-module (ice-9 format)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-13)
-  #:export (length-for-text))
+  #:export (badge-scale scaled rounded length-for-text))
+
+;; Every badge is drawn 6% larger than the shields.io and GitHub geometry the
+;; numbers in this library are calibrated against.  A slightly larger badge
+;; reads better in a README while keeping the compact look, and applying the
+;; scale in one place means the boxes, the text and the logo grow together.
+(define badge-scale
+  1.06)
+
+(define (scaled value)
+  "VALUE scaled by BADGE-SCALE, rounded to two decimals so that coordinates stay
+short in the SVG."
+  (/ (round (* value badge-scale 100)) 100))
+
+(define (rounded value)
+  "VALUE rounded to two decimals, so that a coordinate built by adding or
+subtracting scaled dimensions stays short in the SVG."
+  (/ (round (* value 100)) 100))
 
 ;; Average character widths for the sans-serif stack at each font size. They
 ;; are calibrated against the badges shields.io and GitHub render, which are
@@ -53,12 +70,14 @@ letters take more room than the average lowercase letter."
 (define* (length-for-text text
                           #:key (font-size 11) (padding 5))
   "Estimate the width of a badge section in pixels: TEXT at FONT-SIZE plus
-PADDING on both sides. The per-character widths are averages for the
-sans-serif stack badges use, so a badge stays as compact as the ones
-shields.io and GitHub render. The result is rounded to a whole pixel."
+PADDING on both sides, drawn at BADGE-SCALE. The per-character widths are
+averages for the sans-serif stack badges use, so a badge stays as compact as
+the ones shields.io and GitHub render. The result is rounded to a whole pixel."
   (let ((text (if (string? text) text (format #f "~a" text))))
-    (round (+ (* 2 padding)
-              (fold (lambda (character total)
-                      (+ total (character-width character font-size)))
-                    0
-                    (string->list text))))))
+    (inexact->exact
+     (round (* badge-scale
+               (+ (* 2 padding)
+                  (fold (lambda (character total)
+                          (+ total (character-width character font-size)))
+                        0
+                        (string->list text))))))))

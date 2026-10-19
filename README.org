@@ -44,7 +44,7 @@ The SVG (Scalable Vector Graphics) can then be easily converted without quality 
 -  Helpful Errors :: Invalid glyph files are reported with actionable messages before anything is generated.
 -  Simple Definition :: Badge configurations are defined in an easy-to-understand data structure within the Scheme code.
 
-Badges follow the compact geometry of the badges GitHub shows: 20px tall by default, 11px text, a 14px logo, 5px of padding on each side of a text run and 3px rounded corners. ggg estimates text width by summing a per-character width for the font size (capitals, digits and wide letters take more room than narrow ones) and adding that padding, so a badge stays as tight as the ones you see in README files.
+Badges follow the compact geometry of the badges GitHub shows: 20px tall, 11px text, a 14px logo, 5px of padding on each side of a text run and 3px rounded corners -- all drawn 6% larger, so a default badge is 21.2px tall with 11.66px text and a 14.84px logo, which reads a little better next to body text. ggg estimates text width by summing a per-character width for the font size (capitals, digits and wide letters take more room than narrow ones) and adding that padding, so a badge stays as tight as the ones you see in README files.
 
 ggg tries to provide sensible defaults to every option, but allow customization. We construct the SVG structure using SXML (S-expressions representing XML). This makes it easy to define the SVG elements and their attributes programmatically.
 

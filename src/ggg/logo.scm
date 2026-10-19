@@ -24,6 +24,7 @@
   #:use-module (srfi srfi-13)
   #:use-module (sxml ssax)
   #:use-module (ggg prelude)
+  #:use-module (ggg svg)
   #:export (logo-names logo-file-path logo-name->string
                       logo-name-valid? legacy-svg-paths get-logo-sxml))
 
@@ -209,7 +210,8 @@ metadata and foreign namespaces."
             #:hint (format #f "~a. Make sure it is a well-formed XML document."
                            (if (pair? args) (car args) key))))))
 
-(define* (full-svg-logo path #:key (width 14) (height 14) (x 3) (y 3))
+(define* (full-svg-logo path #:key (width (scaled 14)) (height (scaled 14))
+                             (x (scaled 3)) (y (scaled 3)))
   (let* ((contents (call-with-input-file path get-string-all))
          (trimmed (string-trim-both contents)))
     (unless (string-contains trimmed "<svg")
@@ -247,7 +249,7 @@ metadata and foreign namespaces."
                  ,@extra-attributes)
               ,@children)))))
 
-(define* (get-logo-sxml name #:key resources (width 14) (height 14))
+(define* (get-logo-sxml name #:key resources (width (scaled 14)) (height (scaled 14)))
   "Return the SXML for logo NAME ready to be nested inside a badge, or #f."
   (let* ((name (logo-name->string name))
          (path (logo-file-path name #:resources resources)))

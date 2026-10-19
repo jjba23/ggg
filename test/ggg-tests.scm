@@ -37,6 +37,7 @@
              (ggg main)
              (ggg prelude)
              (ggg sxml)
+             (ggg svg)
              (ggg version))
 
 (define project-root
@@ -136,6 +137,24 @@ creating a literal #f/ directory in the project root when TMPDIR is unset."
     (string-contains (color-error 'nope #:context "glyph 'x', section 1")
                      "glyph 'x', section 1")))
 
+;; ====== Geometry ======
+
+(test-group "geometry"
+  (test-equal "the badge scale is 6%"
+    1.06
+    badge-scale)
+  (test-equal "the default geometry is scaled and kept to two decimals"
+    '(21.2 14.84 6.36 14.84 3.18 3.18 11.66)
+    (list (scaled 20) (scaled 14) (scaled 6) (scaled 14)
+          (scaled 3) (scaled 3) (scaled 11)))
+  (test-equal "coordinates built from scaled dimensions stay short"
+    67.84
+    (rounded (- 71.02 (scaled 3))))
+  (test-equal "text is measured at the unscaled font size, then scaled"
+  ;; "Scheme" is 40px of glyphs at 11px, plus 5px of padding each side.
+    53
+    (length-for-text "Scheme" #:font-size 11)))
+
 ;; ====== Version ======
 
 (test-group "version"
@@ -194,10 +213,10 @@ creating a literal #f/ directory in the project root when TMPDIR is unset."
         "0 0 32 32"
         (svg-attribute logo 'viewBox))
       (test-equal "the badge decides the logo size"
-        14
+        14.84
         (svg-attribute logo 'width))
       (test-equal "a stray x/y in the logo document is ignored"
-        '(3 3)
+        '(3.18 3.18)
         (list (svg-attribute logo 'x) (svg-attribute logo 'y)))
       (test-assert "the svg namespace is declared"
         (string-contains xml "xmlns=\"http://www.w3.org/2000/svg\""))
@@ -321,19 +340,20 @@ creating a literal #f/ directory in the project root when TMPDIR is unset."
              (string-contains xml (format #f "viewBox=\"~a\"" box)))))
     (test-assert "the badge id becomes the svg id"
       (string-contains xml "id=\"scheme-guile-test\""))
-    ;; Badges follow the compact shields.io geometry: 20px high, 11px text,
-    ;; 5px of padding per side and 3px rounded corners.
-    (test-assert "badges are 20px high with 3px corners"
-      (and (string-contains xml "height=\"20\"")
-           (string-contains xml "rx=\"3\"")))
-    (test-assert "badge text sits at y=14 for an 11px font"
-      (and (string-contains xml "font-size=\"11\"")
-           (string-contains xml "y=\"14\"")))
-    (test-assert "text width is tight like shields.io"
-      ;; 17px logo area, then 10px padding plus the measured text per section.
-      (string-contains xml "width=\"103.0\" height=\"20\""))
+    ;; Badges follow the compact shields.io geometry -- 20px high, 11px text,
+    ;; 5px of padding per side and 3px rounded corners -- drawn 6% larger.
+    (test-assert "badges are 21.2px high with 3.18px corners"
+      (and (string-contains xml "height=\"21.2\"")
+           (string-contains xml "rx=\"3.18\"")))
+    (test-assert "badge text sits at y=14.84 for an 11.66px font"
+      (and (string-contains xml "font-size=\"11.66\"")
+           (string-contains xml "y=\"14.84\"")))
+    (test-assert "text width is tight like shields.io, 6% larger"
+      ;; 18.02px logo area, then 10px of padding plus the measured text per
+      ;; section, all scaled by the badge scale.
+      (string-contains xml "width=\"109.02\" height=\"21.2\""))
     (test-assert "the first label is centered after the logo gap"
-      (string-contains xml "x=\"42.0\" y=\"14\">Scheme<")))
+      (string-contains xml "x=\"45.0\" y=\"14.84\">Scheme<")))
 
   (let* ((glyph `((sections ((background . catppuccin-mocha-surface2)
                              (text . "Complex")
