@@ -15,390 +15,561 @@
 ;; You should have received a copy of the GNU Affero General Public License
 ;; along with ggg.  If not, see <https://www.gnu.org/licenses/>.
 
+;; Commentary:
+;;
+;; The badges below are colored with the Catppuccin palette (the mocha flavor),
+;; whose colors ggg knows by name: every color of every supported theme is
+;; available as "<theme>-<color>". Since Catppuccin accents are light, the text
+;; on them is `catppuccin-mocha-base`, and the neutral first section (the one
+;; holding the logo) is `catppuccin-mocha-surface2` with `catppuccin-mocha-text`.
+;;
+;; `ggg --list-colors` prints every theme and color; see the README for the
+;; other palettes (doom, dracula, solarized, modus).
+
 (define-module (ggg config)
   #:declarative? #t)
 
 (define glyph-pipeline-succeeded
-  `((sections ((background . badge-gray) (text . "pipeline")
-               (color . white))
-              ((background . success-green) (text . "succeeded")
-               (color . white)))
+  `((sections ((background . catppuccin-mocha-surface2) (text . "pipeline")
+               (color . catppuccin-mocha-text))
+              ((background . catppuccin-mocha-green) (text . "succeeded")
+               (color . catppuccin-mocha-base)))
     (id . pipeline-succeeded)))
 
 (define glyph-gnu-guix
-  `((sections ((background . badge-gray) (text . "GNU")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "GNU")
+               (color . catppuccin-mocha-text)
                (logo . gnu))
-              ((background . guix-yellow) (text . "Guix")
-               (color . black)))
+              ((background . catppuccin-mocha-yellow) (text . "Guix")
+               (color . catppuccin-mocha-base)))
     (id . gnu-guix)))
 
 (define glyph-scheme-guile
-  `((sections ((background . badge-gray) (text . "Scheme")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "Scheme")
+               (color . catppuccin-mocha-text)
                (logo . lambda))
-              ((background . guix-orange) (text . "Guile")
-               (color . white)))
+              ((background . catppuccin-mocha-peach) (text . "Guile")
+               (color . catppuccin-mocha-base)))
     (id . scheme-guile)))
 
 (define glyph-haskell-ghc910
-  `((sections ((background . badge-gray)
+  `((sections ((background . catppuccin-mocha-surface2)
                (text . "Haskell")
-               (color . white)
+               (color . catppuccin-mocha-text)
                (logo . lambda))
-              ((background . haskell-purple) (text . "GHC 9.10")
-               (color . white)))
+              ((background . catppuccin-mocha-mauve) (text . "GHC 9.10")
+               (color . catppuccin-mocha-base)))
     (id . haskell-ghc910)))
 
 (define glyph-gnu-make
-  `((sections ((background . badge-gray) (text . "GNU")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "GNU")
+               (color . catppuccin-mocha-text)
                (logo . gnu))
-              ((background . gnu-red) (text . "Make")
-               (color . white)))
+              ((background . catppuccin-mocha-red) (text . "Make")
+               (color . catppuccin-mocha-base)))
     (id . gnu-make)))
 
 (define glyph-maak
-  `((sections ((background . badge-gray) (text . "maak")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "maak")
+               (color . catppuccin-mocha-text)
                (logo . maak))
-              ((background . "#D9760F") (text . "tasks")
-               (color . black)))
+              ((background . catppuccin-mocha-peach) (text . "tasks")
+               (color . catppuccin-mocha-base)))
     (id . maak)))
 
 (define glyph-byggsteg
-  `((sections ((background . badge-gray) (text . "byggsteg")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "byggsteg")
+               (color . catppuccin-mocha-text)
                (logo . byggsteg))
-              ((background . "#2EA44F") (text . "CI/CD")
-               (color . white)))
+              ((background . catppuccin-mocha-green) (text . "CI/CD")
+               (color . catppuccin-mocha-base)))
     (id . byggsteg)))
 
 (define glyph-lucidplan
-  `((sections ((background . badge-gray) (text . "LucidPlan")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "LucidPlan")
+               (color . catppuccin-mocha-text)
                (logo . lucidplan))
-              ((background . "#2563EB") (text . "planning")
-               (color . white)))
+              ((background . catppuccin-mocha-blue) (text . "planning")
+               (color . catppuccin-mocha-base)))
     (id . lucidplan)))
 
 (define glyph-bewaking
-  `((sections ((background . badge-gray) (text . "bewaking")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "bewaking")
+               (color . catppuccin-mocha-text)
                (logo . bewaking))
-              ((background . "#334155") (text . "security")
-               (color . white)))
+              ((background . catppuccin-mocha-overlay2) (text . "security")
+               (color . catppuccin-mocha-base)))
     (id . bewaking)))
 
 (define glyph-hygguile
-  `((sections ((background . badge-gray) (text . "Hygguile")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "Hygguile")
+               (color . catppuccin-mocha-text)
                (logo . hygguile))
-              ((background . "#7C5A43") (text . "UI")
-               (color . white)))
+              ((background . catppuccin-mocha-rosewater) (text . "UI")
+               (color . catppuccin-mocha-base)))
     (id . hygguile)))
 
 (define glyph-veritas
-  `((sections ((background . badge-gray) (text . "Veritas")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "Veritas")
+               (color . catppuccin-mocha-text)
                (logo . veritas))
-              ((background . "#4338CA") (text . "testing")
-               (color . white)))
+              ((background . catppuccin-mocha-lavender) (text . "testing")
+               (color . catppuccin-mocha-base)))
     (id . veritas)))
 
 (define glyph-symbanta
-  `((sections ((background . badge-gray) (text . "Symbanta")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "Symbanta")
+               (color . catppuccin-mocha-text)
                (logo . symbanta))
-              ((background . "#A61E4D") (text . "analytics")
-               (color . white)))
+              ((background . catppuccin-mocha-pink) (text . "analytics")
+               (color . catppuccin-mocha-base)))
     (id . symbanta)))
 
 (define glyph-i18n-gnu-gettext
-  `((sections ((background . badge-gray) (text . "i18n")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "i18n")
+               (color . catppuccin-mocha-text)
                (logo . language))
-              ((background . gnu-red) (text . "GNU gettext")
-               (color . white)))
+              ((background . catppuccin-mocha-red) (text . "GNU gettext")
+               (color . catppuccin-mocha-base)))
     (id . i18n-gnu-gettext)))
 
 (define glyph-gnu-emacs
-  `((sections ((background . badge-gray) (text . "GNU")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "GNU")
+               (color . catppuccin-mocha-text)
                (logo . emacs))
-              ((background . emacs-magenta) (text . "Emacs")
-               (color . white)))
+              ((background . catppuccin-mocha-pink) (text . "Emacs")
+               (color . catppuccin-mocha-base)))
     (id . gnu-emacs)))
 
 (define glyph-gnu-emacs-single
-  `((sections ((background . badge-gray) (text . "GNU Emacs")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "GNU Emacs")
+               (color . catppuccin-mocha-text)
                (logo . emacs)))
     (id . gnu-emacs-single)))
 
 (define glyph-emacs-lisp
-  `((sections ((background . badge-gray) (text . "Emacs")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "Emacs")
+               (color . catppuccin-mocha-text)
                (logo . emacs))
-              ((background . emacs-magenta) (text . "Lisp")
-               (color . white)))
+              ((background . catppuccin-mocha-pink) (text . "Lisp")
+               (color . catppuccin-mocha-base)))
     (id . emacs-lisp)))
 
 (define glyph-license-gpl3+
-  `((sections ((background . badge-gray) (text . "license")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "license")
+               (color . catppuccin-mocha-text)
                (logo . scales))
-              ((background . license-steel) (text . "GPL v3+")
-               (color . white)))
+              ((background . catppuccin-mocha-overlay2) (text . "GPL v3+")
+               (color . catppuccin-mocha-base)))
     (id . license-gpl3+)))
 
 (define glyph-license-lgpl3+
-  `((sections ((background . badge-gray) (text . "license")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "license")
+               (color . catppuccin-mocha-text)
                (logo . scales))
-              ((background . license-steel) (text . "LGPL v3+")
-               (color . white)))
+              ((background . catppuccin-mocha-overlay2) (text . "LGPL v3+")
+               (color . catppuccin-mocha-base)))
     (id . license-lgpl3+)))
 
 (define glyph-license-agpl3+
-  `((sections ((background . badge-gray) (text . "license")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "license")
+               (color . catppuccin-mocha-text)
                (logo . scales))
-              ((background . license-steel) (text . "AGPL v3+")
-               (color . white)))
+              ((background . catppuccin-mocha-overlay2) (text . "AGPL v3+")
+               (color . catppuccin-mocha-base)))
     (id . license-agpl3+)))
 
 (define glyph-license-fdl13+
-  `((sections ((background . badge-gray) (text . "license")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "license")
+               (color . catppuccin-mocha-text)
                (logo . scales))
-              ((background . license-steel) (text . "GFDL v1.3+")
-               (color . white)))
+              ((background . catppuccin-mocha-overlay2) (text . "GFDL v1.3+")
+               (color . catppuccin-mocha-base)))
     (id . license-fdl13+)))
 
 (define glyph-shell-fish
-  `((sections ((background . badge-gray) (text . "Shell")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "Shell")
+               (color . catppuccin-mocha-text)
                (logo . hashtag))
-              ((background . success-green) (text . "Fish")
-               (color . white)))
+              ((background . catppuccin-mocha-green) (text . "Fish")
+               (color . catppuccin-mocha-base)))
     (id . shell-fish)))
 
 (define glyph-shell-bash
-  `((sections ((background . badge-gray) (text . "Shell")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "Shell")
+               (color . catppuccin-mocha-text)
                (logo . hashtag))
-              ((background . success-green) (text . "Bash")
-               (color . white)))
+              ((background . catppuccin-mocha-green) (text . "Bash")
+               (color . catppuccin-mocha-base)))
     (id . shell-bash)))
 
 (define glyph-shell-eshell
-  `((sections ((background . badge-gray) (text . "Shell")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "Shell")
+               (color . catppuccin-mocha-text)
                (logo . hashtag))
-              ((background . emacs-magenta) (text . "EShell")
-               (color . white)))
+              ((background . catppuccin-mocha-pink) (text . "EShell")
+               (color . catppuccin-mocha-base)))
     (id . shell-eshell)))
 
 (define glyph-gnu-artanis
-  `((sections ((background . badge-gray) (text . "GNU")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "GNU")
+               (color . catppuccin-mocha-text)
                (logo . lambda))
-              ((background . artanis-plum) (text . "Artanis")
-               (color . white)))
+              ((background . catppuccin-mocha-maroon) (text . "Artanis")
+               (color . catppuccin-mocha-base)))
     (id . gnu-artanis)))
 
 (define glyph-gnu-artanis-122
-  `((sections ((background . badge-gray) (text . "GNU")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "GNU")
+               (color . catppuccin-mocha-text)
                (logo . lambda)
                (font-weight . 900))
-              ((background . artanis-plum) (text . "Artanis")
-               (color . white)
+              ((background . catppuccin-mocha-maroon) (text . "Artanis")
+               (color . catppuccin-mocha-base)
                (font-weight . 900))
-              ((background . badge-gray) (text . "v1.2.2")
-               (color . white)
+              ((background . catppuccin-mocha-surface2) (text . "v1.2.2")
+               (color . catppuccin-mocha-text)
                (font-weight . 900)))
     (id . gnu-artanis-122)))
 
 (define glyph-css-tailwind4
-  `((sections ((background . badge-gray) (text . "CSS")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "CSS")
+               (color . catppuccin-mocha-text)
                (logo . paint))
-              ((background . tailwind-blue) (text . "Tailwind v4")
-               (color . graphite)))
+              ((background . catppuccin-mocha-sapphire) (text . "Tailwind v4")
+               (color . catppuccin-mocha-base)))
     (id . css-tailwind4)))
 
 (define glyph-scala-213
-  `((sections ((background . badge-gray) (text . "Scala")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "Scala")
+               (color . catppuccin-mocha-text)
                (logo . scala))
-              ((background . scala-red) (text . "v2.13")
-               (color . white)))
+              ((background . catppuccin-mocha-red) (text . "v2.13")
+               (color . catppuccin-mocha-base)))
     (id . scala-213)))
 
 (define glyph-jointhefreeworld-org
-  `((sections ((background . badge-gray) (text . "jointhefreeworld.org")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "jointhefreeworld.org")
+               (color . catppuccin-mocha-text)
                (logo . gear)))
     (id . jointhefreeworld-org)))
 
 
 (define glyph-sbt
-  `((sections ((background . badge-gray) (text . "build")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "build")
+               (color . catppuccin-mocha-text)
                (logo . gear))
-              ((background . scala-red) (text . "sbt")
-               (color . white)))
+              ((background . catppuccin-mocha-red) (text . "sbt")
+               (color . catppuccin-mocha-base)))
     (id . sbt)))
 
 (define glyph-rust-185+
-  `((sections ((background . badge-gray) (text . "Rust")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "Rust")
+               (color . catppuccin-mocha-text)
                (logo . rust))
-              ((background . rust-orange) (text . "1.85+")
-               (color . black)))
+              ((background . catppuccin-mocha-peach) (text . "1.85+")
+               (color . catppuccin-mocha-base)))
     (id . rust-185+)))
 
 (define glyph-cargo
-  `((sections ((background . badge-gray) (text . "build")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "build")
+               (color . catppuccin-mocha-text)
                (logo . rust))
-              ((background . rust-orange) (text . "cargo")
-               (color . black)))
+              ((background . catppuccin-mocha-peach) (text . "cargo")
+               (color . catppuccin-mocha-base)))
     (id . cargo)))
 
 (define glyph-justfile
-  `((sections ((background . badge-gray) (text . "Justfile")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "Justfile")
+               (color . catppuccin-mocha-text)
                (logo . gear)))
     (id . justfile)))
 
 (define glyph-env
-  `((sections ((background . badge-gray) (text . ".env")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . ".env")
+               (color . catppuccin-mocha-text)
                (logo . gear)))
     (id . env)))
 
 (define glyph-java-25
-  `((sections ((background . badge-gray) (text . "Java")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "Java")
+               (color . catppuccin-mocha-text)
                (logo . java))
-              ((background . java-red) (text . "OpenJDK 25")
-               (color . white)))
+              ((background . catppuccin-mocha-red) (text . "OpenJDK 25")
+               (color . catppuccin-mocha-base)))
     (id . java-25)))
 
 (define glyph-kotlin-2
-  `((sections ((background . badge-gray) (text . "Kotlin")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "Kotlin")
+               (color . catppuccin-mocha-text)
                (logo . code))
-              ((background . kotlin-purple) (text . "v2.0+")
-               (color . white)))
+              ((background . catppuccin-mocha-mauve) (text . "v2.0+")
+               (color . catppuccin-mocha-base)))
     (id . kotlin-2)))
 
 (define glyph-scala-3
-  `((sections ((background . badge-gray) (text . "Scala")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "Scala")
+               (color . catppuccin-mocha-text)
                (logo . scala))
-              ((background . scala3-red) (text . "v3.x")
-               (color . white)))
+              ((background . catppuccin-mocha-maroon) (text . "v3.x")
+               (color . catppuccin-mocha-base)))
     (id . scala-3)))
 
 (define glyph-build-gradle
-  `((sections ((background . badge-gray) (text . "build")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "build")
+               (color . catppuccin-mocha-text)
                (logo . gear))
-              ((background . gradle-teal) (text . "Gradle")
-               (color . white)))
+              ((background . catppuccin-mocha-teal) (text . "Gradle")
+               (color . catppuccin-mocha-base)))
     (id . build-gradle)))
 
 (define glyph-build-maven
-  `((sections ((background . badge-gray) (text . "build")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "build")
+               (color . catppuccin-mocha-text)
                (logo . gear))
-              ((background . maven-red) (text . "Maven")
-               (color . white)))
+              ((background . catppuccin-mocha-red) (text . "Maven")
+               (color . catppuccin-mocha-base)))
     (id . build-maven)))
 
 (define glyph-lisp-sbcl
-  `((sections ((background . badge-gray) (text . "Lisp")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "Lisp")
+               (color . catppuccin-mocha-text)
                (logo . lambda))
-              ((background . sbcl-orange) (text . "SBCL")
-               (color . white)))
+              ((background . catppuccin-mocha-maroon) (text . "SBCL")
+               (color . catppuccin-mocha-base)))
     (id . lisp-sbcl)))
 
 (define glyph-scheme-racket
-  `((sections ((background . badge-gray) (text . "Scheme")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "Scheme")
+               (color . catppuccin-mocha-text)
                (logo . lambda))
-              ((background . racket-blue) (text . "Racket")
-               (color . white)))
+              ((background . catppuccin-mocha-blue) (text . "Racket")
+               (color . catppuccin-mocha-base)))
     (id . scheme-racket)))
 
 (define glyph-clojure
-  `((sections ((background . badge-gray) (text . "Lisp")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "Lisp")
+               (color . catppuccin-mocha-text)
                (logo . lambda))
-              ((background . clojure-green) (text . "Clojure")
-               (color . white)))
+              ((background . catppuccin-mocha-green) (text . "Clojure")
+               (color . catppuccin-mocha-base)))
     (id . clojure)))
 
 (define glyph-emacs-org
-  `((sections ((background . badge-gray) (text . "Emacs")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "Emacs")
+               (color . catppuccin-mocha-text)
                (logo . emacs))
-              ((background . org-green) (text . "Org-mode")
-               (color . white)))
+              ((background . catppuccin-mocha-teal) (text . "Org-mode")
+               (color . catppuccin-mocha-base)))
     (id . emacs-org)))
 
 (define glyph-emacs-magit
-  `((sections ((background . badge-gray) (text . "Emacs")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "Emacs")
+               (color . catppuccin-mocha-text)
                (logo . emacs))
-              ((background . magit-red) (text . "Magit")
-               (color . white)))
+              ((background . catppuccin-mocha-red) (text . "Magit")
+               (color . catppuccin-mocha-base)))
     (id . emacs-magit)))
 
 (define glyph-dev-docker
-  `((sections ((background . badge-gray) (text . "Docker")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "Docker")
+               (color . catppuccin-mocha-text)
                (logo . cube))
-              ((background . docker-blue) (text . "ready")
-               (color . white)))
+              ((background . catppuccin-mocha-blue) (text . "ready")
+               (color . catppuccin-mocha-base)))
     (id . dev-docker)))
 
 (define glyph-nix-flake
-  `((sections ((background . badge-gray) (text . "Nix")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "Nix")
+               (color . catppuccin-mocha-text)
                (logo . snowflake))
-              ((background . nix-blue) (text . "flake")
-               (color . white)))
+              ((background . catppuccin-mocha-sapphire) (text . "flake")
+               (color . catppuccin-mocha-base)))
     (id . nix-flake)))
 
 (define glyph-lang-c
-  `((sections ((background . badge-gray) (text . "C")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "C")
+               (color . catppuccin-mocha-text)
                (logo . code))
-              ((background . gcc-blue) (text . "17")
-               (color . white)))
+              ((background . catppuccin-mocha-blue) (text . "17")
+               (color . catppuccin-mocha-base)))
     (id . lang-c)))
 
 (define glyph-gtk4
-  `((sections ((background . badge-gray) (text . "GTK")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "GTK")
+               (color . catppuccin-mocha-text)
                (logo . gear))
-              ((background . gtk-blue) (text . "v4")
-               (color . white)))
+              ((background . catppuccin-mocha-blue) (text . "v4")
+               (color . catppuccin-mocha-base)))
     (id . gtk4)))
 
 (define glyph-build-meson
-  `((sections ((background . badge-gray) (text . "build")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "build")
+               (color . catppuccin-mocha-text)
                (logo . gear))
-              ((background . meson-teal) (text . "Meson")
-               (color . white)))
+              ((background . catppuccin-mocha-teal) (text . "Meson")
+               (color . catppuccin-mocha-base)))
     (id . build-meson)))
+
+(define glyph-lang-python
+  `((sections ((background . catppuccin-mocha-surface2) (text . "Python")
+               (color . catppuccin-mocha-text)
+               (logo . python))
+              ((background . catppuccin-mocha-blue) (text . "3.13")
+               (color . catppuccin-mocha-base)))
+    (id . lang-python)))
+
+(define glyph-lang-go
+  `((sections ((background . catppuccin-mocha-surface2) (text . "Go")
+               (color . catppuccin-mocha-text)
+               (logo . go))
+              ((background . catppuccin-mocha-sky) (text . "1.24")
+               (color . catppuccin-mocha-base)))
+    (id . lang-go)))
+
+(define glyph-build-cmake
+  `((sections ((background . catppuccin-mocha-surface2) (text . "build")
+               (color . catppuccin-mocha-text)
+               (logo . cmake))
+              ((background . catppuccin-mocha-blue) (text . "CMake")
+               (color . catppuccin-mocha-base)))
+    (id . build-cmake)))
+
+(define glyph-pkg-homebrew
+  `((sections ((background . catppuccin-mocha-surface2) (text . "pkg")
+               (color . catppuccin-mocha-text)
+               (logo . homebrew))
+              ((background . catppuccin-mocha-yellow) (text . "Homebrew")
+               (color . catppuccin-mocha-base)))
+    (id . pkg-homebrew)))
+
+(define glyph-ci-buildkite
+  `((sections ((background . catppuccin-mocha-surface2) (text . "CI")
+               (color . catppuccin-mocha-text)
+               (logo . buildkite))
+              ((background . catppuccin-mocha-green) (text . "Buildkite")
+               (color . catppuccin-mocha-base)))
+    (id . ci-buildkite)))
+
+(define glyph-ci-drone
+  `((sections ((background . catppuccin-mocha-surface2) (text . "CI")
+               (color . catppuccin-mocha-text)
+               (logo . drone))
+              ((background . catppuccin-mocha-sky) (text . "Drone")
+               (color . catppuccin-mocha-base)))
+    (id . ci-drone)))
+
+(define glyph-ci-travis
+  `((sections ((background . catppuccin-mocha-surface2) (text . "CI")
+               (color . catppuccin-mocha-text)
+               (logo . travisci))
+              ((background . catppuccin-mocha-maroon) (text . "Travis CI")
+               (color . catppuccin-mocha-base)))
+    (id . ci-travis)))
+
+(define glyph-test-jest
+  `((sections ((background . catppuccin-mocha-surface2) (text . "test")
+               (color . catppuccin-mocha-text)
+               (logo . jest))
+              ((background . catppuccin-mocha-red) (text . "Jest")
+               (color . catppuccin-mocha-base)))
+    (id . test-jest)))
+
+(define glyph-test-vitest
+  `((sections ((background . catppuccin-mocha-surface2) (text . "test")
+               (color . catppuccin-mocha-text)
+               (logo . vitest))
+              ((background . catppuccin-mocha-green) (text . "Vitest")
+               (color . catppuccin-mocha-base)))
+    (id . test-vitest)))
+
+(define glyph-test-pytest
+  `((sections ((background . catppuccin-mocha-surface2) (text . "test")
+               (color . catppuccin-mocha-text)
+               (logo . pytest))
+              ((background . catppuccin-mocha-sky) (text . "pytest")
+               (color . catppuccin-mocha-base)))
+    (id . test-pytest)))
+
+(define glyph-lint-eslint
+  `((sections ((background . catppuccin-mocha-surface2) (text . "lint")
+               (color . catppuccin-mocha-text)
+               (logo . eslint))
+              ((background . catppuccin-mocha-lavender) (text . "ESLint")
+               (color . catppuccin-mocha-base)))
+    (id . lint-eslint)))
+
+(define glyph-fmt-prettier
+  `((sections ((background . catppuccin-mocha-surface2) (text . "format")
+               (color . catppuccin-mocha-text)
+               (logo . prettier))
+              ((background . catppuccin-mocha-yellow) (text . "Prettier")
+               (color . catppuccin-mocha-base)))
+    (id . fmt-prettier)))
+
+(define glyph-db-postgresql
+  `((sections ((background . catppuccin-mocha-surface2) (text . "db")
+               (color . catppuccin-mocha-text)
+               (logo . postgresql))
+              ((background . catppuccin-mocha-blue) (text . "PostgreSQL")
+               (color . catppuccin-mocha-base)))
+    (id . db-postgresql)))
+
+(define glyph-db-sqlite
+  `((sections ((background . catppuccin-mocha-surface2) (text . "db")
+               (color . catppuccin-mocha-text)
+               (logo . sqlite))
+              ((background . catppuccin-mocha-sapphire) (text . "SQLite")
+               (color . catppuccin-mocha-base)))
+    (id . db-sqlite)))
+
+(define glyph-db-redis
+  `((sections ((background . catppuccin-mocha-surface2) (text . "db")
+               (color . catppuccin-mocha-text)
+               (logo . redis))
+              ((background . catppuccin-mocha-red) (text . "Redis")
+               (color . catppuccin-mocha-base)))
+    (id . db-redis)))
+
+(define glyph-deploy-kubernetes
+  `((sections ((background . catppuccin-mocha-surface2) (text . "deploy")
+               (color . catppuccin-mocha-text)
+               (logo . kubernetes))
+              ((background . catppuccin-mocha-blue) (text . "Kubernetes")
+               (color . catppuccin-mocha-base)))
+    (id . deploy-kubernetes)))
+
+(define glyph-infra-terraform
+  `((sections ((background . catppuccin-mocha-surface2) (text . "infra")
+               (color . catppuccin-mocha-text)
+               (logo . terraform))
+              ((background . catppuccin-mocha-mauve) (text . "Terraform")
+               (color . catppuccin-mocha-base)))
+    (id . infra-terraform)))
+
+(define glyph-web-nginx
+  `((sections ((background . catppuccin-mocha-surface2) (text . "server")
+               (color . catppuccin-mocha-text)
+               (logo . nginx))
+              ((background . catppuccin-mocha-green) (text . "NGINX")
+               (color . catppuccin-mocha-base)))
+    (id . web-nginx)))
+
+(define glyph-shell-zsh
+  `((sections ((background . catppuccin-mocha-surface2) (text . "Shell")
+               (color . catppuccin-mocha-text)
+               (logo . zsh))
+              ((background . catppuccin-mocha-peach) (text . "Zsh")
+               (color . catppuccin-mocha-base)))
+    (id . shell-zsh)))
+
+(define glyph-docs-markdown
+  `((sections ((background . catppuccin-mocha-surface2) (text . "docs")
+               (color . catppuccin-mocha-text)
+               (logo . markdown))
+              ((background . catppuccin-mocha-overlay2) (text . "Markdown")
+               (color . catppuccin-mocha-base)))
+    (id . docs-markdown)))
 
 (define ggg-glyphs
   (list glyph-pipeline-succeeded
@@ -448,4 +619,27 @@
         glyph-build-meson
         glyph-gtk4
         glyph-lang-c
-        glyph-env))
+        glyph-env
+        ;; Languages, builds, packages and CI
+        glyph-lang-python
+        glyph-lang-go
+        glyph-build-cmake
+        glyph-pkg-homebrew
+        glyph-ci-buildkite
+        glyph-ci-drone
+        glyph-ci-travis
+        ;; Tests, linting and formatting
+        glyph-test-jest
+        glyph-test-vitest
+        glyph-test-pytest
+        glyph-lint-eslint
+        glyph-fmt-prettier
+        ;; Data, deployment, servers and docs
+        glyph-db-postgresql
+        glyph-db-sqlite
+        glyph-db-redis
+        glyph-deploy-kubernetes
+        glyph-infra-terraform
+        glyph-web-nginx
+        glyph-shell-zsh
+        glyph-docs-markdown))

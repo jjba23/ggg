@@ -23,6 +23,7 @@
   #:use-module (ice-9 textual-ports)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-13)
+  #:use-module (ggg colors)
   #:use-module (ggg glyph)
   #:use-module (ggg logo)
   #:use-module (ggg prelude)
@@ -225,35 +226,50 @@ quotes readable in a double-quoted attribute."
             (else (string character))))
         (string->list (format #f "~a" text)))))
 
-(define gallery-style "
+(define (palette-css template)
+  "TEMPLATE with each @name@ replaced by that Catppuccin mocha color, so the
+gallery is painted with the same palette as the badges."
+  (regexp-substitute/global
+   #f "@([a-z0-9]+)@"
+   template
+   'pre
+   (lambda (match)
+     (resolve-color
+      (string->symbol
+       (format #f "catppuccin-mocha-~a" (match:substring match 1)))))
+   'post))
+
+(define (gallery-style)
+  "The gallery stylesheet, colored from the Catppuccin mocha palette."
+  (palette-css "
   :root { color-scheme: dark; }
   * { box-sizing: border-box; }
   body {
     margin: 0; padding: 2rem 1.5rem 4rem;
     font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-    background: #14181d; color: #e9edf2;
+    background: @base@; color: @text@;
   }
   header { max-width: 76rem; margin: 0 auto 1.5rem; }
   h1 { margin: 0 0 .4rem; font-size: 1.7rem; }
-  p.lede { margin: 0 0 1rem; color: #a9b3bf; max-width: 48rem; line-height: 1.5; }
+  p.lede { margin: 0 0 1rem; color: @subtext0@; max-width: 48rem; line-height: 1.5; }
   .toolbar { display: flex; gap: .8rem; flex-wrap: wrap; align-items: center; }
   input[type=search] {
     padding: .5rem .7rem; min-width: 16rem; border-radius: .4rem;
-    border: 1px solid #39414b; background: #1b2128; color: inherit; font-size: .95rem;
+    border: 1px solid @surface1@; background: @mantle@; color: inherit; font-size: .95rem;
   }
-  .count { color: #a9b3bf; font-size: .9rem; }
+  .count { color: @subtext0@; font-size: .9rem; }
 
   .badge-group { max-width: 76rem; margin: 2rem auto 0; }
   .badge-group h2, h2.section-heading { font-size: 1.1rem; margin: 0 0 .9rem; }
   h2.section-heading { max-width: 76rem; margin: 2.6rem auto .9rem; }
-  .meta { font-weight: 400; color: #7f8b98; font-size: .85rem; margin-left: .35rem; }
+  .meta { font-weight: 400; color: @overlay1@; font-size: .85rem; margin-left: .35rem; }
   .badge-grid {
     display: grid; gap: .8rem; align-items: start;
     grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
   }
   figure.badge-tile {
     margin: 0; padding: .85rem .7rem .65rem; border-radius: .6rem;
-    background: #1b2128; border: 1px solid #262d36;
+    background: @mantle@; border: 1px solid @surface0@;
     display: flex; flex-direction: column; gap: .55rem; align-items: center;
     min-width: 0;
   }
@@ -271,41 +287,41 @@ quotes readable in a double-quoted attribute."
   }
   figure.tile {
     margin: 0; padding: .9rem .7rem .7rem; border-radius: .6rem;
-    background: #1b2128; border: 1px solid #262d36;
+    background: @mantle@; border: 1px solid @surface0@;
     display: flex; flex-direction: column; gap: .6rem; align-items: center;
   }
   figure.tile[hidden] { display: none; }
   .preview {
     width: 4.5rem; height: 4.5rem; border-radius: .5rem;
-    background: #555555; display: flex; align-items: center; justify-content: center;
+    background: @surface2@; display: flex; align-items: center; justify-content: center;
   }
   .preview svg { width: 3rem; height: 3rem; }
   figcaption { text-align: center; width: 100%; }
   .name {
     display: block; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: .85rem; color: #ffffff; overflow-wrap: anywhere;
+    font-size: .85rem; color: @text@; overflow-wrap: anywhere;
   }
-  .title { display: block; font-size: .74rem; color: #97a2ae; margin-top: .15rem; }
+  .title { display: block; font-size: .74rem; color: @overlay1@; margin-top: .15rem; }
   button.snippet {
     display: block; margin: .4rem auto 0; padding: .16rem .4rem;
-    font-size: .68rem; color: #7f8b98; cursor: pointer;
+    font-size: .68rem; color: @overlay1@; cursor: pointer;
     background: transparent; border: 1px solid transparent; border-radius: .3rem;
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   }
-  button.snippet:hover { color: #cfe0f5; border-color: #39414b; background: #232b34; }
-  button.snippet:focus-visible { outline: 2px solid #80aadf; outline-offset: 1px; }
+  button.snippet:hover { color: @lavender@; border-color: @surface1@; background: @surface0@; }
+  button.snippet:focus-visible { outline: 2px solid @lavender@; outline-offset: 1px; }
   .toast {
     position: fixed; left: 50%; bottom: 1.4rem; z-index: 10;
     transform: translate(-50%, .8rem); opacity: 0; pointer-events: none;
     padding: .55rem .9rem; border-radius: .45rem; font-size: .85rem;
-    background: #2b3540; color: #e9edf2; border: 1px solid #3d4854;
+    background: @surface0@; color: @text@; border: 1px solid @surface1@;
     box-shadow: 0 6px 24px rgba(0, 0, 0, .35);
     transition: opacity .18s ease, transform .18s ease;
   }
   .toast.show { opacity: 1; transform: translate(-50%, 0); }
-  footer { max-width: 76rem; margin: 2.5rem auto 0; color: #7f8b98; font-size: .85rem; }
-  a { color: #80aadf; }
-")
+  footer { max-width: 76rem; margin: 2.5rem auto 0; color: @overlay1@; font-size: .85rem; }
+  a { color: @sapphire@; }
+"))
 
 (define gallery-script "
   const input = document.querySelector('input[type=search]');
@@ -398,8 +414,8 @@ quotes readable in a double-quoted attribute."
        "<code>(logo . name)</code>. See <code>CREDITS.org</code> "
        "for where each logo comes from.")
       (format #f
-              "Every badge from ~a glyph file~a, rendered at its real size and with \
-its real colors, followed by all ~a logos that ggg ships. Use a logo in a \
+              "Every badge from ~a glyph file~a, rendered at its real size with the \
+theme colors it asks for, followed by all ~a logos that ggg ships. Use a logo in a \
 glyph file with <code>(logo . name)</code>. See \
 <code>CREDITS.org</code> for where each logo comes from."
               glyph-file-count
@@ -459,7 +475,7 @@ logo in RESOURCES with its name."
 </html>
 "
             (html-escape title)
-            gallery-style
+            (gallery-style)
             (html-escape title)
             (gallery-lede badge-count (length glyph-groups) logo-count)
             summary

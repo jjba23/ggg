@@ -23,8 +23,8 @@ Say hello to the *Guile Glyph Generator (GGG)*, a small but mighty tool crafted 
 
 Based on the provided Lisp configuration, GGG will produce something like the following badges (one, two, three or more parts) (as both SVG and PNG files).
 
-[[./dist/haskell-ghc910.svg]] [[./dist/gnu-emacs.svg]]  [[./dist/pipeline-succeeded.svg]] [[./dist/scala-213.svg]]  [[./dist/shell-fish.svg]]  [[./dist/shell-eshell.svg]]
-[[./dist/css-tailwind4.svg]]  [[./dist/gnu-artanis.svg]] [[./dist/gnu-emacs-single.svg]] [[./dist/gnu-artanis-122.svg]] [[./dist/i18n-gnu-gettext.svg]]
+[[./dist/lang-python.svg]] [[./dist/lang-go.svg]] [[./dist/test-jest.svg]] [[./dist/ci-buildkite.svg]] [[./dist/db-postgresql.svg]] [[./dist/deploy-kubernetes.svg]]
+[[./dist/gnu-artanis-122.svg]] [[./dist/pipeline-succeeded.svg]] [[./dist/gnu-emacs-single.svg]] [[./dist/css-tailwind4.svg]] [[./dist/docs-markdown.svg]] [[./dist/fmt-prettier.svg]]
 
 
 ----------
@@ -38,7 +38,7 @@ The SVG (Scalable Vector Graphics) can then be easily converted without quality 
 -  Vector Graphics (SVG) :: Generates crisp and scalable SVG images, perfect for any screen resolution.
 -  Raster Images (PNG) :: Also produces PNG versions for broader compatibility.
 -  Highly Customizable :: Customize the text, background colors, text colors, logos, etc.
--  Named Colors :: Use readable names (~badge-gray~, ~guix-yellow~, ~emacs-magenta~, ...) instead of raw hex codes.
+-  Theme Colors :: Every color of Catppuccin (mocha, macchiato, frappé, latte), Doom (~doom-one~, ~doom-one-light~), Dracula (~dracula~, ~dracula-alucard~), Solarized (dark, light) and Modus (~modus-operandi~, ~modus-vivendi~) is available as a named color such as ~catppuccin-mocha-red~, instead of raw hex codes.
 -  Full SVG Logos :: Save logos as complete ~<svg>~ elements, allowing multiple paths, groups and gradients.
 -  Logo Library :: Ships hundreds of ready-to-use logos, browsable in a generated gallery page.
 -  Helpful Errors :: Invalid glyph files are reported with actionable messages before anything is generated.
@@ -70,11 +70,11 @@ Defining your glyphs is simple and only requires very basic knowledge of Lisp/Sc
 
 #+begin_src scheme
 (define my-scheme-guile-glyph
-  `((sections ((background . badge-gray) (text . "Scheme")
-               (color . white)
+  `((sections ((background . catppuccin-mocha-surface2) (text . "Scheme")
+               (color . catppuccin-mocha-text)
                (logo . lambda))
-              ((background . guix-orange) (text . "Guile")
-               (color . white)))
+              ((background . catppuccin-mocha-peach) (text . "Guile")
+               (color . catppuccin-mocha-base)))
     (id . scheme-guile)))
 
 #+end_src
@@ -90,25 +90,43 @@ Then to ensure that ggg will read your glyphs from the file, you need to export 
 
 ** Colors
 
-Backgrounds and text colors can be written as raw hex strings (e.g. ~"#555"~) or as names from the built-in palette, which is easier to read and typo-proof:
+Backgrounds and text colors are names taken from the palettes of five theme families, or raw hex strings (e.g. ~"#555"~) for one-off colors. Every name is qualified with its theme, so it always means the same thing: ~<theme>-<color>~.
 
 #+begin_src scheme
-(background . badge-gray)    ;; #555, the usual first-section background
-(background . guix-yellow)   ;; #FFBF01
-(background . emacs-magenta) ;; #c4609e
-(color . white)              ;; #fff
+(background . catppuccin-mocha-surface2) ;; #585b70, the neutral first-section background
+(background . catppuccin-mocha-yellow)   ;; #f9e2af
+(background . catppuccin-mocha-pink)     ;; #f5c2e7
+(color . catppuccin-mocha-text)          ;; #cdd6f4
 #+end_src
 
-Run ~ggg --list-colors~ to see every available name. Hex strings are still validated, so ~"#ggg"~ or ~"#12345"~ are rejected with a message instead of producing a broken badge.
+| Theme family | Themes                                                                               |
+|--------------+--------------------------------------------------------------------------------------|
+| Catppuccin   | ~catppuccin-mocha~, ~catppuccin-macchiato~, ~catppuccin-frappe~, ~catppuccin-latte~   |
+| Doom         | ~doom-one~, ~doom-one-light~                                                         |
+| Dracula      | ~dracula~, ~dracula-alucard~                                                         |
+| Solarized    | ~solarized-dark~, ~solarized-light~                                                  |
+| Modus        | ~modus-operandi~, ~modus-vivendi~                                                    |
+
+Each theme keeps its own color vocabulary, so names feel native to the theme you picked:
+
+- Catppuccin :: ~rosewater~, ~flamingo~, ~pink~, ~mauve~, ~red~, ~maroon~, ~peach~, ~yellow~, ~green~, ~teal~, ~sky~, ~sapphire~, ~blue~, ~lavender~, plus the shades ~text~, ~subtext1~, ~subtext0~, ~overlay2~, ~overlay1~, ~overlay0~, ~surface2~, ~surface1~, ~surface0~, ~base~, ~mantle~, ~crust~.
+- Doom :: ~bg~, ~bg-alt~, ~base0~ to ~base8~, ~fg~, ~fg-alt~, ~grey~, ~red~, ~orange~, ~green~, ~teal~, ~yellow~, ~blue~, ~dark-blue~, ~magenta~, ~violet~, ~cyan~, ~dark-cyan~.
+- Dracula :: ~background~, ~current-line~, ~foreground~, ~comment~, ~cyan~, ~green~, ~orange~, ~pink~, ~purple~, ~red~, ~yellow~.
+- Solarized :: ~base03~ to ~base3~, ~yellow~, ~orange~, ~red~, ~magenta~, ~violet~, ~blue~, ~cyan~, ~green~.
+- Modus :: ~bg-main~, ~bg-dim~, ~bg-active~, ~bg-inactive~, ~fg-main~, ~fg-dim~, ~fg-active~, ~fg-alt~, ~red~, ~green~, ~yellow~, ~blue~, ~magenta~, ~cyan~.
+
+Run ~ggg --list-colors~ to print every name (236 of them) with its hex value, grouped by theme. Hex strings keep working and are still validated, so ~"#ggg"~ or ~"#12345"~ are rejected with a message instead of producing a broken badge.
+
+A practical note on contrast: the Catppuccin accents are light, so text drawn on top of one reads best in ~base~ (or ~crust~), while the neutral ~surface2~ label section pairs with ~text~. That is exactly what the shipped glyph files do, and both of them are a good starting point to copy from.
 
 ** Logos
 
 Logos are full SVG documents stored as ~resources/logos/<name>.svg~ and are referenced by name:
 
 #+begin_src scheme
-(sections ((background . badge-gray)
+(sections ((background . catppuccin-mocha-surface2)
            (text . "Project")
-           (color . white)
+           (color . catppuccin-mocha-text)
            (logo . sparkle)))
 #+end_src
 
@@ -155,14 +173,18 @@ ggg --gallery ./test/gallery.html --glyphs ./glyphs
 
 ** The badge showcase
 
-~glyphs/showcase.scm~ is a second glyph file that ships one ready-made badge for each of the most popular logos in the library, grouped by what the project is (languages, web frameworks, databases, infrastructure, cloud, observability, distributions, editors, shells, AI, testing, media, chat). Every badge reads ~<logo> Name | category~, uses the project's brand color for the second section, and chooses black or white text, whichever contrasts more with that color.
+~glyphs/showcase.scm~ ships one ready-made badge per popular logo in the library: 157 badges grouped by what the project is (languages, web frameworks and APIs, databases and queues, infrastructure, security and networking, cloud, git, observability, distributions, editors, shells, AI, testing, media, chat). Every badge reads ~<logo> Name | category~; its second section takes the Catppuccin mocha accent closest to the project's own hue (blue stays ~blue~, orange becomes ~peach~, black brands use the neutral ~overlay2~) and draws its text in ~base~.
 
 #+begin_src scheme
 (define glyph-postgresql
-  (badge 'postgresql "PostgreSQL" 'postgresql "database" "#4169E1"))
+  (badge 'postgresql "PostgreSQL" 'postgresql "database" 'blue))
 #+end_src
 
-These badges are part of ~dist/~, and the gallery shows them next to the badges of ~glyphs/jjba23.scm~. Because ggg clears its destination directory, the second file has to be rendered with ~-k~ / ~--keep~:
+The ~badge~ helper qualifies that accent with the theme, so the whole file follows one palette: switching flavor is a matter of changing the prefix in one place.
+
+~glyphs/jjba23.scm~ is the other half of the pair: 68 badges for the things a project ticks off one by one -- language and tool versions (~lang-python~, ~lang-go~, ~haskell-ghc910~, ~rust-185+~), build and package tooling (~build-cmake~, ~build-meson~, ~pkg-homebrew~), CI (~ci-buildkite~, ~ci-drone~, ~pipeline-succeeded~), tests, linting and formatting (~test-jest~, ~test-pytest~, ~lint-eslint~, ~fmt-prettier~), data and deployment (~db-postgresql~, ~db-redis~, ~deploy-kubernetes~, ~infra-terraform~), shells, editors, licenses, and the project badges of the tools ggg is built with.
+
+Both files are part of ~dist/~, and the gallery shows them next to each other. Because ggg clears its destination directory, the second file has to be rendered with ~-k~ / ~--keep~:
 
 #+begin_src shell
 maak run            # renders both glyph files into ./dist
@@ -194,7 +216,7 @@ You can see the program's help by invoking it with the ~--help~ argument or look
 
 Useful helpers while working on glyphs:
 
-- ~ggg --list-colors~ :: list the named colors available to glyph files.
+- ~ggg --list-colors~ :: list every theme color available to glyph files, grouped by theme.
 - ~ggg --list-logos~ :: list the logos found in the resources directory.
 - ~ggg --gallery FILE [--glyphs PATH]~ :: write an HTML gallery of every badge and logo (see [[./test/gallery.html][test/gallery.html]]).
 - ~ggg -k~ / ~--keep~ :: render a second glyph file into a destination directory without clearing it first.

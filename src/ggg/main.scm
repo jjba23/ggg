@@ -291,7 +291,7 @@ USAGE: ggg [OPTIONS]
     -c, --convert            also write PNGs (ImageMagick or Inkscape)
     -k, --keep               keep the files already in the destination
     -r, --resources DIR      directory containing the logos/ directory
-        --list-colors        show the named badge colors
+        --list-colors        show every named color, grouped by theme
         --list-logos         show the available logos
         --gallery FILE       write an HTML gallery of every logo
         --glyphs PATH        glyph file or directory to show in --gallery
@@ -307,19 +307,22 @@ See resources/help.txt or the README for details.\n")
         (display short-help))))
 
 (define (print-colors)
-  (let* ((entries (sort (map (lambda (entry)
-                               (cons (symbol->string (car entry)) (cdr entry)))
-                             named-colors)
-                         (lambda (a b) (string<? (car a) (car b)))))
-         (width (apply max (map (lambda (entry)
-                                  (string-length (car entry)))
-                                entries))))
-    (display "Named badge colors:\n")
-    (for-each (lambda (entry)
-                (display (format #f "  ~a  ~a\n"
-                                 (string-pad-right (car entry) width)
-                                 (cdr entry))))
-              entries)))
+  (display "Theme colors, grouped by theme:\n")
+  (for-each
+   (lambda (theme-colors)
+     (let* ((theme (car theme-colors))
+            (entries (cdr theme-colors))
+            (width (apply max (map (lambda (entry)
+                                     (string-length (car entry)))
+                                   entries))))
+       (newline)
+       (display (format #f "~a (~a colors):\n" theme (length entries)))
+       (for-each (lambda (entry)
+                   (display (format #f "  ~a  ~a\n"
+                                    (string-pad-right (car entry) width)
+                                    (cdr entry))))
+                 entries)))
+   (colors-by-theme)))
 
 (define* (print-logos #:key resources)
   (let ((names (logo-names #:resources resources)))

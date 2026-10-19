@@ -80,9 +80,42 @@ creating a literal #f/ directory in the project root when TMPDIR is unset."
 ;; ====== Named colors ======
 
 (test-group "colors"
-  (test-equal "palette names resolve to hex values"
-    "#555"
-    (resolve-color 'badge-gray))
+  (test-equal "catppuccin colors resolve to their hex values"
+    "#f38ba8"
+    (resolve-color 'catppuccin-mocha-red))
+  (test-equal "every theme family is available"
+    '(catppuccin-mocha catppuccin-macchiato catppuccin-frappe catppuccin-latte
+      doom-one doom-one-light dracula dracula-alucard
+      solarized-dark solarized-light modus-operandi modus-vivendi)
+    (theme-names))
+  (test-equal "doom colors resolve to their hex values"
+    "#51afef"
+    (resolve-color 'doom-one-blue))
+  (test-equal "dracula colors resolve to their hex values"
+    "#bd93f9"
+    (resolve-color 'dracula-purple))
+  (test-equal "solarized colors resolve to their hex values"
+    "#fdf6e3"
+    (resolve-color 'solarized-light-base3))
+  (test-equal "modus colors resolve to their hex values"
+    "#44bc44"
+    (resolve-color 'modus-vivendi-green))
+  (test-assert "every color is named after its theme"
+    (every (lambda (theme)
+             (every (lambda (name)
+                      (string-prefix? (string-append (symbol->string theme) "-")
+                                      (symbol->string name)))
+                    (theme-color-names theme)))
+           (theme-names)))
+  (test-equal "no two themes share a color name"
+    (length named-colors)
+    (length (delete-duplicates (map car named-colors))))
+  (test-assert "every palette color is a valid color"
+    (every (lambda (entry) (not (color-error (cdr entry))))
+           named-colors))
+  (test-equal "colors are grouped by theme for display"
+    (map symbol->string (theme-names))
+    (map car (colors-by-theme)))
   (test-equal "hex strings pass through"
     "#abcdef"
     (resolve-color "#abcdef"))
@@ -92,8 +125,11 @@ creating a literal #f/ directory in the project root when TMPDIR is unset."
     (color-error "#12345"))
   (test-assert "unknown color names are reported"
     (color-error 'not-a-color))
+  (test-assert "colors without a theme are not accepted"
+    (color-error 'red))
   (test-assert "unknown color names get a suggestion"
-    (string-contains (color-error 'guix-yelow) "guix-yellow"))
+    (string-contains (color-error 'catppuccin-mocha-surfce2)
+                     "catppuccin-mocha-surface2"))
   (test-assert "error messages can carry a context"
     (string-contains (color-error 'nope #:context "glyph 'x', section 1")
                      "glyph 'x', section 1")))
@@ -166,17 +202,17 @@ creating a literal #f/ directory in the project root when TMPDIR is unset."
 ;; ====== Glyph validation ======
 
 (define valid-glyph
-  `((sections ((background . badge-gray)
+  `((sections ((background . catppuccin-mocha-surface2)
                (text . "Scheme")
-               (color . white)
+               (color . catppuccin-mocha-text)
                (logo . lambda))
-              ((background . guix-orange) (text . "Guile") (color . white)))
+              ((background . catppuccin-mocha-peach) (text . "Guile") (color . catppuccin-mocha-text)))
     (id . scheme-guile-test)))
 
 (define broken-glyph
   `((sections ((background . not-a-color)
                (text . "Broken")
-               (color . white)
+               (color . catppuccin-mocha-text)
                (logo . no-such-logo)))
     (id . broken-test)
     (height . tall)))
@@ -202,17 +238,17 @@ creating a literal #f/ directory in the project root when TMPDIR is unset."
     (any (lambda (problem) (string-contains problem "(background . value)"))
          (validate-glyph `((sections ((background "#555")
                                       (text . "x")
-                                      (color . white)))
+                                      (color . catppuccin-mocha-text)))
                            (id . malformed))
                          #:resources resources)))
 
   (test-equal "badges may have more than three sections"
     '()
-    (validate-glyph `((sections ((background . badge-gray) (text . "1") (color . white))
-                                ((background . badge-gray) (text . "2") (color . white))
-                                ((background . badge-gray) (text . "3") (color . white))
-                                ((background . badge-gray) (text . "4") (color . white))
-                                ((background . badge-gray) (text . "5") (color . white)))
+    (validate-glyph `((sections ((background . catppuccin-mocha-surface2) (text . "1") (color . catppuccin-mocha-text))
+                                ((background . catppuccin-mocha-surface2) (text . "2") (color . catppuccin-mocha-text))
+                                ((background . catppuccin-mocha-surface2) (text . "3") (color . catppuccin-mocha-text))
+                                ((background . catppuccin-mocha-surface2) (text . "4") (color . catppuccin-mocha-text))
+                                ((background . catppuccin-mocha-surface2) (text . "5") (color . catppuccin-mocha-text)))
                       (id . five))
                     #:resources resources))
 
@@ -222,15 +258,15 @@ creating a literal #f/ directory in the project root when TMPDIR is unset."
 
   (test-assert "missing text labels are reported"
     (any (lambda (problem) (string-contains problem "missing a text label"))
-         (validate-glyph `((sections ((background . badge-gray) (color . white)))
+         (validate-glyph `((sections ((background . catppuccin-mocha-surface2) (color . catppuccin-mocha-text)))
                            (id . no-text))
                          #:resources resources)))
 
   (test-assert "ids that cannot be file names are reported"
     (any (lambda (problem) (string-contains problem "cannot be used as a file name"))
-         (validate-glyph `((sections ((background . badge-gray)
+         (validate-glyph `((sections ((background . catppuccin-mocha-surface2)
                                       (text . "x")
-                                      (color . white)))
+                                      (color . catppuccin-mocha-text)))
                            (id . "../escape"))
                          #:resources resources)))
 
@@ -245,12 +281,12 @@ creating a literal #f/ directory in the project root when TMPDIR is unset."
 
 (test-group "rendering"
   (let* ((xml (sxml->string* (mk-glyph valid-glyph #:resources resources))))
-    ;; The badge is rendered from the glyph defined above, using named colors,
-    ;; a named logo and defaults for every other setting.
-    (test-assert "named colors are resolved to hex values"
-      (and (string-contains xml "fill=\"#555\"")
-           (string-contains xml "fill=\"#d0730f\"")
-           (string-contains xml "fill=\"#fff\"")))
+    ;; The badge is rendered from the glyph defined above, using named theme
+    ;; colors, a named logo and defaults for every other setting.
+    (test-assert "theme colors are resolved to hex values"
+      (and (string-contains xml "fill=\"#585b70\"")
+           (string-contains xml "fill=\"#fab387\"")
+           (string-contains xml "fill=\"#cdd6f4\"")))
     (test-assert "badge text is rendered"
       (and (string-contains xml ">Scheme<")
            (string-contains xml ">Guile<")))
@@ -281,9 +317,9 @@ creating a literal #f/ directory in the project root when TMPDIR is unset."
     (test-assert "the first label is centered after the logo gap"
       (string-contains xml "x=\"42.0\" y=\"14\">Scheme<")))
 
-  (let* ((glyph `((sections ((background . badge-gray)
+  (let* ((glyph `((sections ((background . catppuccin-mocha-surface2)
                              (text . "Complex")
-                             (color . white)
+                             (color . catppuccin-mocha-text)
                              (logo . sparkle)))
                   (id . complex-logo-test)))
          (xml (sxml->string* (mk-glyph glyph #:resources resources))))
@@ -291,11 +327,11 @@ creating a literal #f/ directory in the project root when TMPDIR is unset."
       (and (string-contains xml "linearGradient")
            (string-contains xml "url(#sparkle-shine)"))))
 
-  (let* ((glyph `((sections ((background . badge-gray) (text . "one") (color . white))
-                            ((background . gnu-red) (text . "two") (color . white))
-                            ((background . badge-gray) (text . "three") (color . white))
-                            ((background . gnu-red) (text . "four") (color . white))
-                            ((background . badge-gray) (text . "five") (color . white)))
+  (let* ((glyph `((sections ((background . catppuccin-mocha-surface2) (text . "one") (color . catppuccin-mocha-text))
+                            ((background . catppuccin-mocha-red) (text . "two") (color . catppuccin-mocha-text))
+                            ((background . catppuccin-mocha-surface2) (text . "three") (color . catppuccin-mocha-text))
+                            ((background . catppuccin-mocha-red) (text . "four") (color . catppuccin-mocha-text))
+                            ((background . catppuccin-mocha-surface2) (text . "five") (color . catppuccin-mocha-text)))
                   (id . five-parts)))
          (xml (sxml->string* (mk-glyph glyph #:resources resources))))
     (test-assert "every part of a five-part badge is rendered"
@@ -304,9 +340,9 @@ creating a literal #f/ directory in the project root when TMPDIR is unset."
     (test-assert "a five-part badge has a background and a seam per part"
       (= 13 (count-substring "<rect " xml))))
 
-  (let* ((glyph `((sections ((background . badge-gray)
+  (let* ((glyph `((sections ((background . catppuccin-mocha-surface2)
                              (text . "Complex")
-                             (color . white)
+                             (color . catppuccin-mocha-text)
                              (logo . sparkle)))
                   (id . complex-logo-test)))
          (xml (sxml->string* (mk-glyph glyph #:resources resources))))
@@ -371,7 +407,7 @@ creating a literal #f/ directory in the project root when TMPDIR is unset."
       '("jjba23.scm" "showcase.scm")
       (map car groups))
     (test-equal "every glyph of every file is in the gallery"
-      165
+      225
       (apply + (map (lambda (group) (length (cdr group))) groups))))
 
   (let* ((path (format #f "~a/ggg-gallery-test-~a.html"
@@ -423,7 +459,9 @@ creating a literal #f/ directory in the project root when TMPDIR is unset."
       (every (lambda (id)
                (member id (map glyph-id main-glyphs)))
              '("byggsteg" "lucidplan" "maak" "bewaking"
-               "hygguile" "veritas" "symbanta")))
+               "hygguile" "veritas" "symbanta"
+               "lang-python" "build-cmake" "test-jest"
+               "db-postgresql" "ci-buildkite" "docs-markdown")))
 
     (test-assert "showcase ids do not collide with the main glyph file"
       (null? (lset-intersection string=? (map glyph-id main-glyphs)
@@ -437,14 +475,26 @@ creating a literal #f/ directory in the project root when TMPDIR is unset."
                                                 #:resources resources))
                        "<svg"))
 
-    (test-equal "light brand colors get dark text"
-      'black
+    (test-equal "showcase badges color their accent section with catppuccin"
+      'catppuccin-mocha-base
       (cdr (assq 'color
                  (cadr (lookup (car (filter (lambda (glyph)
                                               (string=? (glyph-id glyph)
                                                         "javascript"))
                                             showcase-glyphs))
-                               'sections)))))))
+                               'sections)))))
+
+    (test-assert "every showcase badge paints its sections with catppuccin"
+      (every (lambda (glyph)
+               (every (lambda (section)
+                        (every (lambda (key)
+                                 (let ((name (lookup section key)))
+                                   (and (symbol? name)
+                                        (string-prefix? "catppuccin-mocha-"
+                                                        (symbol->string name)))))
+                               '(background color)))
+                      (lookup glyph 'sections)))
+             showcase-glyphs))))
 
 ;; ====== Destination directory ======
 

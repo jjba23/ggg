@@ -25,426 +25,530 @@
 ;; --keep is needed because ggg clears the destination directory by default,
 ;; which would remove the badges produced from glyphs/jjba23.scm. `maak run`
 ;; renders both files into ./dist, and `maak showcase` renders only this one.
+;;
+;; Every badge is colored with the Catppuccin palette (the mocha flavor). The
+;; second section picks the accent that sits closest to the project's own hue
+;; -- blue stays blue, orange becomes peach, black brands become the neutral
+;; overlay2 -- and the accent's text is `base`, the dark shade that reads well
+;; on Catppuccin's light accents. Switching flavor is a matter of changing the
+;; theme prefix in `catppuccin` below.
 
 (define-module (ggg config)
   #:declarative? #t)
 
 ;; ====== Helpers ======
 
-(define (hex-channel digits start)
-  (string->number (substring digits start (+ start 2)) 16))
+(define (catppuccin color)
+  "The Catppuccin mocha palette color COLOR, as a qualified color name: for
+example (catppuccin 'blue) is the symbol catppuccin-mocha-blue. Qualifying the
+name here keeps every badge independent of whatever palette is the default."
+  (string->symbol (string-append "catppuccin-mocha-" (symbol->string color))))
 
-(define (expand-hex hex)
-  "The digits of HEX as six characters, so #fff and #ffffff read alike."
-  (let ((digits (substring hex 1)))
-    (if (= (string-length digits) 3)
-        (string-join (map (lambda (digit)
-                            (string digit digit))
-                          (string->list digits))
-                     "")
-        digits)))
-
-(define (channel-luminance value)
-  (let ((scaled (/ value 255.0)))
-    (if (<= scaled 0.03928)
-        (/ scaled 12.92)
-        (expt (/ (+ scaled 0.055) 1.055) 2.4))))
-
-(define (relative-luminance hex)
-  "The WCAG relative luminance of HEX, between 0 and 1."
-  (let ((digits (expand-hex hex)))
-    (+ (* 0.2126 (channel-luminance (hex-channel digits 0)))
-       (* 0.7152 (channel-luminance (hex-channel digits 2)))
-       (* 0.0722 (channel-luminance (hex-channel digits 4))))))
-
-(define (ink hex)
-  "Black or white, whichever contrasts more with HEX.
-0.179 is the luminance at which both have the same contrast ratio."
-  (if (> (relative-luminance hex) 0.179) 'black 'white))
-
-(define (badge id label logo category background)
-  "A two-section badge: the logo with LABEL, then CATEGORY on BACKGROUND."
-  `((sections ((background . badge-gray)
+(define (badge id label logo category accent)
+  "A two-section badge: the logo with LABEL, then CATEGORY on ACCENT."
+  `((sections ((background . ,(catppuccin 'surface2))
                (text . ,label)
-               (color . white)
+               (color . ,(catppuccin 'text))
                (logo . ,logo))
-              ((background . ,background)
+              ((background . ,(catppuccin accent))
                (text . ,category)
-               (color . ,(ink background))))
+               (color . ,(catppuccin 'base))))
     (id . ,id)))
 
 ;; ====== Languages ======
 
 (define glyph-python
-  (badge 'python "Python" 'python "language" "#3776AB"))
+  (badge 'python "Python" 'python "language" 'blue))
 
 (define glyph-javascript
-  (badge 'javascript "JavaScript" 'javascript "language" "#F7DF1E"))
+  (badge 'javascript "JavaScript" 'javascript "language" 'yellow))
 
 (define glyph-typescript
-  (badge 'typescript "TypeScript" 'typescript "language" "#3178C6"))
+  (badge 'typescript "TypeScript" 'typescript "language" 'blue))
 
 (define glyph-go
-  (badge 'go "Go" 'go "language" "#00ADD8"))
+  (badge 'go "Go" 'go "language" 'sky))
 
 (define glyph-swift
-  (badge 'swift "Swift" 'swift "language" "#F05138"))
+  (badge 'swift "Swift" 'swift "language" 'peach))
 
 (define glyph-cplusplus
-  (badge 'cplusplus "C++" 'cplusplus "language" "#00599C"))
+  (badge 'cplusplus "C++" 'cplusplus "language" 'blue))
 
 (define glyph-dart
-  (badge 'dart "Dart" 'dart "language" "#0175C2"))
+  (badge 'dart "Dart" 'dart "language" 'blue))
 
 (define glyph-elixir
-  (badge 'elixir "Elixir" 'elixir "language" "#4B275F"))
+  (badge 'elixir "Elixir" 'elixir "language" 'mauve))
 
 (define glyph-erlang
-  (badge 'erlang "Erlang" 'erlang "language" "#A90533"))
+  (badge 'erlang "Erlang" 'erlang "language" 'red))
 
 (define glyph-lua
-  (badge 'lua "Lua" 'lua "language" "#2C2D72"))
+  (badge 'lua "Lua" 'lua "language" 'lavender))
 
 (define glyph-julia
-  (badge 'julia "Julia" 'julia "language" "#9558B2"))
+  (badge 'julia "Julia" 'julia "language" 'mauve))
 
 (define glyph-perl
-  (badge 'perl "Perl" 'perl "language" "#39457E"))
+  (badge 'perl "Perl" 'perl "language" 'sapphire))
 
 (define glyph-ocaml
-  (badge 'ocaml "OCaml" 'ocaml "language" "#EC6A00"))
+  (badge 'ocaml "OCaml" 'ocaml "language" 'peach))
 
 (define glyph-crystal
-  (badge 'crystal "Crystal" 'crystal "language" "#000000"))
+  (badge 'crystal "Crystal" 'crystal "language" 'overlay2))
 
 (define glyph-nim
-  (badge 'nim "Nim" 'nim "language" "#FFE953"))
+  (badge 'nim "Nim" 'nim "language" 'yellow))
+
+(define glyph-dotnet
+  (badge 'dotnet "C#" 'dotnet "language" 'mauve))
+
+(define glyph-fsharp
+  (badge 'fsharp "F#" 'fsharp "language" 'sky))
+
+(define glyph-fortran
+  (badge 'fortran "Fortran" 'fortran "language" 'lavender))
+
+(define glyph-haskell
+  (badge 'haskell "Haskell" 'haskell "language" 'mauve))
+
+(define glyph-java
+  (badge 'java "Java" 'java "language" 'red))
+
+(define glyph-kotlin
+  (badge 'kotlin "Kotlin" 'kotlin "language" 'mauve))
+
+(define glyph-scala
+  (badge 'scala "Scala" 'scala "language" 'red))
+
+(define glyph-webassembly
+  (badge 'webassembly "WebAssembly" 'webassembly "language" 'lavender))
 
 ;; ====== Web frameworks and tools ======
 
 (define glyph-react
-  (badge 'react "React" 'react "framework" "#61DAFB"))
+  (badge 'react "React" 'react "framework" 'sky))
 
 (define glyph-svelte
-  (badge 'svelte "Svelte" 'svelte "framework" "#FF3E00"))
+  (badge 'svelte "Svelte" 'svelte "framework" 'peach))
 
 (define glyph-astro
-  (badge 'astro "Astro" 'astro "framework" "#FF5D01"))
+  (badge 'astro "Astro" 'astro "framework" 'peach))
 
 (define glyph-nextjs
-  (badge 'nextjs "Next.js" 'nextdotjs "framework" "#000000"))
+  (badge 'nextjs "Next.js" 'nextdotjs "framework" 'overlay2))
 
 (define glyph-nuxt
-  (badge 'nuxt "Nuxt" 'nuxt "framework" "#00DC82"))
+  (badge 'nuxt "Nuxt" 'nuxt "framework" 'green))
 
 (define glyph-vite
-  (badge 'vite "Vite" 'vite "bundler" "#646CFF"))
+  (badge 'vite "Vite" 'vite "bundler" 'lavender))
 
 (define glyph-tailwindcss
-  (badge 'tailwindcss "Tailwind CSS" 'tailwindcss "css" "#06B6D4"))
+  (badge 'tailwindcss "Tailwind CSS" 'tailwindcss "css" 'sky))
 
 (define glyph-bootstrap
-  (badge 'bootstrap "Bootstrap" 'bootstrap "css" "#7952B3"))
+  (badge 'bootstrap "Bootstrap" 'bootstrap "css" 'mauve))
 
 (define glyph-html5
-  (badge 'html5 "HTML5" 'html5 "web" "#E34F26"))
+  (badge 'html5 "HTML5" 'html5 "web" 'maroon))
 
 (define glyph-markdown
-  (badge 'markdown "Markdown" 'markdown "docs" "#000000"))
+  (badge 'markdown "Markdown" 'markdown "docs" 'overlay2))
 
 (define glyph-graphql
-  (badge 'graphql "GraphQL" 'graphql "api" "#E10098"))
+  (badge 'graphql "GraphQL" 'graphql "api" 'pink))
 
 (define glyph-htmx
-  (badge 'htmx "htmx" 'htmx "web" "#3366CC"))
+  (badge 'htmx "htmx" 'htmx "web" 'blue))
 
 (define glyph-django
-  (badge 'django "Django" 'django "framework" "#092E20"))
+  (badge 'django "Django" 'django "framework" 'green))
 
 (define glyph-fastapi
-  (badge 'fastapi "FastAPI" 'fastapi "framework" "#009688"))
+  (badge 'fastapi "FastAPI" 'fastapi "framework" 'teal))
 
 (define glyph-flask
-  (badge 'flask "Flask" 'flask "framework" "#000000"))
+  (badge 'flask "Flask" 'flask "framework" 'overlay2))
 
 (define glyph-laravel
-  (badge 'laravel "Laravel" 'laravel "framework" "#FF2D20"))
+  (badge 'laravel "Laravel" 'laravel "framework" 'red))
 
 (define glyph-springboot
-  (badge 'springboot "Spring Boot" 'springboot "framework" "#6DB33F"))
+  (badge 'springboot "Spring Boot" 'springboot "framework" 'green))
 
 (define glyph-flutter
-  (badge 'flutter "Flutter" 'flutter "framework" "#02569B"))
+  (badge 'flutter "Flutter" 'flutter "framework" 'blue))
 
 (define glyph-electron
-  (badge 'electron "Electron" 'electron "framework" "#47848F"))
+  (badge 'electron "Electron" 'electron "framework" 'teal))
+
+(define glyph-express
+  (badge 'express "Express" 'express "framework" 'overlay2))
+
+(define glyph-nestjs
+  (badge 'nestjs "NestJS" 'nestjs "framework" 'red))
+
+(define glyph-preact
+  (badge 'preact "Preact" 'preact "framework" 'lavender))
+
+(define glyph-remix
+  (badge 'remix "Remix" 'remix "framework" 'sky))
+
+(define glyph-phoenixframework
+  (badge 'phoenixframework "Phoenix" 'phoenixframework "framework" 'peach))
+
+(define glyph-gatsby
+  (badge 'gatsby "Gatsby" 'gatsby "framework" 'mauve))
+
+(define glyph-qt
+  (badge 'qt "Qt" 'qt "toolkit" 'green))
+
+(define glyph-apollographql
+  (badge 'apollographql "Apollo" 'apollographql "api" 'pink))
+
+(define glyph-openapiinitiative
+  (badge 'openapiinitiative "OpenAPI" 'openapiinitiative "api" 'green))
+
+(define glyph-postman
+  (badge 'postman "Postman" 'postman "api" 'peach))
+
+(define glyph-insomnia
+  (badge 'insomnia "Insomnia" 'insomnia "api" 'mauve))
 
 ;; ====== Data and infrastructure ======
 
 (define glyph-postgresql
-  (badge 'postgresql "PostgreSQL" 'postgresql "database" "#4169E1"))
+  (badge 'postgresql "PostgreSQL" 'postgresql "database" 'blue))
 
 (define glyph-mysql
-  (badge 'mysql "MySQL" 'mysql "database" "#4479A1"))
+  (badge 'mysql "MySQL" 'mysql "database" 'sapphire))
 
 (define glyph-mariadb
-  (badge 'mariadb "MariaDB" 'mariadb "database" "#003545"))
+  (badge 'mariadb "MariaDB" 'mariadb "database" 'teal))
 
 (define glyph-sqlite
-  (badge 'sqlite "SQLite" 'sqlite "database" "#003B57"))
+  (badge 'sqlite "SQLite" 'sqlite "database" 'sapphire))
 
 (define glyph-mongodb
-  (badge 'mongodb "MongoDB" 'mongodb "database" "#47A248"))
+  (badge 'mongodb "MongoDB" 'mongodb "database" 'green))
 
 (define glyph-redis
-  (badge 'redis "Redis" 'redis "database" "#FF4438"))
+  (badge 'redis "Redis" 'redis "database" 'red))
 
 (define glyph-clickhouse
-  (badge 'clickhouse "ClickHouse" 'clickhouse "database" "#FFCC01"))
+  (badge 'clickhouse "ClickHouse" 'clickhouse "database" 'yellow))
 
 (define glyph-duckdb
-  (badge 'duckdb "DuckDB" 'duckdb "database" "#FFF000"))
+  (badge 'duckdb "DuckDB" 'duckdb "database" 'yellow))
 
 (define glyph-elasticsearch
-  (badge 'elasticsearch "Elasticsearch" 'elasticsearch "search" "#005571"))
+  (badge 'elasticsearch "Elasticsearch" 'elasticsearch "search" 'sapphire))
 
 (define glyph-prisma
-  (badge 'prisma "Prisma" 'prisma "orm" "#2D3748"))
+  (badge 'prisma "Prisma" 'prisma "orm" 'overlay2))
 
 (define glyph-supabase
-  (badge 'supabase "Supabase" 'supabase "backend" "#3FCF8E"))
+  (badge 'supabase "Supabase" 'supabase "backend" 'green))
 
 (define glyph-kubernetes
-  (badge 'kubernetes "Kubernetes" 'kubernetes "containers" "#326CE5"))
+  (badge 'kubernetes "Kubernetes" 'kubernetes "containers" 'blue))
 
 (define glyph-podman
-  (badge 'podman "Podman" 'podman "containers" "#892CA0"))
+  (badge 'podman "Podman" 'podman "containers" 'mauve))
 
 (define glyph-terraform
-  (badge 'terraform "Terraform" 'terraform "infrastructure" "#844FBA"))
+  (badge 'terraform "Terraform" 'terraform "infrastructure" 'mauve))
 
 (define glyph-ansible
-  (badge 'ansible "Ansible" 'ansible "infrastructure" "#EE0000"))
+  (badge 'ansible "Ansible" 'ansible "infrastructure" 'red))
 
 (define glyph-nginx
-  (badge 'nginx "NGINX" 'nginx "server" "#009639"))
+  (badge 'nginx "NGINX" 'nginx "server" 'green))
 
 (define glyph-apache
-  (badge 'apache "Apache" 'apache "server" "#D22128"))
+  (badge 'apache "Apache" 'apache "server" 'red))
 
 (define glyph-rabbitmq
-  (badge 'rabbitmq "RabbitMQ" 'rabbitmq "queue" "#FF6600"))
+  (badge 'rabbitmq "RabbitMQ" 'rabbitmq "queue" 'peach))
+
+(define glyph-apachekafka
+  (badge 'apachekafka "Kafka" 'apachekafka "queue" 'overlay2))
+
+(define glyph-apachespark
+  (badge 'apachespark "Spark" 'apachespark "data" 'peach))
+
+(define glyph-apacheflink
+  (badge 'apacheflink "Flink" 'apacheflink "data" 'pink))
+
+(define glyph-apacheairflow
+  (badge 'apacheairflow "Airflow" 'apacheairflow "workflow" 'teal))
+
+(define glyph-celery
+  (badge 'celery "Celery" 'celery "queue" 'green))
+
+(define glyph-cockroachlabs
+  (badge 'cockroachlabs "CockroachDB" 'cockroachlabs "database" 'mauve))
+
+(define glyph-influxdb
+  (badge 'influxdb "InfluxDB" 'influxdb "database" 'sky))
+
+(define glyph-neo4j
+  (badge 'neo4j "Neo4j" 'neo4j "database" 'blue))
+
+(define glyph-helm
+  (badge 'helm "Helm" 'helm "kubernetes" 'blue))
+
+(define glyph-containerd
+  (badge 'containerd "containerd" 'containerd "containers" 'sky))
+
+(define glyph-envoyproxy
+  (badge 'envoyproxy "Envoy" 'envoyproxy "proxy" 'pink))
+
+(define glyph-caddy
+  (badge 'caddy "Caddy" 'caddy "server" 'sky))
+
+;; ====== Security and networking ======
+
+(define glyph-openssl
+  (badge 'openssl "OpenSSL" 'openssl "security" 'red))
+
+(define glyph-wireguard
+  (badge 'wireguard "WireGuard" 'wireguard "vpn" 'red))
+
+(define glyph-tailscale
+  (badge 'tailscale "Tailscale" 'tailscale "vpn" 'overlay2))
 
 ;; ====== Version control, cloud and CI ======
 
 (define glyph-github
-  (badge 'github "GitHub" 'github "git" "#181717"))
+  (badge 'github "GitHub" 'github "git" 'overlay2))
 
 (define glyph-gitlab
-  (badge 'gitlab "GitLab" 'gitlab "git" "#FC6D26"))
+  (badge 'gitlab "GitLab" 'gitlab "git" 'peach))
 
 (define glyph-gitea
-  (badge 'gitea "Gitea" 'gitea "git" "#609926"))
+  (badge 'gitea "Gitea" 'gitea "git" 'green))
+
+(define glyph-bitbucket
+  (badge 'bitbucket "Bitbucket" 'bitbucket "git" 'blue))
+
+(define glyph-codeberg
+  (badge 'codeberg "Codeberg" 'codeberg "git" 'blue))
 
 (define glyph-githubactions
-  (badge 'githubactions "GitHub Actions" 'githubactions "ci" "#2088FF"))
+  (badge 'githubactions "GitHub Actions" 'githubactions "ci" 'blue))
 
 (define glyph-circleci
-  (badge 'circleci "CircleCI" 'circleci "ci" "#343434"))
+  (badge 'circleci "CircleCI" 'circleci "ci" 'overlay2))
 
 (define glyph-vercel
-  (badge 'vercel "Vercel" 'vercel "cloud" "#000000"))
+  (badge 'vercel "Vercel" 'vercel "cloud" 'overlay2))
 
 (define glyph-netlify
-  (badge 'netlify "Netlify" 'netlify "cloud" "#00C7B7"))
+  (badge 'netlify "Netlify" 'netlify "cloud" 'teal))
 
 (define glyph-cloudflare
-  (badge 'cloudflare "Cloudflare" 'cloudflare "cloud" "#F38020"))
+  (badge 'cloudflare "Cloudflare" 'cloudflare "cloud" 'peach))
 
 (define glyph-googlecloud
-  (badge 'googlecloud "Google Cloud" 'googlecloud "cloud" "#4285F4"))
+  (badge 'googlecloud "Google Cloud" 'googlecloud "cloud" 'blue))
 
 (define glyph-firebase
-  (badge 'firebase "Firebase" 'firebase "cloud" "#FFCA28"))
+  (badge 'firebase "Firebase" 'firebase "cloud" 'yellow))
+
+(define glyph-digitalocean
+  (badge 'digitalocean "DigitalOcean" 'digitalocean "cloud" 'blue))
+
+(define glyph-render
+  (badge 'render "Render" 'render "cloud" 'lavender))
+
+(define glyph-flydotio
+  (badge 'flydotio "Fly.io" 'flydotio "cloud" 'mauve))
 
 ;; ====== Observability ======
 
 (define glyph-grafana
-  (badge 'grafana "Grafana" 'grafana "metrics" "#F46800"))
+  (badge 'grafana "Grafana" 'grafana "metrics" 'peach))
 
 (define glyph-prometheus
-  (badge 'prometheus "Prometheus" 'prometheus "metrics" "#E6522C"))
+  (badge 'prometheus "Prometheus" 'prometheus "metrics" 'maroon))
 
 (define glyph-sentry
-  (badge 'sentry "Sentry" 'sentry "errors" "#362D59"))
+  (badge 'sentry "Sentry" 'sentry "errors" 'mauve))
 
 (define glyph-datadog
-  (badge 'datadog "Datadog" 'datadog "monitoring" "#632CA6"))
+  (badge 'datadog "Datadog" 'datadog "monitoring" 'mauve))
 
 ;; ====== Operating systems and desktops ======
 
 (define glyph-ubuntu
-  (badge 'ubuntu "Ubuntu" 'ubuntu "os" "#E95420"))
+  (badge 'ubuntu "Ubuntu" 'ubuntu "os" 'peach))
 
 (define glyph-archlinux
-  (badge 'archlinux "Arch Linux" 'archlinux "os" "#1793D1"))
+  (badge 'archlinux "Arch Linux" 'archlinux "os" 'sky))
 
 (define glyph-opensuse
-  (badge 'opensuse "openSUSE" 'opensuse "os" "#73BA25"))
+  (badge 'opensuse "openSUSE" 'opensuse "os" 'green))
 
 (define glyph-freebsd
-  (badge 'freebsd "FreeBSD" 'freebsd "os" "#AB2B28"))
+  (badge 'freebsd "FreeBSD" 'freebsd "os" 'red))
 
 (define glyph-openbsd
-  (badge 'openbsd "OpenBSD" 'openbsd "os" "#F2CA30"))
+  (badge 'openbsd "OpenBSD" 'openbsd "os" 'yellow))
 
 (define glyph-alpinelinux
-  (badge 'alpinelinux "Alpine Linux" 'alpinelinux "os" "#0D597F"))
+  (badge 'alpinelinux "Alpine Linux" 'alpinelinux "os" 'sapphire))
 
 (define glyph-gnome
-  (badge 'gnome "GNOME" 'gnome "desktop" "#4A86CF"))
+  (badge 'gnome "GNOME" 'gnome "desktop" 'blue))
 
 (define glyph-kde
-  (badge 'kde "KDE" 'kde "desktop" "#1D99F3"))
+  (badge 'kde "KDE" 'kde "desktop" 'sky))
 
 (define glyph-xfce
-  (badge 'xfce "Xfce" 'xfce "desktop" "#2284F2"))
+  (badge 'xfce "Xfce" 'xfce "desktop" 'blue))
 
 (define glyph-wayland
-  (badge 'wayland "Wayland" 'wayland "desktop" "#FFBC00"))
+  (badge 'wayland "Wayland" 'wayland "desktop" 'yellow))
 
 ;; ====== Editors, IDEs and shells ======
 
 (define glyph-vim
-  (badge 'vim "Vim" 'vim "editor" "#019733"))
+  (badge 'vim "Vim" 'vim "editor" 'green))
 
 (define glyph-helix
-  (badge 'helix "Helix" 'helix "editor" "#6A5ACD"))
+  (badge 'helix "Helix" 'helix "editor" 'lavender))
 
 (define glyph-sublimetext
-  (badge 'sublimetext "Sublime Text" 'sublimetext "editor" "#FF9800"))
+  (badge 'sublimetext "Sublime Text" 'sublimetext "editor" 'peach))
 
 (define glyph-zed
-  (badge 'zed "Zed" 'zedindustries "editor" "#084CCF"))
+  (badge 'zed "Zed" 'zedindustries "editor" 'blue))
 
 (define glyph-intellijidea
-  (badge 'intellijidea "IntelliJ IDEA" 'intellijidea "ide" "#000000"))
+  (badge 'intellijidea "IntelliJ IDEA" 'intellijidea "ide" 'overlay2))
 
 (define glyph-tmux
-  (badge 'tmux "tmux" 'tmux "terminal" "#1BB91F"))
+  (badge 'tmux "tmux" 'tmux "terminal" 'green))
 
 (define glyph-zsh
-  (badge 'zsh "Zsh" 'zsh "shell" "#F15A24"))
+  (badge 'zsh "Zsh" 'zsh "shell" 'peach))
 
 (define glyph-gnubash
-  (badge 'gnubash "Bash" 'gnubash "shell" "#4EAA25"))
+  (badge 'gnubash "Bash" 'gnubash "shell" 'green))
 
 (define glyph-fishshell
-  (badge 'fishshell "fish" 'fishshell "shell" "#4B8BBE"))
+  (badge 'fishshell "fish" 'fishshell "shell" 'sapphire))
 
 (define glyph-nushell
-  (badge 'nushell "Nushell" 'nushell "shell" "#4E9906"))
+  (badge 'nushell "Nushell" 'nushell "shell" 'green))
 
 ;; ====== AI and data science ======
 
 (define glyph-huggingface
-  (badge 'huggingface "Hugging Face" 'huggingface "ai" "#FFD21E"))
+  (badge 'huggingface "Hugging Face" 'huggingface "ai" 'yellow))
 
 (define glyph-pytorch
-  (badge 'pytorch "PyTorch" 'pytorch "ai" "#EE4C2C"))
+  (badge 'pytorch "PyTorch" 'pytorch "ai" 'maroon))
 
 (define glyph-tensorflow
-  (badge 'tensorflow "TensorFlow" 'tensorflow "ai" "#FF6F00"))
+  (badge 'tensorflow "TensorFlow" 'tensorflow "ai" 'peach))
 
 (define glyph-ollama
-  (badge 'ollama "Ollama" 'ollama "ai" "#000000"))
+  (badge 'ollama "Ollama" 'ollama "ai" 'overlay2))
 
 (define glyph-jupyter
-  (badge 'jupyter "Jupyter" 'jupyter "notebook" "#F37626"))
+  (badge 'jupyter "Jupyter" 'jupyter "notebook" 'peach))
 
 (define glyph-numpy
-  (badge 'numpy "NumPy" 'numpy "science" "#013243"))
+  (badge 'numpy "NumPy" 'numpy "science" 'teal))
 
 (define glyph-pandas
-  (badge 'pandas "pandas" 'pandas "science" "#150458"))
+  (badge 'pandas "pandas" 'pandas "science" 'lavender))
 
 ;; ====== Testing and build tooling ======
 
 (define glyph-jest
-  (badge 'jest "Jest" 'jest "testing" "#C21325"))
+  (badge 'jest "Jest" 'jest "testing" 'red))
 
 (define glyph-vitest
-  (badge 'vitest "Vitest" 'vitest "testing" "#6E9F18"))
+  (badge 'vitest "Vitest" 'vitest "testing" 'green))
 
 (define glyph-cypress
-  (badge 'cypress "Cypress" 'cypress "testing" "#17202C"))
+  (badge 'cypress "Cypress" 'cypress "testing" 'overlay2))
 
 (define glyph-pytest
-  (badge 'pytest "pytest" 'pytest "testing" "#0A9EDC"))
+  (badge 'pytest "pytest" 'pytest "testing" 'sky))
 
 (define glyph-eslint
-  (badge 'eslint "ESLint" 'eslint "linting" "#4B32C3"))
+  (badge 'eslint "ESLint" 'eslint "linting" 'lavender))
 
 (define glyph-prettier
-  (badge 'prettier "Prettier" 'prettier "formatting" "#F7B93E"))
+  (badge 'prettier "Prettier" 'prettier "formatting" 'yellow))
 
 (define glyph-esbuild
-  (badge 'esbuild "esbuild" 'esbuild "bundler" "#FFCF00"))
+  (badge 'esbuild "esbuild" 'esbuild "bundler" 'yellow))
 
 (define glyph-npm
-  (badge 'npm "npm" 'npm "package" "#CB3837"))
+  (badge 'npm "npm" 'npm "package" 'red))
 
 (define glyph-pnpm
-  (badge 'pnpm "pnpm" 'pnpm "package" "#F69220"))
+  (badge 'pnpm "pnpm" 'pnpm "package" 'peach))
 
 (define glyph-bun
-  (badge 'bun "Bun" 'bun "runtime" "#FBF0DF"))
+  (badge 'bun "Bun" 'bun "runtime" 'rosewater))
 
 (define glyph-deno
-  (badge 'deno "Deno" 'deno "runtime" "#70FFAF"))
+  (badge 'deno "Deno" 'deno "runtime" 'green))
 
 ;; ====== Media, design and notes ======
 
 (define glyph-blender
-  (badge 'blender "Blender" 'blender "3d" "#E87D0D"))
+  (badge 'blender "Blender" 'blender "3d" 'peach))
 
 (define glyph-krita
-  (badge 'krita "Krita" 'krita "design" "#3DABE0"))
+  (badge 'krita "Krita" 'krita "design" 'sky))
 
 (define glyph-excalidraw
-  (badge 'excalidraw "Excalidraw" 'excalidraw "design" "#6965DB"))
+  (badge 'excalidraw "Excalidraw" 'excalidraw "design" 'lavender))
 
 (define glyph-obsstudio
-  (badge 'obsstudio "OBS Studio" 'obsstudio "video" "#302E31"))
+  (badge 'obsstudio "OBS Studio" 'obsstudio "video" 'overlay2))
 
 (define glyph-ffmpeg
-  (badge 'ffmpeg "FFmpeg" 'ffmpeg "video" "#007808"))
+  (badge 'ffmpeg "FFmpeg" 'ffmpeg "video" 'green))
 
 (define glyph-libreoffice
-  (badge 'libreoffice "LibreOffice" 'libreoffice "office" "#18A303"))
+  (badge 'libreoffice "LibreOffice" 'libreoffice "office" 'green))
 
 (define glyph-obsidian
-  (badge 'obsidian "Obsidian" 'obsidian "notes" "#7C3AED"))
+  (badge 'obsidian "Obsidian" 'obsidian "notes" 'mauve))
 
 (define glyph-notion
-  (badge 'notion "Notion" 'notion "notes" "#000000"))
+  (badge 'notion "Notion" 'notion "notes" 'overlay2))
 
 (define glyph-wikipedia
-  (badge 'wikipedia "Wikipedia" 'wikipedia "docs" "#000000"))
+  (badge 'wikipedia "Wikipedia" 'wikipedia "docs" 'overlay2))
+
+(define glyph-latex
+  (badge 'latex "LaTeX" 'latex "writing" 'teal))
 
 ;; ====== Chat and community ======
 
 (define glyph-discord
-  (badge 'discord "Discord" 'discord "chat" "#5865F2"))
+  (badge 'discord "Discord" 'discord "chat" 'lavender))
 
 (define glyph-telegram
-  (badge 'telegram "Telegram" 'telegram "chat" "#26A5E4"))
+  (badge 'telegram "Telegram" 'telegram "chat" 'sky))
 
 (define glyph-matrix
-  (badge 'matrix "Matrix" 'matrix "chat" "#000000"))
+  (badge 'matrix "Matrix" 'matrix "chat" 'overlay2))
 
 (define glyph-reddit
-  (badge 'reddit "Reddit" 'reddit "social" "#FF4500"))
+  (badge 'reddit "Reddit" 'reddit "social" 'peach))
 
 (define ggg-glyphs
   ;; Languages
@@ -463,6 +567,14 @@
         glyph-ocaml
         glyph-crystal
         glyph-nim
+        glyph-dotnet
+        glyph-fsharp
+        glyph-fortran
+        glyph-haskell
+        glyph-java
+        glyph-kotlin
+        glyph-scala
+        glyph-webassembly
         ;; Web frameworks and tools
         glyph-react
         glyph-svelte
@@ -483,6 +595,17 @@
         glyph-springboot
         glyph-flutter
         glyph-electron
+        glyph-express
+        glyph-nestjs
+        glyph-preact
+        glyph-remix
+        glyph-phoenixframework
+        glyph-gatsby
+        glyph-qt
+        glyph-apollographql
+        glyph-openapiinitiative
+        glyph-postman
+        glyph-insomnia
         ;; Data and infrastructure
         glyph-postgresql
         glyph-mysql
@@ -502,10 +625,28 @@
         glyph-nginx
         glyph-apache
         glyph-rabbitmq
+        glyph-apachekafka
+        glyph-apachespark
+        glyph-apacheflink
+        glyph-apacheairflow
+        glyph-celery
+        glyph-cockroachlabs
+        glyph-influxdb
+        glyph-neo4j
+        glyph-helm
+        glyph-containerd
+        glyph-envoyproxy
+        glyph-caddy
+        ;; Security and networking
+        glyph-openssl
+        glyph-wireguard
+        glyph-tailscale
         ;; Version control, cloud and CI
         glyph-github
         glyph-gitlab
         glyph-gitea
+        glyph-bitbucket
+        glyph-codeberg
         glyph-githubactions
         glyph-circleci
         glyph-vercel
@@ -513,6 +654,9 @@
         glyph-cloudflare
         glyph-googlecloud
         glyph-firebase
+        glyph-digitalocean
+        glyph-render
+        glyph-flydotio
         ;; Observability
         glyph-grafana
         glyph-prometheus
@@ -570,6 +714,7 @@
         glyph-obsidian
         glyph-notion
         glyph-wikipedia
+        glyph-latex
         ;; Chat and community
         glyph-discord
         glyph-telegram

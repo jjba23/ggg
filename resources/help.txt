@@ -37,7 +37,8 @@ OPTIONS:
         glyphs/showcase.scm.
 
         --list-colors
-        List the named colors that glyph files can use, then exit.
+        List every theme color that glyph files can use, grouped by
+        theme, then exit.
 
         --list-logos
         List the logos available in the resources directory, then exit.
@@ -57,8 +58,11 @@ OPTIONS:
 
 +----------------------------------------------------------------------------+
 CONFIGURING YOUR GLYPHS:
-    Colors can be raw hex strings (e.g. "#555") or names from the built-in
-    palette (e.g. badge-gray, white, guix-yellow). Run "ggg --list-colors".
+    Colors can be raw hex strings (e.g. "#555") or names from the
+    palettes of Catppuccin, Doom, Dracula, Solarized and Modus. A name
+    is qualified with its theme, e.g. catppuccin-mocha-red,
+    doom-one-blue, dracula-purple, solarized-light-base3 or
+    modus-vivendi-green. Run "ggg --list-colors" to see them all.
 
     Logos are full SVG documents in the resources/logos/ directory, so they
     may contain several paths, groups, gradients, etc. ggg ships a large

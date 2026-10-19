@@ -76,7 +76,7 @@
         (value (lookup section key)))
     (unless value
       (fail (format #f "~a is missing a ~a color" label key)
-            #:hint (format #f "Add (~a . badge-gray) or a hex string such as \"#555\"." key)))
+            #:hint (format #f "Add (~a . catppuccin-mocha-surface2) or a hex string such as \"#555\"." key)))
     (resolve-color value #:context label)))
 
 (define* (section-font-family section glyph-id index)
@@ -276,7 +276,7 @@
                 (let ((entry (setting-entry section key)))
                   (cond
                     ((not entry)
-                     (format #f "~a is missing a ~a color; add (~a . badge-gray) or a hex string"
+                     (format #f "~a is missing a ~a color; add (~a . catppuccin-mocha-surface2) or a hex string"
                              label key key))
                     ;; Entries that are not (key . value) pairs are reported by
                     ;; non-pair-problems, so do not complain twice.
