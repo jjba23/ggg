@@ -151,7 +151,7 @@ ggg --gallery ./test/gallery.html --glyphs ./glyphs
 
 ~--glyphs~ takes a glyph file or a directory of ~.scm~ files; the gallery groups the badges by file. Click the snippet under any badge or logo to copy its definition to the clipboard. Without ~--glyphs~ you still get the logo library. [[./test/gallery.html][test/gallery.html]] is that page, and ~maak gallery~ regenerates it, so it always matches the glyphs in ~glyphs/~ and the logos in ~resources/logos/~.
 
-~maak deploy~ (the task the Woodpecker/Byggsteg job runs on every push) writes the same page to ~dist/gallery.html~, so the deployed copy is available at https://jointhefreeworld.org/ggg/dist/gallery.html.
+~maak deploy~ (the task the Woodpecker/Byggsteg job runs on every push) writes the same page to ~dist/gallery.html~, so the deployed copy is available at https://jointhefreeworld.org/ggg/dist/gallery.html .
 
 ** The badge showcase
 
