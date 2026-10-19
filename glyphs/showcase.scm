@@ -26,12 +26,14 @@
 ;; which would remove the badges produced from glyphs/jjba23.scm. `maak run`
 ;; renders both files into ./dist, and `maak showcase` renders only this one.
 ;;
-;; Every badge is colored with the Catppuccin palette (the mocha flavor). The
-;; second section picks the accent that sits closest to the project's own hue
-;; -- blue stays blue, orange becomes peach, black brands become the neutral
+;; Every badge labels itself with the Catppuccin palette (the mocha flavor). The
+;; second section picks the accent that sits closest to the project's own hue --
+;; blue stays blue, orange becomes peach, black brands become the neutral
 ;; overlay2 -- and the accent's text is `base`, the dark shade that reads well
-;; on Catppuccin's light accents. Switching flavor is a matter of changing the
-;; theme prefix in `catppuccin` below.
+;; on Catppuccin's light accents. The `Theme variants' group at the end paints
+;; its second sections with every other palette ggg knows, so the showcase shows
+;; all five theme families side by side. Switching flavor is a matter of
+;; changing the theme prefix in `catppuccin' below.
 
 (define-module (ggg config)
   #:declarative? #t)
@@ -44,15 +46,25 @@ example (catppuccin 'blue) is the symbol catppuccin-mocha-blue. Qualifying the
 name here keeps every badge independent of whatever palette is the default."
   (string->symbol (string-append "catppuccin-mocha-" (symbol->string color))))
 
-(define (badge id label logo category accent)
-  "A two-section badge: the logo with LABEL, then CATEGORY on ACCENT."
+(define (theme-color theme color)
+  "COLOR of the palette THEME, as a qualified color name: (theme-color 'dracula
+'purple) is the symbol dracula-purple."
+  (string->symbol (string-append (symbol->string theme) "-" (symbol->string color))))
+
+(define* (badge id label logo category accent
+                #:key (theme 'catppuccin-mocha) (ink 'base))
+  "A two-section badge: the logo with LABEL, then CATEGORY on ACCENT.
+
+The first section always wears Catppuccin mocha, so every label in the library
+reads alike; ACCENT is a color of THEME, and INK is the color its text is drawn
+in -- the theme's own background shade in every case below."
   `((sections ((background . ,(catppuccin 'surface2))
                (text . ,label)
                (color . ,(catppuccin 'text))
                (logo . ,logo))
-              ((background . ,(catppuccin accent))
+              ((background . ,(theme-color theme accent))
                (text . ,category)
-               (color . ,(catppuccin 'base))))
+               (color . ,(theme-color theme ink))))
     (id . ,id)))
 
 ;; ====== Languages ======
@@ -550,6 +562,61 @@ name here keeps every badge independent of whatever palette is the default."
 (define glyph-reddit
   (badge 'reddit "Reddit" 'reddit "social" 'peach))
 
+;; ====== Theme variants ======
+;;
+;; One badge per palette that ggg knows, so the second sections of the showcase
+;; show all five theme families next to each other and not only Catppuccin
+;; mocha.  The label keeps the mocha neutral, and the accent -- with the ink
+;; that reads on it -- comes from the theme being shown.  `ggg --list-colors'
+;; prints every name below with its hex value.
+
+(define glyph-theme-catppuccin-mocha
+  (badge 'theme-catppuccin-mocha "Catppuccin" 'paint "mocha" 'mauve))
+
+(define glyph-theme-catppuccin-macchiato
+  (badge 'theme-catppuccin-macchiato "Catppuccin" 'paint "macchiato" 'teal
+         #:theme 'catppuccin-macchiato))
+
+(define glyph-theme-catppuccin-frappe
+  (badge 'theme-catppuccin-frappe "Catppuccin" 'paint "frappe" 'peach
+         #:theme 'catppuccin-frappe))
+
+(define glyph-theme-catppuccin-latte
+  (badge 'theme-catppuccin-latte "Catppuccin" 'paint "latte" 'blue
+         #:theme 'catppuccin-latte))
+
+(define glyph-theme-doom-one
+  (badge 'theme-doom-one "Doom" 'paint "one" 'blue
+         #:theme 'doom-one #:ink 'bg))
+
+(define glyph-theme-doom-one-light
+  (badge 'theme-doom-one-light "Doom" 'paint "one-light" 'magenta
+         #:theme 'doom-one-light #:ink 'bg))
+
+(define glyph-theme-dracula
+  (badge 'theme-dracula "Dracula" 'paint "dracula" 'purple
+         #:theme 'dracula #:ink 'background))
+
+(define glyph-theme-dracula-alucard
+  (badge 'theme-dracula-alucard "Dracula" 'paint "alucard" 'pink
+         #:theme 'dracula-alucard #:ink 'background))
+
+(define glyph-theme-solarized-dark
+  (badge 'theme-solarized-dark "Solarized" 'paint "dark" 'cyan
+         #:theme 'solarized-dark #:ink 'base03))
+
+(define glyph-theme-solarized-light
+  (badge 'theme-solarized-light "Solarized" 'paint "light" 'violet
+         #:theme 'solarized-light #:ink 'base3))
+
+(define glyph-theme-modus-operandi
+  (badge 'theme-modus-operandi "Modus" 'paint "operandi" 'red
+         #:theme 'modus-operandi #:ink 'bg-main))
+
+(define glyph-theme-modus-vivendi
+  (badge 'theme-modus-vivendi "Modus" 'paint "vivendi" 'green
+         #:theme 'modus-vivendi #:ink 'bg-main))
+
 (define ggg-glyphs
   ;; Languages
   (list glyph-python
@@ -719,4 +786,17 @@ name here keeps every badge independent of whatever palette is the default."
         glyph-discord
         glyph-telegram
         glyph-matrix
-        glyph-reddit))
+        glyph-reddit
+        ;; Theme variants
+        glyph-theme-catppuccin-mocha
+        glyph-theme-catppuccin-macchiato
+        glyph-theme-catppuccin-frappe
+        glyph-theme-catppuccin-latte
+        glyph-theme-doom-one
+        glyph-theme-doom-one-light
+        glyph-theme-dracula
+        glyph-theme-dracula-alucard
+        glyph-theme-solarized-dark
+        glyph-theme-solarized-light
+        glyph-theme-modus-operandi
+        glyph-theme-modus-vivendi))

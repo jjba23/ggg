@@ -20,11 +20,18 @@
 ;; The badges below are colored with the Catppuccin palette (the mocha flavor),
 ;; whose colors ggg knows by name: every color of every supported theme is
 ;; available as "<theme>-<color>". Since Catppuccin accents are light, the text
-;; on them is `catppuccin-mocha-base`, and the neutral first section (the one
-;; holding the logo) is `catppuccin-mocha-surface2` with `catppuccin-mocha-text`.
+;; on them is that theme's dark background shade -- `catppuccin-mocha-base' for
+;; mocha, `doom-one-bg' for Doom, `dracula-background' for Dracula -- and the
+;; neutral first section (the one holding the logo) is `catppuccin-mocha-surface2'
+;; with `catppuccin-mocha-text'.
+;;
+;; The accents lean warm: the licenses and the docs badge wear warm neutrals
+;; (rosewater, flamingo) instead of the old cold gray, and two project badges
+;; borrow an orange from Dracula and a yellow from Doom. Badges that stand for
+;; a brand keep that brand's hue.
 ;;
 ;; `ggg --list-colors` prints every theme and color; see the README for the
-;; other palettes (doom, dracula, solarized, modus).
+;; other palettes.
 
 (define-module (ggg config)
   #:declarative? #t)
@@ -89,15 +96,15 @@
   `((sections ((background . catppuccin-mocha-surface2) (text . "LucidPlan")
                (color . catppuccin-mocha-text)
                (logo . lucidplan))
-              ((background . catppuccin-mocha-blue) (text . "planning")
-               (color . catppuccin-mocha-base)))
+              ((background . dracula-orange) (text . "planning")
+               (color . dracula-background)))
     (id . lucidplan)))
 
 (define glyph-bewaking
   `((sections ((background . catppuccin-mocha-surface2) (text . "bewaking")
                (color . catppuccin-mocha-text)
                (logo . bewaking))
-              ((background . catppuccin-mocha-overlay2) (text . "security")
+              ((background . catppuccin-mocha-maroon) (text . "security")
                (color . catppuccin-mocha-base)))
     (id . bewaking)))
 
@@ -113,8 +120,8 @@
   `((sections ((background . catppuccin-mocha-surface2) (text . "Veritas")
                (color . catppuccin-mocha-text)
                (logo . veritas))
-              ((background . catppuccin-mocha-lavender) (text . "testing")
-               (color . catppuccin-mocha-base)))
+              ((background . doom-one-yellow) (text . "testing")
+               (color . doom-one-bg)))
     (id . veritas)))
 
 (define glyph-symbanta
@@ -159,7 +166,7 @@
   `((sections ((background . catppuccin-mocha-surface2) (text . "license")
                (color . catppuccin-mocha-text)
                (logo . scales))
-              ((background . catppuccin-mocha-overlay2) (text . "GPL v3+")
+              ((background . catppuccin-mocha-rosewater) (text . "GPL v3+")
                (color . catppuccin-mocha-base)))
     (id . license-gpl3+)))
 
@@ -167,7 +174,7 @@
   `((sections ((background . catppuccin-mocha-surface2) (text . "license")
                (color . catppuccin-mocha-text)
                (logo . scales))
-              ((background . catppuccin-mocha-overlay2) (text . "LGPL v3+")
+              ((background . catppuccin-mocha-rosewater) (text . "LGPL v3+")
                (color . catppuccin-mocha-base)))
     (id . license-lgpl3+)))
 
@@ -175,7 +182,7 @@
   `((sections ((background . catppuccin-mocha-surface2) (text . "license")
                (color . catppuccin-mocha-text)
                (logo . scales))
-              ((background . catppuccin-mocha-overlay2) (text . "AGPL v3+")
+              ((background . catppuccin-mocha-rosewater) (text . "AGPL v3+")
                (color . catppuccin-mocha-base)))
     (id . license-agpl3+)))
 
@@ -183,7 +190,7 @@
   `((sections ((background . catppuccin-mocha-surface2) (text . "license")
                (color . catppuccin-mocha-text)
                (logo . scales))
-              ((background . catppuccin-mocha-overlay2) (text . "GFDL v1.3+")
+              ((background . catppuccin-mocha-rosewater) (text . "GFDL v1.3+")
                (color . catppuccin-mocha-base)))
     (id . license-fdl13+)))
 
@@ -567,7 +574,7 @@
   `((sections ((background . catppuccin-mocha-surface2) (text . "docs")
                (color . catppuccin-mocha-text)
                (logo . markdown))
-              ((background . catppuccin-mocha-overlay2) (text . "Markdown")
+              ((background . catppuccin-mocha-flamingo) (text . "Markdown")
                (color . catppuccin-mocha-base)))
     (id . docs-markdown)))
 

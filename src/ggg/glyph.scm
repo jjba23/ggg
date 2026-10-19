@@ -30,7 +30,7 @@
 
 ;; Badge geometry follows the compact look of shields.io badges -- a 14px logo
 ;; inset by 3px, 11px text, 5px of padding on each side of a text run and 3px
-;; rounded corners -- drawn at (scaled ...), that is 6% larger than those
+;; rounded corners -- drawn at (scaled ...), that is 9.18% larger than those
 ;; numbers. See `badge-scale' in (ggg svg).
 (define logo-width
   (make-parameter (scaled 14)))

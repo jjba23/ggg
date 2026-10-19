@@ -22,12 +22,13 @@
   #:use-module (srfi srfi-13)
   #:export (badge-scale scaled rounded length-for-text))
 
-;; Every badge is drawn 6% larger than the shields.io and GitHub geometry the
-;; numbers in this library are calibrated against.  A slightly larger badge
-;; reads better in a README while keeping the compact look, and applying the
-;; scale in one place means the boxes, the text and the logo grow together.
+;; Every badge is drawn larger than the shields.io and GitHub geometry the
+;; numbers in this library are calibrated against: 6% larger at first, and then
+;; a further 3%, so 9.18% in total.  A slightly larger badge reads better in a
+;; README while keeping the compact look, and applying the scale in one place
+;; means the boxes, the text and the logo grow together.
 (define badge-scale
-  1.06)
+  (* 1.06 1.03))
 
 (define (scaled value)
   "VALUE scaled by BADGE-SCALE, rounded to two decimals so that coordinates stay

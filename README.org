@@ -44,7 +44,7 @@ The SVG (Scalable Vector Graphics) can then be easily converted without quality 
 -  Helpful Errors :: Invalid glyph files are reported with actionable messages before anything is generated.
 -  Simple Definition :: Badge configurations are defined in an easy-to-understand data structure within the Scheme code.
 
-Badges follow the compact geometry of the badges GitHub shows: 20px tall, 11px text, a 14px logo, 5px of padding on each side of a text run and 3px rounded corners -- all drawn 6% larger, so a default badge is 21.2px tall with 11.66px text and a 14.84px logo, which reads a little better next to body text. ggg estimates text width by summing a per-character width for the font size (capitals, digits and wide letters take more room than narrow ones) and adding that padding, so a badge stays as tight as the ones you see in README files.
+Badges follow the compact geometry of the badges GitHub shows: 20px tall, 11px text, a 14px logo, 5px of padding on each side of a text run and 3px rounded corners -- all drawn 9.18% larger (6%, then a further 3%), so a default badge is 21.84px tall with 12.01px text and a 15.29px logo, which reads a little better next to body text. ggg estimates text width by summing a per-character width for the font size (capitals, digits and wide letters take more room than narrow ones) and adding that padding, so a badge stays as tight as the ones you see in README files.
 
 ggg tries to provide sensible defaults to every option, but allow customization. We construct the SVG structure using SXML (S-expressions representing XML). This makes it easy to define the SVG elements and their attributes programmatically.
 
@@ -173,16 +173,22 @@ ggg --gallery ./test/gallery.html --glyphs ./glyphs
 
 ** The badge showcase
 
-~glyphs/showcase.scm~ ships one ready-made badge per popular logo in the library: 157 badges grouped by what the project is (languages, web frameworks and APIs, databases and queues, infrastructure, security and networking, cloud, git, observability, distributions, editors, shells, AI, testing, media, chat). Every badge reads ~<logo> Name | category~; its second section takes the Catppuccin mocha accent closest to the project's own hue (blue stays ~blue~, orange becomes ~peach~, black brands use the neutral ~overlay2~) and draws its text in ~base~.
+~glyphs/showcase.scm~ ships one ready-made badge per popular logo in the library, grouped by what the project is (languages, web frameworks and APIs, databases and queues, infrastructure, security and networking, cloud, git, observability, distributions, editors, shells, AI, testing, media, chat), and closes with a ~Theme variants~ group that paints one badge per palette: 169 badges in all. Every badge reads ~<logo> Name | category~. Its label stays Catppuccin mocha so the library reads alike, while the second section takes the accent closest to the project's own hue (blue stays ~blue~, orange becomes ~peach~, black brands use the neutral ~overlay2~) and draws its text in ~base~.
 
 #+begin_src scheme
 (define glyph-postgresql
   (badge 'postgresql "PostgreSQL" 'postgresql "database" 'blue))
+
+;; ... and the same helper pointed at another palette, with the color that
+;; reads on that theme's accents:
+(define glyph-theme-dracula
+  (badge 'theme-dracula "Dracula" 'paint "dracula" 'purple
+         #:theme 'dracula #:ink 'background))
 #+end_src
 
-The ~badge~ helper qualifies that accent with the theme, so the whole file follows one palette: switching flavor is a matter of changing the prefix in one place.
+So the second sections of the showcase mix all five theme families: ~mocha~, ~macchiato~, ~frappe~, ~latte~, ~doom-one~, ~doom-one-light~, ~dracula~, ~alucard~, ~solarized~ dark and light, and ~modus~ operandi and vivendi can be compared side by side. The ~badge~ helper qualifies each accent with its theme, so nothing depends on which palette happens to be the default.
 
-~glyphs/jjba23.scm~ is the other half of the pair: 68 badges for the things a project ticks off one by one -- language and tool versions (~lang-python~, ~lang-go~, ~haskell-ghc910~, ~rust-185+~), build and package tooling (~build-cmake~, ~build-meson~, ~pkg-homebrew~), CI (~ci-buildkite~, ~ci-drone~, ~pipeline-succeeded~), tests, linting and formatting (~test-jest~, ~test-pytest~, ~lint-eslint~, ~fmt-prettier~), data and deployment (~db-postgresql~, ~db-redis~, ~deploy-kubernetes~, ~infra-terraform~), shells, editors, licenses, and the project badges of the tools ggg is built with.
+~glyphs/jjba23.scm~ is the other half of the pair: 68 badges for the things a project ticks off one by one -- language and tool versions (~lang-python~, ~lang-go~, ~haskell-ghc910~, ~rust-185+~), build and package tooling (~build-cmake~, ~build-meson~, ~pkg-homebrew~), CI (~ci-buildkite~, ~ci-drone~, ~pipeline-succeeded~), tests, linting and formatting (~test-jest~, ~test-pytest~, ~lint-eslint~, ~fmt-prettier~), data and deployment (~db-postgresql~, ~db-redis~, ~deploy-kubernetes~, ~infra-terraform~), shells, editors, licenses, and the project badges of the tools ggg is built with. Their accents lean warm: warm neutrals for the licenses and docs, an orange from Dracula for planning, a yellow from Doom for testing -- while badges that stand for a brand keep that brand's hue.
 
 Both files are part of ~dist/~, and the gallery shows them next to each other. Because ggg clears its destination directory, the second file has to be rendered with ~-k~ / ~--keep~:
 
