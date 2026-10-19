@@ -59,10 +59,60 @@
     (id . gnu-make)))
 
 (define glyph-maak
-  `((sections ((background . badge-gray) (text . "Maak")
+  `((sections ((background . badge-gray) (text . "maak")
                (color . white)
-               (logo . lambda)))
+               (logo . maak))
+              ((background . "#D9760F") (text . "tasks")
+               (color . black)))
     (id . maak)))
+
+(define glyph-byggsteg
+  `((sections ((background . badge-gray) (text . "byggsteg")
+               (color . white)
+               (logo . byggsteg))
+              ((background . "#2EA44F") (text . "CI/CD")
+               (color . white)))
+    (id . byggsteg)))
+
+(define glyph-lucidplan
+  `((sections ((background . badge-gray) (text . "LucidPlan")
+               (color . white)
+               (logo . lucidplan))
+              ((background . "#2563EB") (text . "planning")
+               (color . white)))
+    (id . lucidplan)))
+
+(define glyph-bewaking
+  `((sections ((background . badge-gray) (text . "bewaking")
+               (color . white)
+               (logo . bewaking))
+              ((background . "#334155") (text . "security")
+               (color . white)))
+    (id . bewaking)))
+
+(define glyph-hygguile
+  `((sections ((background . badge-gray) (text . "Hygguile")
+               (color . white)
+               (logo . hygguile))
+              ((background . "#7C5A43") (text . "UI")
+               (color . white)))
+    (id . hygguile)))
+
+(define glyph-veritas
+  `((sections ((background . badge-gray) (text . "Veritas")
+               (color . white)
+               (logo . veritas))
+              ((background . "#4338CA") (text . "testing")
+               (color . white)))
+    (id . veritas)))
+
+(define glyph-symbanta
+  `((sections ((background . badge-gray) (text . "Symbanta")
+               (color . white)
+               (logo . symbanta))
+              ((background . "#A61E4D") (text . "analytics")
+               (color . white)))
+    (id . symbanta)))
 
 (define glyph-i18n-gnu-gettext
   `((sections ((background . badge-gray) (text . "i18n")
@@ -377,6 +427,12 @@
         glyph-rust-185+
         glyph-cargo
         glyph-maak
+        glyph-byggsteg
+        glyph-lucidplan
+        glyph-bewaking
+        glyph-hygguile
+        glyph-veritas
+        glyph-symbanta
         glyph-java-25
         glyph-kotlin-2
         glyph-scala-3

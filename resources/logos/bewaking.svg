@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <title>bewaking</title>
+  <path d="M12 2.5l7.5 2.8v6c0 4.7-3.2 8.2-7.5 10.2-4.3-2-7.5-5.5-7.5-10.2v-6z"
+        fill="none" stroke="#ffffff" stroke-width="2" stroke-linejoin="round"/>
+  <circle cx="12" cy="10" r="2.2" fill="#ffffff"/>
+  <path d="M12 11.6v4.1" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+</svg>

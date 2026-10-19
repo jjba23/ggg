@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- ggg original logo, licensed AGPL-3.0-or-later -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.01 -0.45 24 24" fill="none">
   <title>Database stack</title>
   <defs>
     <linearGradient id="database-sheen" x1="5" y1="3" x2="19" y2="21" gradientUnits="userSpaceOnUse">

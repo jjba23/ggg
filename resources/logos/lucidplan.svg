@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0.51 24 24">
+  <title>LucidPlan</title>
+  <rect x="4" y="4" width="16" height="18" rx="2" fill="none" stroke="#ffffff" stroke-width="2"/>
+  <rect x="8.5" y="2" width="7" height="4" rx="1.5" fill="#ffffff"/>
+  <path d="M8 11h8M8 15h5" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+  <path d="M7.5 18l1.8 1.8 3.5-3.5" fill="none" stroke="#ffffff" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

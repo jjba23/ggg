@@ -22,35 +22,43 @@
   #:use-module (srfi srfi-13)
   #:export (length-for-text))
 
-(define* (length-for-text text-length
-                          #:key (font-size 12))
-  "Estimates text container widths in pixels. It looks up a rough width per character based on the font size.
-Then, it multiplies this by the number of characters and adds some padding.
-Finally, it slightly adjusts the width based on whether the text is very short, short,
-medium, or long to make the badge look better. It rounds the final width to a whole number."
-  (let* ((base-char-width (case font-size
-                            ((10)
-                             8)
-                            ((11)
-                             9)
-                            ((12)
-                             9.5)
-                            ((14)
-                             10.5)
-                            ((16)
-                             11.5)
-                            (else 7)))
-         (horizontal-padding 16)
-         (scaling-factor (cond
-                           ((> text-length 7)
-                            0.8)
-                           ((> text-length 6)
-                            0.9)
-                           ((> text-length 5)
-                            1.0)
-                           ((< text-length 5)
-                            1.3)
-                           (else 1.0)))
-         (calculated-width (+ horizontal-padding
-                              (* base-char-width text-length scaling-factor))))
-    (round calculated-width)))
+;; Average character widths for the sans-serif stack at each font size. They
+;; are calibrated against the badges shields.io and GitHub render, which are
+;; 11px text with 5px of padding on each side.
+(define (average-character-width font-size)
+  (case font-size
+    ((9) 5.1)
+    ((10) 5.6)
+    ((11) 6.0)
+    ((12) 6.5)
+    ((13) 7.1)
+    ((14) 7.6)
+    ((16) 8.7)
+    (else 6.0)))
+
+(define (character-width character font-size)
+  "The estimated width of CHARACTER at FONT-SIZE. Capitals, digits and wide
+letters take more room than the average lowercase letter."
+  (let ((average (average-character-width font-size)))
+    (* average
+       (cond
+         ((char-whitespace? character) 0.55)
+         ((char-upper-case? character) 1.3)
+         ((char-numeric? character) 1.12)
+         ((memv character '(#\i #\l #\I #\. #\, #\: #\; #\' #\! #\| #\( #\)
+                            #\[ #\] #\{ #\})) 0.5)
+         ((memv character '(#\m #\w #\M #\W #\@)) 1.35)
+         (else 1.0)))))
+
+(define* (length-for-text text
+                          #:key (font-size 11) (padding 5))
+  "Estimate the width of a badge section in pixels: TEXT at FONT-SIZE plus
+PADDING on both sides. The per-character widths are averages for the
+sans-serif stack badges use, so a badge stays as compact as the ones
+shields.io and GitHub render. The result is rounded to a whole pixel."
+  (let ((text (if (string? text) text (format #f "~a" text))))
+    (round (+ (* 2 padding)
+              (fold (lambda (character total)
+                      (+ total (character-width character font-size)))
+                    0
+                    (string->list text))))))

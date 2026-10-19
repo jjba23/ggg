@@ -68,9 +68,14 @@
   "Run ggg's test suite."
   (time-machine-manifest-shell '("guile -L ./src ./test/ggg-tests.scm")))
 
+(define (write-gallery destination)
+  "Write the HTML gallery of every badge in ./glyphs and every logo."
+  (time-machine-program-shell (list (~ "ggg --gallery ~a" destination)
+                                    "--glyphs ./glyphs")))
+
 (define (gallery)
-  "Generate the HTML gallery of every logo."
-  (time-machine-program-shell '("ggg --gallery ./test/gallery.html")))
+  "Generate the HTML gallery of every badge and logo."
+  (write-gallery "./test/gallery.html"))
 
 (define (docs)
   "Generate technical API documentation for Maak."
@@ -82,6 +87,9 @@
 
 (define (deploy)
   (run)
+  ;; The gallery ships with dist/ so the CI deployment publishes it:
+  ;; https://jointhefreeworld.org/ggg/dist/gallery.html
+  (write-gallery "./dist/gallery.html")
   (docs)
   ;; Deploy GGG
   (mkdir-p (~ "~a/ggg" deploy-dir))

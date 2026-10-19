@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- ggg original logo, licensed AGPL-3.0-or-later -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -1.03 24 24" fill="none">
   <title>Anchor</title>
   <circle cx="12" cy="4.4" r="2.2" fill="none" stroke="#ffffff" stroke-width="1.6" />
   <path fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" d="M12 6.6v12.8M7.6 9.6h8.8" />

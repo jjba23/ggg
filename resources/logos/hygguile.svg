@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0.7 -0.97 24 24">
+  <title>Hygguile</title>
+  <path d="M4 10h12v6.5a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z" fill="#ffffff"/>
+  <path d="M16 11h1.6a2.9 2.9 0 0 1 0 5.8H16" fill="none" stroke="#ffffff"
+        stroke-width="2" stroke-linecap="round"/>
+  <path d="M8 3.5c0 1.4.9 1.9.9 3.2M12 2.5c0 1.4.9 1.9.9 3.2" fill="none"
+        stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+</svg>

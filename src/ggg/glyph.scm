@@ -28,20 +28,23 @@
                      logo-width separator-width text-vertical-center
                      first-padding separator-x-offset))
 
+;; Badge geometry follows the compact 20px-high look of shields.io badges:
+;; a 14px logo inset by 3px, 11px text, 5px of padding on each side of a text
+;; run and 3px rounded corners.
 (define logo-width
-  (make-parameter 18))
+  (make-parameter 14))
 
 (define separator-width
-  (make-parameter 8))
+  (make-parameter 6))
 
 (define text-vertical-center
-  (make-parameter 17))
+  (make-parameter 14))
 
 (define first-padding
-  (make-parameter 2))
+  (make-parameter 3))
 
 (define separator-x-offset
-  (make-parameter 6))
+  (make-parameter 3))
 
 ;; ====== Reading a glyph definition ======
 
@@ -120,6 +123,27 @@
 
 ;; ====== Rendering ======
 
+(define* (resolve-section section index glyph-id #:key resources)
+  "Resolve SECTION into the values the renderer needs, including its width."
+  (let* ((text (section-text section glyph-id index))
+         (font-size (section-number section 'font-size 11 glyph-id index))
+         (logo (and (= index 1)
+                    (section-logo section glyph-id index #:resources resources))))
+    `((text . ,text)
+      (background . ,(section-color section 'background glyph-id index))
+      (color . ,(section-color section 'color glyph-id index))
+      (font-family . ,(section-font-family section glyph-id index))
+      (font-size . ,font-size)
+      (font-weight . ,(section-number section 'font-weight 500 glyph-id index))
+      (logo . ,logo)
+      ;; The first text area starts after the logo box and the gap that keeps
+      ;; the label from touching the logo. Other sections have no logo.
+      (text-area-start . ,(if logo (+ (logo-width) (first-padding)) 0))
+      (text-width . ,(length-for-text text #:font-size font-size)))))
+
+(define (section-full-width section)
+  (+ (lookup section 'text-area-start) (lookup section 'text-width)))
+
 (define* (mk-glyph x
                    #:key resources)
   (let* ((badge-id (or (glyph-id x)
@@ -127,178 +151,76 @@
                              #:hint "Give each glyph a unique id, e.g. (id . scheme-guile).")))
          (sections (or (lookup x 'sections) '()))
          (section-count (if (list? sections) (length sections) 0)))
-    (unless (and (>= section-count 1) (<= section-count 3))
-      (fail (format #f "glyph '~a' has ~a sections; ggg supports between 1 and 3"
-                    badge-id section-count)
-            #:hint "Use one section for a plain badge, or two or three for segmented badges."))
-    (let* ((first-section (car sections))
-           (second-section (and (>= section-count 2) (cadr sections)))
-           (third-section (and (>= section-count 3) (caddr sections)))
-           (first-text (section-text first-section badge-id 1))
-           (second-text (and second-section
-                             (section-text second-section badge-id 2)))
-           (third-text (and third-section
-                            (section-text third-section badge-id 3)))
-           (first-background (section-color first-section 'background badge-id 1))
-           (second-background (and second-section
-                                   (section-color second-section 'background badge-id 2)))
-           (third-background (and third-section
-                                  (section-color third-section 'background badge-id 3)))
-           (first-color (section-color first-section 'color badge-id 1))
-           (second-color (and second-section
-                              (section-color second-section 'color badge-id 2)))
-           (third-color (and third-section
-                             (section-color third-section 'color badge-id 3)))
-           (height (glyph-number x 'height 26))
-           (border-radius (glyph-number x 'border-radius 6))
-           (first-font-family (section-font-family first-section badge-id 1))
-           (second-font-family (and second-section
-                                    (section-font-family second-section badge-id 2)))
-           (third-font-family (and third-section
-                                   (section-font-family third-section badge-id 3)))
-           (first-font-size (section-number first-section 'font-size 12 badge-id 1))
-           (second-font-size (and second-section
-                                  (section-number second-section 'font-size 12 badge-id 2)))
-           (third-font-size (and third-section
-                                 (section-number third-section 'font-size 12 badge-id 3)))
-           (first-font-weight (section-number first-section 'font-weight 500 badge-id 1))
-           (second-font-weight (and second-section
-                                    (section-number second-section 'font-weight 500 badge-id 2)))
-           (third-font-weight (and third-section
-                                   (section-number third-section 'font-weight 500 badge-id 3)))
-           (first-logo (section-logo first-section badge-id 1 #:resources resources))
-
-           ;; Calculated Dimensions
-           (has-first-logo? (not (nil? first-logo)))
-           (first-logo-effective-width (if has-first-logo?
-                                           (logo-width) 0))
-
-           (first-text-width (length-for-text (string-length first-text)))
-           (second-text-width (if (not second-text) 0
-                                  (length-for-text (string-length second-text))))
-           (third-text-width (if (not third-text) 0
-                                 (length-for-text (string-length third-text))))
-
-           (first-area-width (+ first-logo-effective-width
-                                (first-padding) first-text-width))
-
-           (total-badge-width (+ first-area-width
-                                 (if (not second-text-width) 0 second-text-width)
-                                 (if (not third-text-width) 0 third-text-width)))
-
-           (first-separator-x (- first-area-width
-                                 (separator-x-offset)))
-           (second-separator-x first-area-width)
-
-           (third-separator-x (- (+ first-area-width second-text-width)
-                                 (separator-x-offset)))
-           (fourth-separator-x (+ first-area-width second-text-width))
-
-           (second-x first-area-width)
-           (third-x (+ first-area-width second-text-width))
-           ;; Center text in first area
-           (first-text-x (round (+ first-logo-effective-width
-                                   (/ first-text-width 2))))
-           ;; Center text in second area
-           (second-text-x (round (+ second-x
-                                    (/ second-text-width 2))))
-           ;; Center text in third area
-           (third-text-x (round (+ third-x
-                                   (/ third-text-width 2)))))
+    (when (zero? section-count)
+      (fail (format #f "glyph '~a' has no sections" badge-id)
+            #:hint "Add at least one section with a text label and colors."))
+    (let* ((height (glyph-number x 'height 20))
+           (border-radius (glyph-number x 'border-radius 3))
+           (resolved (map (lambda (section index)
+                            (resolve-section section index badge-id
+                                             #:resources resources))
+                          sections
+                          (iota section-count 1)))
+           (widths (map section-full-width resolved))
+           ;; Where each section starts. The next section's start is also the
+           ;; boundary between the two of them.
+           (positions (let loop ((rest widths) (x 0) (acc '()))
+                        (if (null? rest)
+                            (reverse acc)
+                            (loop (cdr rest) (+ x (car rest)) (cons x acc)))))
+           (total-badge-width (fold + 0 widths))
+           (first-section (car resolved))
+           (first-logo (lookup first-section 'logo)))
       `((svg (@ (id ,badge-id)
                 (xmlns "http://www.w3.org/2000/svg")
                 (width ,total-badge-width)
                 (height ,height)
                 (viewBox ,(format #f "0 0 ~a ~a" total-badge-width height)))
              (g (@ (shape-rendering "geometricPrecision"))
-                (rect (@ (x 0)
-                         (width ,first-area-width)
-                         (height ,height)
-                         (fill ,first-background)
-                         (rx ,border-radius)
-                         (ry ,border-radius)) "")
-                ,(if (not second-text)
-                     '()
-                     `(rect (@ (x ,second-x)
-                               (width ,second-text-width)
-                               (height ,height)
-                               (fill ,second-background)
-                               (rx ,border-radius)
-                               (ry ,border-radius)) ""))
-                ,(if (not third-text)
-                     '()
-                     `(rect (@ (x ,third-x)
-                               (width ,third-text-width)
-                               (height ,height)
-                               (fill ,third-background)
-                               (rx ,border-radius)
-                               (ry ,border-radius)) ""))
-                ,(if (not second-text)
-                     '()
-                     `(rect (@ (x ,first-separator-x)
-                               (width ,(separator-width))
-                               (height ,height)
-                               (fill ,first-background)
-                               (rx 0)
-                               (ry 0)) ""))
-                ,(if (not second-text)
-                     '()
-                     `(rect (@ (x ,second-separator-x)
-                               (width ,(separator-width))
-                               (height ,height)
-                               (fill ,second-background)
-                               (rx 0)
-                               (ry 0)) ""))
-                ,(if (not third-text)
-                     '()
-                     `(rect (@ (x ,third-separator-x)
-                               (width ,(separator-width))
-                               (height ,height)
-                               (fill ,second-background)
-                               (rx 0)
-                               (ry 0)) ""))
-                ,(if (not third-text)
-                     '()
-                     `(rect (@ (x ,fourth-separator-x)
-                               (width ,(separator-width))
-                               (height ,height)
-                               (fill ,third-background)
-                               (rx 0)
-                               (ry 0)) "")))
+                ,@(map (lambda (section x width)
+                         `(rect (@ (x ,x)
+                                   (width ,width)
+                                   (height ,height)
+                                   (fill ,(lookup section 'background))
+                                   (rx ,border-radius)
+                                   (ry ,border-radius)) ""))
+                       resolved positions widths)
+                ;; Square off the rounded corners where two sections meet, with
+                ;; one strip of each background color around every boundary.
+                ,@(append-map (lambda (previous next boundary)
+                                (list
+                                 `(rect (@ (x ,(- boundary (separator-x-offset)))
+                                           (width ,(separator-width))
+                                           (height ,height)
+                                           (fill ,(lookup previous 'background))
+                                           (rx 0)
+                                           (ry 0)) "")
+                                 `(rect (@ (x ,boundary)
+                                           (width ,(separator-width))
+                                           (height ,height)
+                                           (fill ,(lookup next 'background))
+                                           (rx 0)
+                                           (ry 0)) "")))
+                              resolved (cdr resolved) (cdr positions)))
              (g (@ (text-anchor "middle")
                    (shape-rendering "geometricPrecision"))
-                (text (@ (fill ,first-color)
-                         (font-size ,first-font-size)
-                         (font-family ,first-font-family)
-                         (style ,(serialize-style `((font-weight unquote
-                                                                 first-font-weight))))
-                         (x ,first-text-x)
-                         (y ,(text-vertical-center)))
-                      ,first-text)
-                ,(if (not second-text)
-                     '()
-                     `(text (@ (fill ,second-color)
-                               (font-size ,second-font-size)
-                               (font-family ,second-font-family)
-                               (style ,(serialize-style `((font-weight unquote
-                                                                       second-font-weight))))
-                               (x ,second-text-x)
-                               (y ,(text-vertical-center)))
-                            ,second-text))
-                ,(if (not third-text)
-                     '()
-                     `(text (@ (fill ,third-color)
-                               (font-size ,third-font-size)
-                               (font-family ,third-font-family)
-                               (style ,(serialize-style `((font-weight unquote
-                                                                      third-font-weight))))
-                               (x ,third-text-x)
-                               (y ,(text-vertical-center)))
-                            ,third-text)))
-             ,(if first-logo
-                  `(g (@ (shape-rendering "geometricPrecision"))
-                      ,first-logo)
-                  '()))))))
+                ,@(map (lambda (section x)
+                         `(text (@ (fill ,(lookup section 'color))
+                                   (font-size ,(lookup section 'font-size))
+                                   (font-family ,(lookup section 'font-family))
+                                   (style ,(serialize-style
+                                            (list (cons 'font-weight
+                                                        (lookup section 'font-weight)))))
+                                   (x ,(round (+ x
+                                                 (lookup section 'text-area-start)
+                                                 (/ (lookup section 'text-width) 2))))
+                                   (y ,(text-vertical-center)))
+                                ,(lookup section 'text)))
+                       resolved positions))
+             ,@(if first-logo
+                   `((g (@ (shape-rendering "geometricPrecision"))
+                        ,first-logo))
+                   '()))))))
 
 ;; ====== Validation ======
 
@@ -405,7 +327,7 @@
       (list (format #f "glyph ~a is not a proper list of settings" index))
       (let* ((id (glyph-id glyph))
              (label (format #f "glyph '~a'" (or id (format #f "#~a" index))))
-             (sections (lookup glyph 'sections)))
+             (sections (or (lookup glyph 'sections) '())))
         (append
          (if id
              (if (safe-filename? id)
@@ -421,9 +343,6 @@
            ((null? sections)
             (list (format #f "~a has no sections; add at least one section with text and colors"
                           label)))
-           ((> (length sections) 3)
-            (list (format #f "~a has ~a sections; ggg supports at most 3"
-                          label (length sections))))
            (else
             (append-map (lambda (section section-index)
                           (validate-section section section-index label resources))

@@ -74,7 +74,7 @@ point_to_help() {
   log_error "Try 'ggg --help' for more information."
 }
 
-if ! parsed_options=$(getopt -n "ggg" -o d:f:iochk --long destination:,file:,stdin,stdout,convert,keep,help,list-colors,list-logos,gallery: -- "$@"); then
+if ! parsed_options=$(getopt -n "ggg" -o d:f:iochk --long destination:,file:,stdin,stdout,convert,keep,help,list-colors,list-logos,gallery:,glyphs: -- "$@"); then
   point_to_help
   exit 1
 fi
@@ -140,6 +140,11 @@ while true; do
     standalone_arg="true"
     shift 2
     ;;
+  --glyphs)
+    [[ -n "${2}" ]] && guile_cmd_args+=("--glyphs" "${2}")
+    standalone_arg="true"
+    shift 2
+    ;;
   -h | --help)
     show_help
     exit 0
@@ -156,8 +161,8 @@ while true; do
   esac
 done
 
-# --list-colors, --list-logos and --gallery do not need a glyph file or a
-# destination directory.
+# --list-colors, --list-logos, --gallery and --glyphs do not need a glyph file
+# or a destination directory.
 if [[ -n "${standalone_arg}" ]]; then
   exec guile "${guile_cmd_args[@]}"
 fi

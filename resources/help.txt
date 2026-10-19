@@ -6,7 +6,7 @@ GGG: Guile Glyph Generator
     See more at: https://codeberg.org/jjba23/ggg
     Software licensed under the GNU AGPL v3 or newer.
 
-    With flexible support for badges between ONE and THREE parts.
+    With flexible support for badges with any number of parts.
 
 USAGE: ggg [OPTIONS]
 OPTIONS:
@@ -43,8 +43,14 @@ OPTIONS:
         List the logos available in the resources directory, then exit.
 
         --gallery FILE
-        Write a self-contained HTML gallery showing every logo with its
-        name, then exit. Handy for browsing the logo library.
+        Write a self-contained HTML gallery showing every badge from
+        --glyphs together with every logo, then exit. Handy for browsing
+        the badge and logo libraries.
+
+        --glyphs PATH
+        A glyph file, or a directory of .scm glyph files, to render as
+        badges in the --gallery page. Pass a directory such as ./glyphs
+        to include every glyph file; the gallery groups them by name.
 
     -h, --help
         Display this help message and exit.
@@ -56,9 +62,14 @@ CONFIGURING YOUR GLYPHS:
 
     Logos are full SVG documents in the resources/logos/ directory, so they
     may contain several paths, groups, gradients, etc. ggg ships a large
-    library of tech logos; see resources/logos/CREDITS.md for their sources.
+    library of tech logos; see CREDITS.org, in the repository root, for their
+    sources.
     Run "ggg --list-logos" to see the names, or "ggg --gallery
-    ./gallery.html" to browse them visually.
+    ./gallery.html" to browse them visually. In the gallery, click the
+    snippet under a badge or logo to copy it to the clipboard.
+
+    A glyph can have any number of sections; each one becomes a segment with
+    its own text and colors. A logo belongs to the first section.
 
     Your glyph file is validated before anything is generated: problems such
     as unknown color or logo names are reported with a hint, instead of
@@ -75,7 +86,7 @@ EXAMPLES:
 
     ggg --list-colors
 
-    ggg --gallery ./test/gallery.html
+    ggg --gallery ./test/gallery.html --glyphs ./glyphs
 
     ggg -f ./glyphs/showcase.scm -d ./dist -k -c
 

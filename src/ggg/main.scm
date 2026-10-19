@@ -18,6 +18,7 @@
 (define-module (ggg main)
   #:declarative? #f
   #:use-module (ice-9 format)
+  #:use-module (ice-9 ftw)
   #:use-module (ice-9 getopt-long)
   #:use-module (ice-9 textual-ports)
   #:use-module (srfi srfi-1)
@@ -97,6 +98,40 @@
       (fail "the glyph configuration does not define ggg-glyphs"
             #:hint "Start the file with (define-module (ggg config)) and finish it with (define ggg-glyphs (list your-glyph ...))."))
     glyphs))
+
+(define (glyph-files path)
+  "The glyph files named by PATH: the file itself, or every *.scm file in it."
+  (guard-errors
+   (lambda ()
+     (unless (file-exists? path)
+       (fail (format #f "glyphs path not found: ~a" path)
+             #:hint "Pass a glyph file (Scheme) or a directory containing .scm files."))
+     (let ((files (if (file-is-directory? path)
+                      (map (lambda (name) (format #f "~a/~a" path name))
+                           (sort (filter (lambda (name)
+                                           (string-suffix? ".scm" name))
+                                         (scandir path
+                                                  (lambda (name)
+                                                    (not (member name '("." ".."))))))
+                                 string<?))
+                      (list path))))
+       (when (null? files)
+         (fail (format #f "no .scm glyph files found in '~a'" path)
+               #:hint "Pass a file, or a directory that contains at least one .scm file."))
+       files))
+   #:label (format #f "could not read the glyphs in '~a'" path)
+   #:hint "Pass a glyph file (Scheme) or a directory containing .scm files."))
+
+(define* (load-glyph-groups path #:key resources)
+  "Load every glyph file named by PATH for the gallery, as (label . glyphs)
+pairs. The badges are validated exactly like a normal render."
+  (map (lambda (file)
+         (let ((glyphs (load-glyphs #:file file #:with-stdin? #f)))
+           (let ((problems (validate-glyphs glyphs #:resources resources)))
+             (when (pair? problems)
+               (report-problems problems)))
+           (cons (basename file) glyphs)))
+       (glyph-files path)))
 
 (define (report-problems problems)
   (let ((count (length problems)))
@@ -259,6 +294,7 @@ USAGE: ggg [OPTIONS]
         --list-colors        show the named badge colors
         --list-logos         show the available logos
         --gallery FILE       write an HTML gallery of every logo
+        --glyphs PATH        glyph file or directory to show in --gallery
     -h, --help               show this help
 
 See resources/help.txt or the README for details.\n")
@@ -324,7 +360,9 @@ See resources/help.txt or the README for details.\n")
                         (list-logos (value #f)
                                     (required? #f))
                         (gallery (value #t)
-                                 (required? #f))))
+                                 (required? #f))
+                        (glyphs (value #t)
+                                (required? #f))))
          (options (catch 'getopt-long
                     (lambda () (getopt-long args option-spec))
                     (lambda (key . args)
@@ -342,6 +380,7 @@ See resources/help.txt or the README for details.\n")
          (list-colors? (option-ref options 'list-colors #f))
          (list-logos? (option-ref options 'list-logos #f))
          (gallery-file (option-ref options 'gallery #f))
+         (glyphs-path (option-ref options 'glyphs #f))
          (resources (find-resources resources-option)))
 
     (when with-help?
@@ -356,12 +395,26 @@ See resources/help.txt or the README for details.\n")
       (print-logos #:resources (require-resources resources-option))
       (exit 0))
 
+    (when (and glyphs-path (not gallery-file))
+      (fail "--glyphs only makes sense together with --gallery"
+            #:hint "Use --gallery FILE --glyphs ./glyphs to include every badge in the gallery."))
+
     (when gallery-file
-      (let ((count (write-gallery-page gallery-file
-                                       #:resources (require-resources resources-option))))
-        (display (format #f "Wrote a gallery of ~a logos to ~a\n"
-                         count
-                         (canonicalize-path gallery-file))))
+      (let* ((resource-directory (require-resources resources-option))
+             (glyph-groups (if glyphs-path
+                               (load-glyph-groups glyphs-path
+                                                  #:resources resource-directory)
+                               '())))
+        (call-with-values
+            (lambda ()
+              (write-gallery-page gallery-file
+                                  #:resources resource-directory
+                                  #:glyph-groups glyph-groups))
+          (lambda (badges logos)
+            (display (format #f "Wrote a gallery of ~a badge~a and ~a logo~a to ~a\n"
+                             badges (if (= badges 1) "" "s")
+                             logos (if (= logos 1) "" "s")
+                             (canonicalize-path gallery-file))))))
       (exit 0))
 
     (when (and file with-stdin?)

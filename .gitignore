@@ -2,3 +2,5 @@
 doc
 result/
 result
+# Written by `maak deploy` and published by CI, not by `maak run`.
+dist/gallery.html

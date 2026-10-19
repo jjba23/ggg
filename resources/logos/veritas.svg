@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <title>Veritas</title>
+  <path d="M12 3v17M7 21h10M3.5 8h17" fill="none" stroke="#ffffff" stroke-width="2"
+        stroke-linecap="round"/>
+  <path d="M3.5 8L1.4 12.8h4.2zM20.5 8l-2.1 4.8h4.2z" fill="#ffffff"/>
+  <circle cx="12" cy="3.4" r="1.4" fill="#ffffff"/>
+</svg>

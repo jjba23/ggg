@@ -209,7 +209,7 @@ metadata and foreign namespaces."
             #:hint (format #f "~a. Make sure it is a well-formed XML document."
                            (if (pair? args) (car args) key))))))
 
-(define* (full-svg-logo path #:key (width 18) (height 18))
+(define* (full-svg-logo path #:key (width 14) (height 14) (x 3) (y 3))
   (let* ((contents (call-with-input-file path get-string-all))
          (trimmed (string-trim-both contents)))
     (unless (string-contains trimmed "<svg")
@@ -223,8 +223,8 @@ metadata and foreign namespaces."
       (let* ((attributes (svg-attributes svg))
              (view-box (or (assoc-ref attributes 'viewBox)
                            (view-box-from-size attributes)))
-             (x (or (assoc-ref attributes 'x) 6))
-             (y (or (assoc-ref attributes 'y) 5))
+             ;; The badge decides where the logo sits; a stray x/y left on a
+             ;; logo document must not push it out of the badge's padding.
              (extra-attributes
               (map attribute->sxml
                    (remove (lambda (attribute)
@@ -247,7 +247,7 @@ metadata and foreign namespaces."
                  ,@extra-attributes)
               ,@children)))))
 
-(define* (get-logo-sxml name #:key resources (width 18) (height 18))
+(define* (get-logo-sxml name #:key resources (width 14) (height 14))
   "Return the SXML for logo NAME ready to be nested inside a badge, or #f."
   (let* ((name (logo-name->string name))
          (path (logo-file-path name #:resources resources)))

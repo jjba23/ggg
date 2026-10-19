@@ -23,10 +23,12 @@
   #:use-module (ice-9 textual-ports)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-13)
+  #:use-module (ggg glyph)
   #:use-module (ggg logo)
   #:use-module (ggg prelude)
   #:use-module (ggg sxml)
-  #:export (gallery-html write-gallery-page logo-display-name logo-markup))
+  #:export (gallery-html write-gallery-page logo-display-name logo-markup
+                        gallery-badge-tile badge-markup badge-search-text))
 
 ;; ====== Logo helpers ======
 
@@ -101,6 +103,101 @@ logos can live in the same document without clashing on gradient names."
           (prefix-svg-ids sxml
                           (format #f "logo-~a-" (logo-name->string name)))))))
 
+;; ====== Badge helpers ======
+
+(define (glyph-section-texts glyph)
+  "Every text label of GLYPH, as strings."
+  (let ((sections (lookup glyph 'sections)))
+    (if (not (list? sections))
+        '()
+        (filter-map (lambda (section)
+                      (let ((text (lookup section 'text)))
+                        (and text (format #f "~a" text))))
+                    sections))))
+
+(define (badge-search-text glyph)
+  "What a badge can be filtered by: its id and the text of every section."
+  (string-join (cons (or (glyph-id glyph) "")
+                     (glyph-section-texts glyph))
+               " "))
+
+(define (id-safe text)
+  "TEXT reduced to characters that are safe inside an SVG id."
+  (list->string (filter (lambda (character)
+                          (or (char-alphabetic? character)
+                              (char-numeric? character)
+                              (eqv? character #\-)))
+                        (string->list text))))
+
+(define (scheme-source value)
+  "VALUE as Scheme source, so a copied snippet can be pasted into a glyph file."
+  (call-with-output-string
+   (lambda (port) (write value port))))
+
+(define (glyph-definition glyph)
+  "The Scheme form that recreates GLYPH."
+  (format #f "(define ~a '~a)"
+          (or (glyph-id glyph) "glyph")
+          (scheme-source glyph)))
+
+(define* (badge-markup glyph #:key resources (group ""))
+  "The badge as inline SVG markup, with its ids namespaced per group."
+  (let ((prefix (format #f "badge-~a-" (id-safe group))))
+    (serialize-sxml
+     (prefix-svg-ids (mk-glyph glyph #:resources resources) prefix))))
+
+(define* (gallery-badge-tile glyph #:key resources (group ""))
+  (let* ((id (or (glyph-id glyph) "badge"))
+         (definition (glyph-definition glyph))
+         (markup (badge-markup glyph #:resources resources #:group group)))
+    (format #f "\
+      <figure class=\"badge-tile\" data-name=\"~a\">
+        <div class=\"badge-preview\">~a</div>
+        <figcaption>
+          <span class=\"name\">~a</span>
+          <button type=\"button\" class=\"snippet\" data-copy=\"~a\" title=\"Copy the ~a glyph definition\">(id . ~a)</button>
+        </figcaption>
+      </figure>"
+            (html-escape (badge-search-text glyph))
+            markup
+            (html-escape id)
+            (html-attribute-escape definition)
+            (html-escape id)
+            (html-escape id))))
+
+(define (gallery-badge-group label glyphs resources)
+  (let ((count (length glyphs)))
+    (format #f "\
+    <section class=\"badge-group\">
+      <h2>~a <span class=\"meta\">~a badge~a</span></h2>
+      <div class=\"badge-grid\">
+~a
+      </div>
+    </section>"
+            (html-escape label)
+            count
+            (if (= count 1) "" "s")
+            (string-join (map (lambda (glyph)
+                                (gallery-badge-tile glyph
+                                                    #:resources resources
+                                                    #:group label))
+                              glyphs)
+                         "\n"))))
+
+(define (gallery-badge-groups glyph-groups resources)
+  "The HTML of every glyph group, or an empty string when there are none."
+  (if (or (not glyph-groups) (null? glyph-groups))
+      ""
+      (string-join (map (lambda (group)
+                          (gallery-badge-group (car group) (cdr group) resources))
+                        glyph-groups)
+                   "\n")))
+
+(define (gallery-badge-count glyph-groups)
+  (fold (lambda (group total) (+ total (length (cdr group))))
+        0
+        (or glyph-groups '())))
+
 ;; ====== HTML ======
 
 (define (html-escape text)
@@ -112,6 +209,19 @@ logos can live in the same document without clashing on gradient names."
             ((#\>) "&gt;")
             ((#\") "&quot;")
             ((#\') "&#39;")
+            (else (string character))))
+        (string->list (format #f "~a" text)))))
+
+(define (html-attribute-escape text)
+  "Like HTML-ESCAPE, but leaves apostrophes alone so copied Scheme keeps its
+quotes readable in a double-quoted attribute."
+  (string-concatenate
+   (map (lambda (character)
+          (case character
+            ((#\&) "&amp;")
+            ((#\<) "&lt;")
+            ((#\>) "&gt;")
+            ((#\") "&quot;")
             (else (string character))))
         (string->list (format #f "~a" text)))))
 
@@ -132,8 +242,30 @@ logos can live in the same document without clashing on gradient names."
     border: 1px solid #39414b; background: #1b2128; color: inherit; font-size: .95rem;
   }
   .count { color: #a9b3bf; font-size: .9rem; }
+
+  .badge-group { max-width: 76rem; margin: 2rem auto 0; }
+  .badge-group h2, h2.section-heading { font-size: 1.1rem; margin: 0 0 .9rem; }
+  h2.section-heading { max-width: 76rem; margin: 2.6rem auto .9rem; }
+  .meta { font-weight: 400; color: #7f8b98; font-size: .85rem; margin-left: .35rem; }
+  .badge-grid {
+    display: grid; gap: .8rem; align-items: start;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  }
+  figure.badge-tile {
+    margin: 0; padding: .85rem .7rem .65rem; border-radius: .6rem;
+    background: #1b2128; border: 1px solid #262d36;
+    display: flex; flex-direction: column; gap: .55rem; align-items: center;
+    min-width: 0;
+  }
+  figure.badge-tile[hidden] { display: none; }
+  .badge-preview {
+    width: 100%; min-height: 2.3rem;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .badge-preview svg { display: block; max-width: 100%; height: auto; }
+
   .grid {
-    max-width: 76rem; margin: 1.5rem auto 0;
+    max-width: 76rem; margin: 0 auto;
     display: grid; gap: .9rem;
     grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
   }
@@ -154,19 +286,37 @@ logos can live in the same document without clashing on gradient names."
     font-size: .85rem; color: #ffffff; overflow-wrap: anywhere;
   }
   .title { display: block; font-size: .74rem; color: #97a2ae; margin-top: .15rem; }
-  code.snippet {
-    display: block; margin-top: .4rem; font-size: .68rem; color: #7f8b98;
+  button.snippet {
+    display: block; margin: .4rem auto 0; padding: .16rem .4rem;
+    font-size: .68rem; color: #7f8b98; cursor: pointer;
+    background: transparent; border: 1px solid transparent; border-radius: .3rem;
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   }
+  button.snippet:hover { color: #cfe0f5; border-color: #39414b; background: #232b34; }
+  button.snippet:focus-visible { outline: 2px solid #80aadf; outline-offset: 1px; }
+  .toast {
+    position: fixed; left: 50%; bottom: 1.4rem; z-index: 10;
+    transform: translate(-50%, .8rem); opacity: 0; pointer-events: none;
+    padding: .55rem .9rem; border-radius: .45rem; font-size: .85rem;
+    background: #2b3540; color: #e9edf2; border: 1px solid #3d4854;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, .35);
+    transition: opacity .18s ease, transform .18s ease;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
   footer { max-width: 76rem; margin: 2.5rem auto 0; color: #7f8b98; font-size: .85rem; }
   a { color: #80aadf; }
 ")
 
 (define gallery-script "
   const input = document.querySelector('input[type=search]');
-  const tiles = Array.from(document.querySelectorAll('figure.tile'));
+  const tiles = Array.from(document.querySelectorAll('figure.tile, figure.badge-tile'));
   const count = document.querySelector('.count');
-  const label = (n) => n + ' logo' + (n === 1 ? '' : 's');
+  const badges = document.querySelectorAll('figure.badge-tile').length;
+  const logos = document.querySelectorAll('figure.tile').length;
+  const noun = (n, word) => n + ' ' + word + (n === 1 ? '' : 's');
+  const summary = () => [badges ? noun(badges, 'badge') : '',
+                         logos ? noun(logos, 'logo') : '']
+                          .filter(Boolean).join(' · ');
   const filter = () => {
     const query = input.value.trim().toLowerCase();
     let shown = 0;
@@ -175,10 +325,47 @@ logos can live in the same document without clashing on gradient names."
       tile.hidden = !matches;
       if (matches) shown += 1;
     });
-    count.textContent = query ? shown + ' of ' + label(tiles.length) : label(tiles.length);
+    count.textContent = query
+      ? shown + ' of ' + tiles.length + ' shown'
+      : summary();
   };
   input.addEventListener('input', filter);
   filter();
+
+  const toast = document.querySelector('.toast');
+  let toastTimer;
+  const notify = (message) => {
+    toast.textContent = message;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+  };
+  const copyText = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch (error) {
+      // file:// pages and older browsers have no clipboard API.
+      const area = document.createElement('textarea');
+      area.value = text;
+      area.setAttribute('readonly', '');
+      area.style.position = 'fixed';
+      area.style.opacity = '0';
+      document.body.appendChild(area);
+      area.select();
+      let copied = false;
+      try { copied = document.execCommand('copy'); } catch (ignored) { copied = false; }
+      area.remove();
+      return copied;
+    }
+  };
+  document.querySelectorAll('button.snippet').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const name = button.closest('figure').querySelector('.name').textContent;
+      const copied = await copyText(button.dataset.copy);
+      notify(copied ? 'Copied ' + name : 'Could not copy ' + name);
+    });
+  });
 ")
 
 (define* (gallery-tile name #:key resources)
@@ -190,7 +377,7 @@ logos can live in the same document without clashing on gradient names."
       <figcaption>
         <span class=\"name\">~a</span>
         <span class=\"title\">~a</span>
-        <code class=\"snippet\">(logo . ~a)</code>
+        <button type=\"button\" class=\"snippet\" data-copy=\"~a\" title=\"Copy the ~a logo snippet\">(logo . ~a)</button>
       </figcaption>
     </figure>"
             (html-escape name)
@@ -198,11 +385,44 @@ logos can live in the same document without clashing on gradient names."
             markup
             (html-escape name)
             (html-escape display)
+            (html-attribute-escape (format #f "(logo . ~a)" name))
+            (html-escape name)
             (html-escape name))))
 
-(define* (gallery-html #:key resources (title "GGG logo gallery"))
-  "A self-contained HTML page showing every logo in RESOURCES with its name."
-  (let ((names (logo-names #:resources resources)))
+(define (gallery-lede badge-count glyph-file-count logo-count)
+  (if (zero? badge-count)
+      (string-append
+       "Every logo that ggg ships, inlined from its "
+       "<code>resources/logos/&lt;name&gt;.svg</code> file. Logos are drawn white "
+       "on the same gray a badge uses. Use one in a glyph file with "
+       "<code>(logo . name)</code>. See <code>CREDITS.org</code> "
+       "for where each logo comes from.")
+      (format #f
+              "Every badge from ~a glyph file~a, rendered at its real size and with \
+its real colors, followed by all ~a logos that ggg ships. Use a logo in a \
+glyph file with <code>(logo . name)</code>. See \
+<code>CREDITS.org</code> for where each logo comes from."
+              glyph-file-count
+              (if (= glyph-file-count 1) "" "s")
+              logo-count)))
+
+(define* (gallery-html #:key resources (glyph-groups '()) (title "GGG badge gallery"))
+  "A self-contained HTML page showing every badge in GLYPH-GROUPS and every
+logo in RESOURCES with its name."
+  (let* ((names (logo-names #:resources resources))
+         (badge-count (gallery-badge-count glyph-groups))
+         (logo-count (length names))
+         (summary (string-join
+                   (filter-map (lambda (part) part)
+                               (list (if (> badge-count 0)
+                                         (format #f "~a badge~a"
+                                                 badge-count
+                                                 (if (= badge-count 1) "" "s"))
+                                         #f)
+                                     (format #f "~a logo~a"
+                                             logo-count
+                                             (if (= logo-count 1) "" "s"))))
+                   " · ")))
     (format #f "\
 <!DOCTYPE html>
 <html lang=\"en\">
@@ -216,23 +436,24 @@ logos can live in the same document without clashing on gradient names."
     <header>
       <h1>~a</h1>
       <p class=\"lede\">
-        Every logo that ggg ships, inlined from its
-        <code>resources/logos/&lt;name&gt;.svg</code> file. Logos are drawn white
-        on the same gray a badge uses, so they look just like they will inside
-        a badge. Use one in a glyph file with <code>(logo . name)</code>.
-        See <code>resources/logos/CREDITS.md</code> for where each logo comes from.
+        ~a
       </p>
       <div class=\"toolbar\">
-        <input type=\"search\" placeholder=\"Filter logos…\" aria-label=\"Filter logos\">
-        <span class=\"count\">~a logos</span>
+        <input type=\"search\" placeholder=\"Filter badges and logos…\" aria-label=\"Filter badges and logos\">
+        <span class=\"count\">~a</span>
       </div>
     </header>
-    <main class=\"grid\">
 ~a
+    <main>
+      <h2 class=\"section-heading\">Logo library <span class=\"meta\">~a</span></h2>
+      <div class=\"grid\">
+~a
+      </div>
     </main>
     <footer>
-      Generated by <code>ggg --gallery</code> from ~a.
+      Generated by <code>ggg --gallery</code>.
     </footer>
+    <div class=\"toast\" role=\"status\" aria-live=\"polite\"></div>
     <script>~a</script>
   </body>
 </html>
@@ -240,18 +461,21 @@ logos can live in the same document without clashing on gradient names."
             (html-escape title)
             gallery-style
             (html-escape title)
-            (length names)
+            (gallery-lede badge-count (length glyph-groups) logo-count)
+            summary
+            (gallery-badge-groups glyph-groups resources)
+            (format #f "~a logo~a" logo-count (if (= logo-count 1) "" "s"))
             (string-join (map (lambda (name)
                                 (gallery-tile name #:resources resources))
                               names)
                          "\n")
-            (html-escape resources)
             gallery-script)))
 
-(define* (write-gallery-page path #:key resources)
-  "Write the logo gallery to PATH and return how many logos it shows."
+(define* (write-gallery-page path #:key resources (glyph-groups '()))
+  "Write the gallery to PATH. Return two values: the number of badges and the
+number of logos it shows."
   (let* ((names (logo-names #:resources resources))
-         (html (gallery-html #:resources resources)))
+         (html (gallery-html #:resources resources #:glyph-groups glyph-groups)))
     (guard-errors (lambda ()
                     (ensure-directory (dirname path))
                     (with-output-to-file path
@@ -259,4 +483,4 @@ logos can live in the same document without clashing on gradient names."
                         (display html))))
                   #:label (format #f "could not write gallery page '~a'" path)
                   #:hint "Check that the directory you are writing to exists and is writable.")
-    (length names)))
+    (values (gallery-badge-count glyph-groups) (length names))))
