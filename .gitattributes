@@ -1,0 +1,4 @@
+*.scm     linguist-language=Scheme
+test/*.html linguist-documentation=true
+dist/*.html linguist-documentation=true
+scripts/ggg linguist-language=Bash
