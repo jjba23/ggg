@@ -25,6 +25,7 @@
   #:use-module (srfi srfi-13)
   #:use-module (ggg sxml)
   #:use-module (ggg prelude)
+  #:use-module (ggg version)
   #:use-module (ggg glyph)
   #:use-module (ggg colors)
   #:use-module (ggg gallery)
@@ -295,6 +296,7 @@ USAGE: ggg [OPTIONS]
         --list-logos         show the available logos
         --gallery FILE       write an HTML gallery of every logo
         --glyphs PATH        glyph file or directory to show in --gallery
+    -V, --version            show the version and exit
     -h, --help               show this help
 
 See resources/help.txt or the README for details.\n")
@@ -358,6 +360,9 @@ See resources/help.txt or the README for details.\n")
                         (help (single-char #\h)
                               (value #f)
                               (required? #f))
+                        (version (single-char #\V)
+                                 (value #f)
+                                 (required? #f))
                         (list-colors (value #f)
                                      (required? #f))
                         (list-logos (value #f)
@@ -380,6 +385,7 @@ See resources/help.txt or the README for details.\n")
          (with-stdout? (option-ref options 'stdout #f))
          (with-stdin? (option-ref options 'stdin #f))
          (with-help? (option-ref options 'help #f))
+         (with-version? (option-ref options 'version #f))
          (list-colors? (option-ref options 'list-colors #f))
          (list-logos? (option-ref options 'list-logos #f))
          (gallery-file (option-ref options 'gallery #f))
@@ -388,6 +394,10 @@ See resources/help.txt or the README for details.\n")
 
     (when with-help?
       (show-help resources)
+      (exit 0))
+
+    (when with-version?
+      (print-version)
       (exit 0))
 
     (when list-colors?

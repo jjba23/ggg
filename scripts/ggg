@@ -74,7 +74,7 @@ point_to_help() {
   log_error "Try 'ggg --help' for more information."
 }
 
-if ! parsed_options=$(getopt -n "ggg" -o d:f:iochk --long destination:,file:,stdin,stdout,convert,keep,help,list-colors,list-logos,gallery:,glyphs: -- "$@"); then
+if ! parsed_options=$(getopt -n "ggg" -o d:f:iochkV --long destination:,file:,stdin,stdout,convert,keep,help,version,list-colors,list-logos,gallery:,glyphs: -- "$@"); then
   point_to_help
   exit 1
 fi
@@ -148,6 +148,11 @@ while true; do
   -h | --help)
     show_help
     exit 0
+    ;;
+  -V | --version)
+    guile_cmd_args+=("--version")
+    standalone_arg="true"
+    shift 1
     ;;
   --)
     shift

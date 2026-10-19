@@ -220,8 +220,21 @@ Useful helpers while working on glyphs:
 - ~ggg --list-logos~ :: list the logos found in the resources directory.
 - ~ggg --gallery FILE [--glyphs PATH]~ :: write an HTML gallery of every badge and logo (see [[./test/gallery.html][test/gallery.html]]).
 - ~ggg -k~ / ~--keep~ :: render a second glyph file into a destination directory without clearing it first.
+- ~ggg -V~ / ~--version~ :: print the version, license and homepage.
 - ~maak showcase~ :: regenerate the popular-logo badges of [[./glyphs/showcase.scm][glyphs/showcase.scm]] in ~dist/~.
 - ~maak test~ (or ~guile -L ./src ./test/ggg-tests.scm~) :: run the test suite, which covers color resolution, the logo library, glyph validation and the gallery.
+- ~maak release~ :: sync, commit and tag a release (see below).
+
+** Releasing
+
+The version lives in one place, ~src/ggg/version.scm~: that is what ~ggg --version~ prints, what ~default.nix~ reads while it evaluates the derivation, and what ~maak version~ shows. Bump it, then let Maak do the rest:
+
+#+begin_src shell
+# edit src/ggg/version.scm: (define ggg-version "0.11.0")
+maak release
+#+end_src
+
+~maak release~ writes that version into ~guix.scm~ (the one file that cannot read a Scheme module), commits everything tracked as ~chore: Release vX.Y.Z~, and tags the commit. It refuses to re-release a version whose tag already exists, and tags the current commit when there is nothing left to commit. Render the badges first (~maak run~, ~maak gallery~) if the glyph files changed, so the release commit carries the images it describes.
 
 * Installing
 

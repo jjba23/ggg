@@ -25,7 +25,8 @@
 ;;
 ;;   maak test
 
-(use-modules (ice-9 textual-ports)
+(use-modules (ice-9 regex)
+             (ice-9 textual-ports)
              (srfi srfi-1)
              (srfi srfi-13)
              (srfi srfi-64)
@@ -35,7 +36,8 @@
              (ggg logo)
              (ggg main)
              (ggg prelude)
-             (ggg sxml))
+             (ggg sxml)
+             (ggg version))
 
 (define project-root
   (canonicalize-path
@@ -133,6 +135,22 @@ creating a literal #f/ directory in the project root when TMPDIR is unset."
   (test-assert "error messages can carry a context"
     (string-contains (color-error 'nope #:context "glyph 'x', section 1")
                      "glyph 'x', section 1")))
+
+;; ====== Version ======
+
+(test-group "version"
+  (test-assert "the version is a three-part version number"
+    (string-match "^[0-9]+\\.[0-9]+\\.[0-9]+$" ggg-version))
+  (test-equal "the version banner names ggg and the version"
+    (string-append "ggg " ggg-version)
+    (ggg-version-string))
+  (test-assert "`ggg --version' prints the version, license and homepage"
+    (let ((printed (call-with-output-string print-version)))
+      (and (string-contains printed (ggg-version-string))
+           (string-contains printed (string-append "License: " ggg-license))
+           (string-contains printed (string-append "Homepage: " ggg-homepage)))))
+  (test-assert "the version source is what `maak release' rewrites"
+    (file-exists? (string-append project-root "/src/ggg/version.scm"))))
 
 ;; ====== Logos ======
 

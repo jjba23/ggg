@@ -26,9 +26,26 @@
 , makeWrapper ? pkgs.makeWrapper
 }:
 
+let
+  # The version is written once, in src/ggg/version.scm, where the library and
+  # `ggg --version` read it.  Reading it here, instead of repeating the literal,
+  # is what keeps a release to one edit: the derivation cannot fall behind the
+  # program.  The newlines become spaces so that a single regular expression can
+  # find the value in a file of several lines.
+  versionText = builtins.readFile ./src/ggg/version.scm;
+  versionMatch = builtins.match
+    ".*\\(define ggg-version +\"([^\"]+)\".*"
+    (builtins.replaceStrings [ "\n" ] [ " " ] versionText);
+in
 stdenv.mkDerivation {
   pname = "ggg";
-  version = "0.1.0-dev";
+  version =
+    if versionMatch == null
+    then throw ''
+      src/ggg/version.scm no longer writes the version as
+      (define ggg-version "x.y.z"), which is the shape default.nix reads.
+    ''
+    else builtins.head versionMatch;
 
   src = ./.;
 
