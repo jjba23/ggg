@@ -363,9 +363,7 @@ The three install the same layout -- ~/usr/bin/ggg~, the Scheme modules under
 ~/usr/share/guile/site/3.0/ggg~, their byte-compiled copies in the
 interpreter's ~site-ccache~ directory, and the help text and logo library under
 ~/usr/share/ggg/resources~ -- which is the layout ~scripts/ggg~ resolves
-relative to its own prefix at runtime. The Arch recipe is pinned to the ~v0.16.0~
-tarball, whose launcher still reads ~/usr/share/resources~, so it keeps that
-path until its next version bump.
+relative to its own prefix at runtime.
 
 #+begin_src shell
 # Debian/Ubuntu: the debian/ directory belongs at the top of the source tree

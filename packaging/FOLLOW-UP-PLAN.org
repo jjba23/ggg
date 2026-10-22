@@ -30,36 +30,41 @@ resource paths from its own prefix (~$(dirname $0)/..~):
   hard-coding a path, so the same recipe works on every architecture.
 - ~PREFIX/share/ggg/resources/~ :: ~help.txt~ and the logo library. The
   resources used to live in the generic ~PREFIX/share/resources~, which made
-  ggg the owner of a top-level ~/usr/share~ directory; the launcher, ~default.nix~,
-  ~guix.scm~, the Debian rules, the spec and the Arch recipe now agree on the
-  namespaced path. Two recipes still install the old one because they build from
-  the ~v0.16.0~ tarball, whose launcher only knows that layout: the ~PKGBUILD~ and
-  the nixpkgs expression. Both carry a note and flip in the same commit as their
-  next version bump.
+  ggg the owner of a top-level ~/usr/share~ directory; ~v0.16.1~ moved them, and
+  the launcher, ~default.nix~, ~guix.scm~, the Debian rules, the spec, the
+  ~PKGBUILD~ and the nixpkgs expression all install the namespaced path.
 - ~PREFIX/share/doc/ggg/...~ :: ~README.org~, ~CREDITS.org~ and the two example
   glyph files, so a user can render something without cloning the repository.
 
-The version was also brought back in line with the tags: ~src/ggg/version.scm~
-and ~guix.scm~ now say ~0.16.0~, which is what ~v0.16.0~ was tagged as.
+The version lives once, in ~src/ggg/version.scm~, and ~maak release~ copies it
+into ~guix.scm~. ~v0.16.1~ is the first release in which the tag, that file and
+~ggg --version~ agree; it was cut and pushed on 2026-10-22.
 
 * What was verified
 
 Built and exercised on this machine on 2026-10-22:
 
-- Nix, in-repo :: ~nix-build default.nix~ builds ~ggg-0.16.0~; ~ggg --version~
-  prints ~ggg 0.16.0~; ~glyphs/showcase.scm~ renders 177 badges.
-- Nix, nixpkgs :: ~nix-build ~/Hacking/nixpkgs -A ggg~ builds from the ~v0.16.0~
+Everything below was re-run against ~v0.16.1~, the first release whose tarball
+carries the packaging and the namespaced resources directory.
+
+- Guix :: ~guix build -f guix.scm~ builds ~ggg-0.16.1~; ~--version~, ~--help~ and
+  177 rendered badges all read from ~/gnu/store/.../share/ggg/resources~.
+- Nix, in-repo :: ~nix-build default.nix~ builds ~ggg-0.16.1~; ~--version~,
+  ~--help~ and 177 badges work.
+- Nix, nixpkgs :: ~nix-build ~/Hacking/nixpkgs -A ggg~ builds from the ~v0.16.1~
   tag, runs the 122-check test suite in ~checkPhase~, and the wrapper finds the
   byte-compiled modules (~GUILE_AUTO_COMPILE=0~ still works) and renders 177
   badges.
 - Debian :: ~dpkg-buildpackage -us -uc -b~ on ~debian:trixie~ runs the 122
-  checks; the ~.deb~ installs on a clean ~trixie~ and renders 177 badges.
+  checks; the ~.deb~ installs on a clean ~trixie~, reports ~ggg 0.16.1~, lists
+  285 logos and renders badges out of ~/usr/share/ggg/resources~.
 - openSUSE :: ~rpmbuild~ runs the 122 checks in ~%check~; the ~.rpm~ installs on
-  ~opensuse/tumbleweed~, ~ggg --version~ prints ~ggg 0.16.0~ and it renders 177
-  badges. ~rpmlint~ is clean apart from ~no-changelogname-tag~, which the OBS
-  changes file fills in.
-- Arch :: ~makepkg~ runs the 122 checks; ~pacman -U~ installs on ~archlinux~ and
-  it renders 177 badges.
+  ~opensuse/tumbleweed~, reports ~ggg 0.16.1~ and renders 177 badges. ~rpmlint~
+  is clean apart from ~no-changelogname-tag~, which the OBS changes file fills
+  in.
+- Arch :: ~makepkg~ runs the 122 checks; ~pacman -U~ installs on ~archlinux~,
+  reports ~ggg 0.16.1~ and renders 177 badges, with no ~/usr/share/resources~
+  left behind on any of them.
 
 Known environment quirks seen while testing (not package bugs): the ~archlinux~
 and ~opensuse/tumbleweed~ container images set ~NoExtract~ / ~excludedocs~, so
@@ -69,33 +74,35 @@ dependency on purpose).
 
 * Follow-up plan
 
-** 1. Cut a release that carries the packaging (blocking)
+** 1. Cut a release that carries the packaging
 
-Everything else waits on this. The ~v0.16.0~ tag predates both the packaging
-directory and the version fix, and it still reports ~ggg 0.12.0~ from
-~ggg --version~, which any reviewer will notice.
+*DONE in ~v0.16.1~.* The tag was cut with ~maak release~ and pushed, together
+with the packaging directory and the namespaced resources path, so it is the
+first release any of these recipes can point at. The steps below are what the
+next release has to repeat, and the order they are worth doing in.
 
-1. Decide the version. Either ~0.16.1~ (the tag and the tree differ, which is
-   exactly what a patch release is for) or ~0.17.0~ if the packaging counts as a
-   feature. Edit ~src/ggg/version.scm~ only, then   ~maak release~, which writes
-   ~guix.scm~, commits and tags.
-2. Bump the version literals in the recipes with it: ~packaging/arch/PKGBUILD~
+1. Bump ~src/ggg/version.scm~ only, then ~maak release~, which writes ~guix.scm~,
+   commits everything tracked as ~chore: Release vX.Y.Z~ and tags it. Nothing is
+   pushed: that is a separate, deliberate step.
+2. Bump the version literals the tag cannot rewrite: ~packaging/arch/PKGBUILD~
    (~pkgver~), ~packaging/opensuse/ggg.spec~ (~Version:~), the top entry of
-   ~packaging/debian/changelog~, and the nixpkgs ~package.nix~. This is the
-   perfect place for a ~maak~ task (see section 6).
+   ~packaging/debian/changelog~, and the nixpkgs ~package.nix~. Do the two
+   tag-pinned ones *after* the push, since their checksums come from the archive
+   that only exists once the tag is on Codeberg. This is where a ~maak~ task
+   belongs (see section 6).
 3. Check the tagged tarball, not just the checkout: unpack
    ~https://codeberg.org/jjba23/ggg/archive/vX.Y.Z.tar.gz~ somewhere else and run
-   the three recipes against it. The recipes point at released artefacts, so a
+   the four recipes against it. The recipes point at released artefacts, so a
    mistake here is invisible until a reviewer hits it.
 
 ** 2. Nix: land the package in nixpkgs
 
-~pkgs/by-name/gg/ggg/package.nix~ is written and builds against the ~v0.16.0~
-tag, which means two things still have to happen before it is submitted.
+~pkgs/by-name/gg/ggg/package.nix~ is written, retargeted at ~v0.16.1~ (version,
+~hash~ and the ~share/ggg/resources~ path) and builds there, which means two
+things still have to happen before it is submitted.
 
-1. Retarget it at the release from step 1: change ~version~, recompute the
-   ~hash~ (~nix-prefetch-url --unpack~ or ~nix-update ggg~), move the resources
-   install to ~share/ggg/resources~, and rebuild.
+1. Keep it current: when a new release lands, change ~version~ and recompute the
+   ~hash~ (~nix-prefetch-url --unpack~ or ~nix-update ggg~), then rebuild.
 2. Run ~nixfmt-rfc-style~ on the file (the tree is currently formatted by hand),
    then ~nix-build -A ggg~ and ~nix-shell -p nixpkgs-review --run "nixpkgs-review
    pr"~ once it is a PR.
@@ -157,9 +164,8 @@ packaging is only the beginning.
 
 ** 5. Arch: publish in the AUR
 
-1. ~packaging/arch/PKGBUILD~ is ready and builds cleanly. Bump ~pkgver~, move
-   the resources install to ~/usr/share/ggg/resources~, recompute
-   ~sha256sums~ for the new release tarball
+1. ~packaging/arch/PKGBUILD~ is ready, points at ~v0.16.1~ and builds cleanly
+   from it. For each new release: bump ~pkgver~ and ~sha256sums~
    (~updpkgsums~), then run ~makepkg --printsrcinfo > .SRCINFO~ and ~namcap~ on
    the built package.
 2. Create the ~ggg~ AUR repository, add ~PKGBUILD~ and ~.SRCINFO~, push. The AUR
@@ -210,11 +216,6 @@ Byggsteg). The packaging has no automated check at all, which means a change to
   and installs them when present, and the Debian and openSUSE recipes have a
   slot for them too, but the files do not exist yet. Writing them turns an
   already-prepared install step on.
-- Resources directory :: the move to ~share/ggg/resources~ is done upstream and
-  in three of the four recipes. The Arch ~PKGBUILD~ and the nixpkgs expression
-  still install ~share/resources~ because they build from the ~v0.16.0~ tarball;
-  flip both in the release commit that bumps their version, and drop the notes
-  that explain why.
 - ~--convert~ documentation :: the PNG path needs ImageMagick or Inkscape and
   fails with a good hint when neither is installed. That is already handled, but
   the packages should keep it as an optional dependency and say so in the
@@ -222,14 +223,13 @@ Byggsteg). The packaging has no automated check at all, which means a change to
 
 * Order of work
 
-1. Bump, release, verify from the tarball (section 1). Nothing else can be
-   submitted before this, and the release is also what lets the Arch and nixpkgs
-   recipes move to ~share/ggg/resources~ with their version bump.
-2. nixpkgs PR (section 2) -- fastest external win, and the review is public, so
+0. *DONE*: release ~v0.16.1~, which carries the packaging, and verify every
+   recipe from its tarball (section 1).
+1. nixpkgs PR (section 2) -- fastest external win, and the review is public, so
    it doubles as feedback on the whole layout.
-4. AUR (section 5) -- a single push, no review process.
-5. OBS (section 3) -- green builds first, Factory submission last.
-6. Debian ITP and sponsorship (section 4) -- the slowest, start it as early as
+2. AUR (section 5) -- a single push, no review process.
+3. OBS (section 3) -- green builds first, Factory submission last.
+4. Debian ITP and sponsorship (section 4) -- the slowest, start it as early as
    possible even though it finishes last.
-7. Version automation (section 6) and the CI matrix (section 7) once two of the
+5. Version automation (section 6) and the CI matrix (section 7) once two of the
    four channels are public.
