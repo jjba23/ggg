@@ -32,8 +32,9 @@
 ;; overlay2 -- and the accent's text is `base`, the dark shade that reads well
 ;; on Catppuccin's light accents. The `Theme variants' group at the end paints
 ;; its second sections with every other palette ggg knows, so the showcase shows
-;; all five theme families side by side. Switching flavor is a matter of
-;; changing the theme prefix in `catppuccin' below.
+;; all five theme families side by side, and the `Styles' group that follows it
+;; renders the same kind of badge in every style a glyph can ask for. Switching
+;; flavor is a matter of changing the theme prefix in `catppuccin' below.
 
 (define-module (ggg config)
   #:declarative? #t)
@@ -66,6 +67,13 @@ in -- the theme's own background shade in every case below."
                (text . ,category)
                (color . ,(theme-color theme ink))))
     (id . ,id)))
+
+(define* (styled-badge id label logo category accent style
+                       #:key (theme 'catppuccin-mocha) (ink 'base))
+  "A BADGE that also asks for a visual STYLE, so the showcase can show off
+flat, square, shadow, plastic, frosted-glass, material, frutiger and neon."
+  (append (badge id label logo category accent #:theme theme #:ink ink)
+          `((style . ,style))))
 
 ;; ====== Languages ======
 
@@ -617,6 +625,37 @@ in -- the theme's own background shade in every case below."
   (badge 'theme-modus-vivendi "Modus" 'paint "vivendi" 'green
          #:theme 'modus-vivendi #:ink 'bg-main))
 
+;; ====== Styles ======
+;;
+;; One badge per visual style that a glyph can ask for with (style . name).
+;; Every style decorates the same geometry, so the label, the logo and the two
+;; sections stay put and only the finish changes.  The default is flat.
+
+(define glyph-style-flat
+  (styled-badge 'style-flat "Flat" 'sparkle "minimal" 'blue 'flat))
+
+(define glyph-style-square
+  (styled-badge 'style-square "Square" 'cube "corners" 'green 'square))
+
+(define glyph-style-shadow
+  (styled-badge 'style-shadow "Shadow" 'planet "elevation" 'peach 'shadow))
+
+(define glyph-style-plastic
+  (styled-badge 'style-plastic "Plastic" 'bolt "gloss" 'pink 'plastic))
+
+(define glyph-style-frosted-glass
+  (styled-badge 'style-frosted-glass "Frosted" 'snowflake "glass" 'sapphire
+                'frosted-glass))
+
+(define glyph-style-material
+  (styled-badge 'style-material "Material" 'compass "design" 'yellow 'material))
+
+(define glyph-style-frutiger
+  (styled-badge 'style-frutiger "Frutiger" 'leaf "aero" 'teal 'frutiger))
+
+(define glyph-style-neon
+  (styled-badge 'style-neon "Neon" 'atom-orbit "glow" 'red 'neon))
+
 (define ggg-glyphs
   ;; Languages
   (list glyph-python
@@ -799,4 +838,13 @@ in -- the theme's own background shade in every case below."
         glyph-theme-solarized-dark
         glyph-theme-solarized-light
         glyph-theme-modus-operandi
-        glyph-theme-modus-vivendi))
+        glyph-theme-modus-vivendi
+        ;; Styles
+        glyph-style-flat
+        glyph-style-square
+        glyph-style-shadow
+        glyph-style-plastic
+        glyph-style-frosted-glass
+        glyph-style-material
+        glyph-style-frutiger
+        glyph-style-neon))

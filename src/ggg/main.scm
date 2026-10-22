@@ -30,6 +30,7 @@
   #:use-module (ggg colors)
   #:use-module (ggg gallery)
   #:use-module (ggg logo)
+  #:use-module (ggg style)
   #:export (main render-glyphs))
 
 ;; The ImageMagick program used for PNG output. The Guix package replaces this
@@ -294,6 +295,7 @@ USAGE: ggg [OPTIONS]
     -r, --resources DIR      directory containing the logos/ directory
         --list-colors        show every named color, grouped by theme
         --list-logos         show the available logos
+        --list-styles        show the badge styles and what they look like
         --gallery FILE       write an HTML gallery of every logo
         --glyphs PATH        glyph file or directory to show in --gallery
     -V, --version            show the version and exit
@@ -336,6 +338,18 @@ See resources/help.txt or the README for details.\n")
                       (display (format #f "  ~a\n" name)))
                     names)))))
 
+(define (print-styles)
+  (display "Badge styles, set per glyph with (style . name):\n")
+  (let ((width (apply max (map (lambda (name)
+                                 (string-length (symbol->string name)))
+                               style-names))))
+    (for-each (lambda (name)
+                (display (format #f "  ~a  ~a\n"
+                                 (string-pad-right (symbol->string name) width)
+                                 (or (assoc-ref style-descriptions name)
+                                     ""))))
+              style-names)))
+
 (define* (main #:key (args (command-line)))
   (let* ((option-spec '((destination (single-char #\d)
                                      (value #t)
@@ -367,6 +381,8 @@ See resources/help.txt or the README for details.\n")
                                      (required? #f))
                         (list-logos (value #f)
                                     (required? #f))
+                        (list-styles (value #f)
+                                     (required? #f))
                         (gallery (value #t)
                                  (required? #f))
                         (glyphs (value #t)
@@ -388,6 +404,7 @@ See resources/help.txt or the README for details.\n")
          (with-version? (option-ref options 'version #f))
          (list-colors? (option-ref options 'list-colors #f))
          (list-logos? (option-ref options 'list-logos #f))
+         (list-styles? (option-ref options 'list-styles #f))
          (gallery-file (option-ref options 'gallery #f))
          (glyphs-path (option-ref options 'glyphs #f))
          (resources (find-resources resources-option)))
@@ -406,6 +423,10 @@ See resources/help.txt or the README for details.\n")
 
     (when list-logos?
       (print-logos #:resources (require-resources resources-option))
+      (exit 0))
+
+    (when list-styles?
+      (print-styles)
       (exit 0))
 
     (when (and glyphs-path (not gallery-file))

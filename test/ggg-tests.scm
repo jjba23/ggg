@@ -37,6 +37,7 @@
              (ggg main)
              (ggg prelude)
              (ggg sxml)
+             (ggg style)
              (ggg svg)
              (ggg version))
 
@@ -387,6 +388,117 @@ creating a literal #f/ directory in the project root when TMPDIR is unset."
       (and (string-contains xml "linearGradient")
            (string-contains xml "url(#sparkle-shine)")))))
 
+;; ====== Styles ======
+
+(test-group "styles"
+  (define (glyph-with-style style)
+    (append valid-glyph `((style . ,style))))
+
+  (define (render-style style)
+    (sxml->string* (mk-glyph (glyph-with-style style) #:resources resources)))
+
+  (define (canvas-width badge)
+    "The width attribute of BADGE as a number, whether it is still SXML or a
+string. MK-GLYPH returns a list holding the svg element."
+    (let* ((element (if (and (pair? badge) (eq? 'svg (car badge)))
+                        badge
+                        (car badge)))
+           (value (svg-attribute element 'width)))
+      (cond
+        ((number? value) value)
+        ((string? value) (string->number value))
+        (else #f))))
+
+  (test-equal "every style is listed"
+    '(flat square shadow plastic frosted-glass material frutiger neon)
+    style-names)
+
+  (test-equal "style names accept friendly spellings"
+    '(frosted-glass frosted-glass flat flat neon)
+    (map style-name '("frosted glass" frosted_glass default plain neo)))
+
+  (test-assert "unknown styles are not accepted"
+    (not (style-name 'glassy)))
+
+  (test-assert "a flat badge has no decorations at all"
+    (let ((xml (render-style 'flat)))
+      (and (not (string-contains xml "<defs"))
+           (not (string-contains xml "<filter"))
+           (not (string-contains xml "transform=")))))
+
+  (test-assert "square corners drop the corner radius"
+    (string-contains (render-style 'square) "rx=\"0\" ry=\"0\""))
+
+  (let* ((flat (mk-glyph valid-glyph #:resources resources))
+         (shadow (mk-glyph (glyph-with-style 'shadow) #:resources resources))
+         (flat-width (canvas-width flat))
+         (shadow-width (canvas-width shadow)))
+    (test-assert "a shadow grows the canvas so it cannot be clipped"
+      (> shadow-width flat-width))
+    (test-assert "the shadow is a real drop shadow filter"
+      (let ((xml (sxml->string* shadow)))
+        (and (string-contains xml "<filter")
+             (string-contains xml "feGaussianBlur")
+             (string-contains xml "feOffset")))))
+
+  (test-assert "plastic adds a clipped gloss and an inner bevel"
+    (let ((xml (render-style 'plastic)))
+      (and (string-contains xml "<clipPath")
+           (string-contains xml "url(#ggg-scheme-guile-test-gloss)")
+           (string-contains xml "stroke=\"#ffffff\""))))
+
+  (test-assert "frosted glass adds a frost sheen and a hairline border"
+    (let ((xml (render-style 'frosted-glass)))
+      (and (string-contains xml "url(#ggg-scheme-guile-test-frost)")
+           (string-contains xml "<ellipse")
+           (string-contains xml "stroke-opacity=\"0.45\""))))
+
+  (test-assert "material adds an elevation shadow and a sheen"
+    (let ((xml (render-style 'material)))
+      (and (string-contains xml "url(#ggg-scheme-guile-test-elevation)")
+           (string-contains xml "url(#ggg-scheme-guile-test-sheen)"))))
+
+  (test-assert "frutiger rounds the corners much more and tints the glass"
+    (let ((xml (render-style 'frutiger)))
+      (and (string-contains xml "rx=\"6.0\"")
+           (string-contains xml "url(#ggg-scheme-guile-test-sky)")
+           (string-contains xml "url(#ggg-scheme-guile-test-gloss)"))))
+
+  (test-assert "neon draws dark plates with glowing outlines and text"
+    (let ((xml (render-style 'neon)))
+      (and (string-contains xml "url(#ggg-scheme-guile-test-glow)")
+           (string-contains xml "url(#ggg-scheme-guile-test-text-glow)")
+           (string-contains xml "stroke-width=\"2\"")
+           ;; The section backgrounds are darkened into plates, so the
+           ;; original background color survives only as an outline.
+           (not (string-contains xml "fill=\"#585b70\"")))))
+
+  (test-assert "the styles do not change how wide the sections are"
+    (let* ((flat (mk-glyph valid-glyph #:resources resources))
+           (flat-width (canvas-width flat))
+           (paddings '(0 0 2.84 0 1.31 2.18 1.75 4.37)))
+      (every (lambda (style padding)
+               (< (abs (- (canvas-width
+                           (mk-glyph (glyph-with-style style) #:resources resources))
+                          (+ flat-width (* 2 padding))))
+                  0.001))
+             style-names paddings)))
+
+  (test-assert "every style renders an svg"
+    (every (lambda (style)
+             (string-contains (render-style style) "<svg"))
+           style-names))
+
+  (test-assert "an unknown style is reported with the valid names"
+    (any (lambda (problem)
+           (and (string-contains problem "unknown style 'glassy'")
+                (string-contains problem "frosted-glass")))
+         (validate-glyph (glyph-with-style 'glassy) #:resources resources)))
+
+  (test-equal "a style written as a string is accepted"
+    '()
+    (validate-glyph (glyph-with-style "frosted glass") #:resources resources)))
+
 ;; ====== Gallery ======
 
 (test-group "gallery"
@@ -444,7 +556,7 @@ creating a literal #f/ directory in the project root when TMPDIR is unset."
       '("jjba23.scm" "showcase.scm")
       (map car groups))
     (test-equal "every glyph of every file is in the gallery"
-      237
+      245
       (apply + (map (lambda (group) (length (cdr group))) groups))))
 
   (let* ((path (format #f "~a/ggg-gallery-test-~a.html"
@@ -506,6 +618,12 @@ creating a literal #f/ directory in the project root when TMPDIR is unset."
 
     (test-assert "showcase ids are unique"
       (= (length showcase-ids) (length (delete-duplicates showcase-ids))))
+
+    (test-assert "the showcase has one badge for every style"
+      (every (lambda (style)
+               (member (string-append "style-" (symbol->string style))
+                       showcase-ids))
+             style-names))
 
     (test-assert "showcase badges render"
       (string-contains (sxml->string* (mk-glyph (car showcase-glyphs)

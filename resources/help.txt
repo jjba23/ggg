@@ -43,6 +43,11 @@ OPTIONS:
         --list-logos
         List the logos available in the resources directory, then exit.
 
+        --list-styles
+        List the badge styles (flat, square, shadow, plastic,
+        frosted-glass, material, frutiger, neon) with a short
+        description of each, then exit.
+
         --gallery FILE
         Write a self-contained HTML gallery showing every badge from
         --glyphs together with every logo, then exit. Handy for browsing
@@ -78,9 +83,13 @@ CONFIGURING YOUR GLYPHS:
     A glyph can have any number of sections; each one becomes a segment with
     its own text and colors. A logo belongs to the first section.
 
+    Every glyph can also choose a style, for example (style . neon) or
+    (style . frosted-glass). Styles only change the look, never the size or
+    the layout of the badge. Run "ggg --list-styles" to see them all.
+
     Your glyph file is validated before anything is generated: problems such
-    as unknown color or logo names are reported with a hint, instead of
-    producing broken images.
+    as unknown color, logo or style names are reported with a hint, instead
+    of producing broken images.
 
 +----------------------------------------------------------------------------+
 EXAMPLES:

@@ -24,7 +24,8 @@
   #:use-module (ggg logo)
   #:use-module (ggg colors)
   #:use-module (ggg prelude)
-  #:export (mk-glyph validate-glyph validate-glyphs glyph-id
+  #:use-module (ggg style)
+  #:export (mk-glyph validate-glyph validate-glyphs glyph-id glyph-style
                      logo-width separator-width text-vertical-center
                      first-padding separator-x-offset))
 
@@ -105,6 +106,18 @@
       (else (fail (format #f "glyph '~a': ~a must be a number, got ~s"
                           (or (glyph-id glyph) "unknown") key value))))))
 
+(define* (glyph-style glyph)
+  "The visual style of GLYPH as a symbol from (ggg style), flat by default."
+  (let ((value (lookup glyph 'style)))
+    (cond
+      ((not value) 'flat)
+      ((style-name value) => identity)
+      (else
+       (fail (format #f "glyph '~a' uses unknown style '~a'"
+                     (or (glyph-id glyph) "unknown") value)
+             #:hint (format #f "Available styles: ~a. Run `ggg --list-styles` for what each one does."
+                            (string-join (map symbol->string style-names) ", ")))))))
+
 (define* (section-logo section glyph-id index #:key resources)
   (let ((name (lookup section 'logo)))
     (and name
@@ -174,61 +187,108 @@
                             (loop (cdr rest) (rounded (+ x (car rest))) (cons x acc)))))
            (total-badge-width (rounded (fold + 0 widths)))
            (first-section (car resolved))
-           (first-logo (lookup first-section 'logo)))
+           (first-logo (lookup first-section 'logo))
+           ;; The style is a skin over the geometry: it may grow the canvas (so
+           ;; a shadow or a glow is not clipped), round the corners differently,
+           ;; paint over the sections or recolor the text.
+           (style (glyph-style x))
+           (context `((id . ,badge-id)
+                      (prefix . ,(style-id-prefix badge-id))
+                      (width . ,total-badge-width)
+                      (height . ,height)
+                      (radius . ,border-radius)
+                      (sections . ,resolved)
+                      (positions . ,positions)
+                      (widths . ,widths)))
+           (skin (style-skin style context))
+           (padding (or (lookup skin 'padding) 0))
+           (radius (or (lookup skin 'radius) border-radius))
+           (defs (or (lookup skin 'defs) '()))
+           (overlays (or (lookup skin 'overlays) '()))
+           (border (or (lookup skin 'border) '()))
+           (background-filter (lookup skin 'background-filter))
+           (background-fill (lookup skin 'background-fill))
+           (text-filter (lookup skin 'text-filter))
+           (text-fill (lookup skin 'text-fill))
+           (section-background (lambda (section)
+                                 (if background-fill
+                                     (background-fill section)
+                                     (lookup section 'background))))
+           (canvas-width (rounded (+ total-badge-width (* 2 padding))))
+           (canvas-height (rounded (+ height (* 2 padding))))
+           (content
+            `((g (@ (shape-rendering "geometricPrecision")
+                    ,@(if background-filter
+                          `((filter ,background-filter))
+                          '()))
+                 ,@(map (lambda (section x width)
+                          `(rect (@ (x ,x)
+                                    (width ,width)
+                                    (height ,height)
+                                    (fill ,(section-background section))
+                                    (rx ,radius)
+                                    (ry ,radius)) ""))
+                        resolved positions widths)
+                 ;; Square off the rounded corners where two sections meet, with
+                 ;; one strip of each background color around every boundary.
+                 ,@(append-map (lambda (previous next boundary)
+                                 (list
+                                  `(rect (@ (x ,(rounded (- boundary (separator-x-offset))))
+                                            (width ,(separator-width))
+                                            (height ,height)
+                                            (fill ,(section-background previous))
+                                            (rx 0)
+                                            (ry 0)) "")
+                                  `(rect (@ (x ,boundary)
+                                            (width ,(separator-width))
+                                            (height ,height)
+                                            (fill ,(section-background next))
+                                            (rx 0)
+                                            (ry 0)) "")))
+                               resolved (cdr resolved) (cdr positions)))
+              ,@overlays
+              ,@border
+              (g (@ (text-anchor "middle")
+                    (shape-rendering "geometricPrecision")
+                    ,@(if text-filter
+                          `((filter ,text-filter))
+                          '()))
+                 ,@(map (lambda (section x)
+                          `(text (@ (fill ,(if text-fill
+                                               (text-fill section)
+                                               (lookup section 'color)))
+                                    (font-size ,(lookup section 'font-size))
+                                    (font-family ,(lookup section 'font-family))
+                                    (style ,(serialize-style
+                                             (list (cons 'font-weight
+                                                         (lookup section 'font-weight)))))
+                                    (x ,(round (+ x
+                                                  (lookup section 'text-area-start)
+                                                  (/ (lookup section 'text-width) 2))))
+                                    (y ,(text-vertical-center)))
+                                 ,(lookup section 'text)))
+                        resolved positions))
+              ,@(if first-logo
+                    `((g (@ (shape-rendering "geometricPrecision"))
+                         ,first-logo))
+                    '()))))
       `((svg (@ (id ,badge-id)
                 (xmlns "http://www.w3.org/2000/svg")
-                (width ,total-badge-width)
-                (height ,height)
-                (viewBox ,(format #f "0 0 ~a ~a" total-badge-width height)))
-             (g (@ (shape-rendering "geometricPrecision"))
-                ,@(map (lambda (section x width)
-                         `(rect (@ (x ,x)
-                                   (width ,width)
-                                   (height ,height)
-                                   (fill ,(lookup section 'background))
-                                   (rx ,border-radius)
-                                   (ry ,border-radius)) ""))
-                       resolved positions widths)
-                ;; Square off the rounded corners where two sections meet, with
-                ;; one strip of each background color around every boundary.
-                ,@(append-map (lambda (previous next boundary)
-                                (list
-                                 `(rect (@ (x ,(rounded (- boundary (separator-x-offset))))
-                                           (width ,(separator-width))
-                                           (height ,height)
-                                           (fill ,(lookup previous 'background))
-                                           (rx 0)
-                                           (ry 0)) "")
-                                 `(rect (@ (x ,boundary)
-                                           (width ,(separator-width))
-                                           (height ,height)
-                                           (fill ,(lookup next 'background))
-                                           (rx 0)
-                                           (ry 0)) "")))
-                              resolved (cdr resolved) (cdr positions)))
-             (g (@ (text-anchor "middle")
-                   (shape-rendering "geometricPrecision"))
-                ,@(map (lambda (section x)
-                         `(text (@ (fill ,(lookup section 'color))
-                                   (font-size ,(lookup section 'font-size))
-                                   (font-family ,(lookup section 'font-family))
-                                   (style ,(serialize-style
-                                            (list (cons 'font-weight
-                                                        (lookup section 'font-weight)))))
-                                   (x ,(round (+ x
-                                                 (lookup section 'text-area-start)
-                                                 (/ (lookup section 'text-width) 2))))
-                                   (y ,(text-vertical-center)))
-                                ,(lookup section 'text)))
-                       resolved positions))
-             ,@(if first-logo
-                   `((g (@ (shape-rendering "geometricPrecision"))
-                        ,first-logo))
-                   '()))))))
+                (width ,canvas-width)
+                (height ,canvas-height)
+                (viewBox ,(format #f "0 0 ~a ~a" canvas-width canvas-height)))
+             ,@(if (null? defs) '() `((defs ,@defs)))
+             ;; An unpadded badge is drawn exactly as before, so the flat style
+             ;; keeps producing the same compact files.
+             ,@(if (zero? padding)
+                   content
+                   `((g (@ (transform ,(format #f "translate(~a ~a)"
+                                               padding padding)))
+                        ,@content))))))))
 
 ;; ====== Validation ======
 
-(define glyph-settings '(id sections height border-radius))
+(define glyph-settings '(id sections height border-radius style))
 
 (define section-settings '(text background color logo
                                 font-family font-size font-weight))
@@ -264,6 +324,22 @@
                        (format #f "~a: ~a must be a number, got ~s"
                                label key value))))
               keys))
+
+(define (style-problems glyph label)
+  "Problems with the style of GLYPH, or '() when it names a known style."
+  (let ((value (setting-value glyph 'style)))
+    (or (and value
+             (not (style-name value))
+             (let ((suggestion (suggest-similar value
+                                                (map symbol->string style-names))))
+               (list (format #f "~a: unknown style '~a'~a (valid styles: ~a)"
+                             label value
+                             (if suggestion
+                                 (format #f "; did you mean '~a'?" suggestion)
+                                 "")
+                             (string-join (map symbol->string style-names)
+                                          ", ")))))
+        '())))
 
 (define (non-pair-problems alist label)
   "Problems for entries that are not written as (key . value) pairs."
@@ -341,6 +417,7 @@
              (list (format #f "~a is missing an (id . name) setting" label)))
          (unknown-settings-problems glyph glyph-settings label)
          (number-problems glyph '(height border-radius) label)
+         (style-problems glyph label)
          (cond
            ((not (list? sections))
             (list (format #f "~a: sections must be a list of section definitions" label)))
