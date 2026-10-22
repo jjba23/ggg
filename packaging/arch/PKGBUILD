@@ -17,7 +17,7 @@
 
 # Maintainer: Josep Bigorra <jjbigorra@gmail.com>
 pkgname=ggg
-pkgver=0.16.0
+pkgver=0.16.1
 pkgrel=1
 pkgdesc="SVG badge and glyph generator written in Guile Scheme"
 arch=('any')
@@ -42,7 +42,7 @@ makedepends=(
 )
 
 source=("$pkgname-$pkgver.tar.gz::$url/archive/v$pkgver.tar.gz")
-sha256sums=('c074baace78b37b6638b53eafe0dcbbfcda46e7e3b4df182d76c960fb8a80208')
+sha256sums=('d6760c263bcdff9aeef30341d3070f29c97129f11968d779b32dcb2d706ae0f1')
 
 # Guile looks for byte-compiled modules under the site-ccache directory, which
 # differ between distributions (and between a Guile installed system-wide and
@@ -89,13 +89,9 @@ package() {
   install -d "$pkgdir${ccache_dir}/ggg"
   cp -r "$srcdir/ccache/ggg/." "$pkgdir${ccache_dir}/ggg/"
 
-  # The launcher shipped in the v0.16.0 tarball resolves its resources from
-  # /usr/share/resources; the next upstream release moves them under
-  # /usr/share/ggg/resources.  When pkgver moves past 0.16.0, change the three
-  # paths below and drop this note.
-  install -d "$pkgdir/usr/share/resources/logos"
-  install -m644 resources/help.txt "$pkgdir/usr/share/resources/help.txt"
-  cp -r resources/logos/. "$pkgdir/usr/share/resources/logos/"
+  install -d "$pkgdir/usr/share/ggg/resources/logos"
+  install -m644 resources/help.txt "$pkgdir/usr/share/ggg/resources/help.txt"
+  cp -r resources/logos/. "$pkgdir/usr/share/ggg/resources/logos/"
 
   install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 
