@@ -188,9 +188,9 @@
            (total-badge-width (rounded (fold + 0 widths)))
            (first-section (car resolved))
            (first-logo (lookup first-section 'logo))
-           ;; The style is a skin over the geometry: it may grow the canvas (so
-           ;; a shadow or a glow is not clipped), round the corners differently,
-           ;; paint over the sections or recolor the text.
+           ;; The style is a skin over the geometry: it may round the corners
+           ;; differently, paint over the sections or recolor the text. It never
+           ;; changes the canvas, so badges of every style line up in a row.
            (style (glyph-style x))
            (context `((id . ,badge-id)
                       (prefix . ,(style-id-prefix badge-id))
@@ -201,90 +201,75 @@
                       (positions . ,positions)
                       (widths . ,widths)))
            (skin (style-skin style context))
-           (padding (or (lookup skin 'padding) 0))
            (radius (or (lookup skin 'radius) border-radius))
            (defs (or (lookup skin 'defs) '()))
            (overlays (or (lookup skin 'overlays) '()))
            (border (or (lookup skin 'border) '()))
-           (background-filter (lookup skin 'background-filter))
            (background-fill (lookup skin 'background-fill))
            (text-filter (lookup skin 'text-filter))
            (text-fill (lookup skin 'text-fill))
            (section-background (lambda (section)
                                  (if background-fill
                                      (background-fill section)
-                                     (lookup section 'background))))
-           (canvas-width (rounded (+ total-badge-width (* 2 padding))))
-           (canvas-height (rounded (+ height (* 2 padding))))
-           (content
-            `((g (@ (shape-rendering "geometricPrecision")
-                    ,@(if background-filter
-                          `((filter ,background-filter))
-                          '()))
-                 ,@(map (lambda (section x width)
-                          `(rect (@ (x ,x)
-                                    (width ,width)
-                                    (height ,height)
-                                    (fill ,(section-background section))
-                                    (rx ,radius)
-                                    (ry ,radius)) ""))
-                        resolved positions widths)
-                 ;; Square off the rounded corners where two sections meet, with
-                 ;; one strip of each background color around every boundary.
-                 ,@(append-map (lambda (previous next boundary)
-                                 (list
-                                  `(rect (@ (x ,(rounded (- boundary (separator-x-offset))))
-                                            (width ,(separator-width))
-                                            (height ,height)
-                                            (fill ,(section-background previous))
-                                            (rx 0)
-                                            (ry 0)) "")
-                                  `(rect (@ (x ,boundary)
-                                            (width ,(separator-width))
-                                            (height ,height)
-                                            (fill ,(section-background next))
-                                            (rx 0)
-                                            (ry 0)) "")))
-                               resolved (cdr resolved) (cdr positions)))
-              ,@overlays
-              ,@border
-              (g (@ (text-anchor "middle")
-                    (shape-rendering "geometricPrecision")
-                    ,@(if text-filter
-                          `((filter ,text-filter))
-                          '()))
-                 ,@(map (lambda (section x)
-                          `(text (@ (fill ,(if text-fill
-                                               (text-fill section)
-                                               (lookup section 'color)))
-                                    (font-size ,(lookup section 'font-size))
-                                    (font-family ,(lookup section 'font-family))
-                                    (style ,(serialize-style
-                                             (list (cons 'font-weight
-                                                         (lookup section 'font-weight)))))
-                                    (x ,(round (+ x
-                                                  (lookup section 'text-area-start)
-                                                  (/ (lookup section 'text-width) 2))))
-                                    (y ,(text-vertical-center)))
-                                 ,(lookup section 'text)))
-                        resolved positions))
-              ,@(if first-logo
-                    `((g (@ (shape-rendering "geometricPrecision"))
-                         ,first-logo))
-                    '()))))
+                                     (lookup section 'background)))))
       `((svg (@ (id ,badge-id)
                 (xmlns "http://www.w3.org/2000/svg")
-                (width ,canvas-width)
-                (height ,canvas-height)
-                (viewBox ,(format #f "0 0 ~a ~a" canvas-width canvas-height)))
+                (width ,total-badge-width)
+                (height ,height)
+                (viewBox ,(format #f "0 0 ~a ~a" total-badge-width height)))
              ,@(if (null? defs) '() `((defs ,@defs)))
-             ;; An unpadded badge is drawn exactly as before, so the flat style
-             ;; keeps producing the same compact files.
-             ,@(if (zero? padding)
-                   content
-                   `((g (@ (transform ,(format #f "translate(~a ~a)"
-                                               padding padding)))
-                        ,@content))))))))
+             (g (@ (shape-rendering "geometricPrecision"))
+                ,@(map (lambda (section x width)
+                         `(rect (@ (x ,x)
+                                   (width ,width)
+                                   (height ,height)
+                                   (fill ,(section-background section))
+                                   (rx ,radius)
+                                   (ry ,radius)) ""))
+                       resolved positions widths)
+                ;; Square off the rounded corners where two sections meet, with
+                ;; one strip of each background color around every boundary.
+                ,@(append-map (lambda (previous next boundary)
+                                (list
+                                 `(rect (@ (x ,(rounded (- boundary (separator-x-offset))))
+                                           (width ,(separator-width))
+                                           (height ,height)
+                                           (fill ,(section-background previous))
+                                           (rx 0)
+                                           (ry 0)) "")
+                                 `(rect (@ (x ,boundary)
+                                           (width ,(separator-width))
+                                           (height ,height)
+                                           (fill ,(section-background next))
+                                           (rx 0)
+                                           (ry 0)) "")))
+                              resolved (cdr resolved) (cdr positions)))
+             ,@overlays
+             ,@border
+             (g (@ (text-anchor "middle")
+                   (shape-rendering "geometricPrecision")
+                   ,@(if text-filter
+                         `((filter ,text-filter))
+                         '()))
+                ,@(map (lambda (section x)
+                         `(text (@ (fill ,(if text-fill
+                                              (text-fill section)
+                                              (lookup section 'color)))
+                                   (font-size ,(lookup section 'font-size))
+                                   (font-family ,(lookup section 'font-family))
+                                   (style ,(serialize-style
+                                            (list (cons 'font-weight
+                                                        (lookup section 'font-weight)))))
+                                   (x ,(round (+ x
+                                                 (lookup section 'text-area-start)
+                                                 (/ (lookup section 'text-width) 2))))
+                                   (y ,(text-vertical-center)))
+                                ,(lookup section 'text)))
+                       resolved positions))
+             ,@(if first-logo
+                   `((g (@ (shape-rendering "geometricPrecision"))
+                        ,first-logo))
+                   '()))))))
 
 ;; ====== Validation ======
 

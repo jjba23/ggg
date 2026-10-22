@@ -123,7 +123,7 @@ Each theme keeps its own color vocabulary, so names feel native to the theme you
 
 Run ~ggg --list-colors~ to print every name (236 of them) with its hex value, grouped by theme. Hex strings keep working and are still validated, so ~"#ggg"~ or ~"#12345"~ are rejected with a message instead of producing a broken badge.
 
-A practical note on contrast: the Catppuccin accents are light, so text drawn on top of one reads best in ~base~ (or ~crust~), while the neutral ~surface2~ label section pairs with ~text~. That is exactly what the shipped glyph files do, and both of them are a good starting point to copy from.
+A practical note on contrast: Catppuccin accents range from light pastels (mocha) to mid-tone and deep shades (latte), so the ink has to follow the background. Pick whichever light or dark shade gives the strongest contrast -- for example ~base~ on a deep accent, a near-black on a pale one -- and let the ratio decide rather than the name of the color. Every section of the shipped glyph files reaches at least 4.5:1 (WCAG AA for normal text), and the test suite enforces that, so ~maak test~ catches a badge whose text becomes hard to read.
 
 ** Styles
 
@@ -144,16 +144,16 @@ A glyph can pick a visual finish with an optional ~style~ setting. Styles decora
 |-----------------+---------------------------------------------------------------------|
 | ~flat~          | the default: flat colors and the usual rounded corners              |
 | ~square~        | sharp, square corners                                               |
-| ~shadow~        | a soft drop shadow lifts the badge off the page                     |
+| ~shadow~        | a subtle shadow just under the content, with no size change         |
 | ~plastic~       | a glossy highlight on the top half and a bright inner bevel         |
 | ~frosted-glass~ | a translucent frost sheen behind a light hairline border            |
-| ~material~      | a Material-style elevation shadow and a subtle sheen                |
+| ~material~      | a Material-style sheen with a soft elevation shade                  |
 | ~frutiger~      | glossy Frutiger Aero glass, with a sky tint and a bright reflection |
-| ~neon~          | a dark plate with glowing outlines and glowing text                 |
+| ~neon~          | a dark plate with crisp glowing outlines and bright text            |
 
 The setting is optional and defaults to ~flat~, so existing glyph files keep their look. Style names are forgiving: ~(style . "frosted glass")~, ~(style . frosted_glass)~ and ~(style . glass)~ all mean ~frosted-glass~. Run ~ggg --list-styles~ to print the table above, and see every finish side by side in the [[./test/gallery.html][gallery]].
 
-Styles that need room for a shadow or a glow (~shadow~, ~material~, ~frutiger~, ~frosted-glass~, ~neon~) grow the SVG canvas around the badge so nothing is clipped; the badge inside keeps the exact size it would have had in ~flat~. The style badges at the top of this README are the ~Styles~ group of ~glyphs/showcase.scm~, one badge per finish.
+Every style keeps exactly the same canvas, width and height as ~flat~, so a row of badges that mix styles always lines up. Shadows, glosses and glows are painted inside the badge, never around it. The style badges at the top of this README are the ~Styles~ group of ~glyphs/showcase.scm~, one badge per finish.
 
 ** Logos
 
@@ -228,7 +228,7 @@ ggg --gallery ./test/gallery.html --glyphs ./glyphs
 
 So the second sections of the showcase mix all five theme families: ~mocha~, ~macchiato~, ~frappe~, ~latte~, ~doom-one~, ~doom-one-light~, ~dracula~, ~alucard~, ~solarized~ dark and light, and ~modus~ operandi and vivendi can be compared side by side. The ~badge~ helper qualifies each accent with its theme, so nothing depends on which palette happens to be the default, and ~styled-badge~ adds a ~style~ to it.
 
-~glyphs/jjba23.scm~ is the other half of the pair: 68 badges for the things a project ticks off one by one -- language and tool versions (~lang-python~, ~lang-go~, ~haskell-ghc910~, ~rust-185+~), build and package tooling (~build-cmake~, ~build-meson~, ~pkg-homebrew~), CI (~ci-buildkite~, ~ci-drone~, ~pipeline-succeeded~), tests, linting and formatting (~test-jest~, ~test-pytest~, ~lint-eslint~, ~fmt-prettier~), data and deployment (~db-postgresql~, ~db-redis~, ~deploy-kubernetes~, ~infra-terraform~), shells, editors, licenses, and the project badges of the tools ggg is built with. Their accents lean warm: warm neutrals for the licenses and docs, an orange from Dracula for planning, a yellow from Doom for testing -- while badges that stand for a brand keep that brand's hue.
+~glyphs/jjba23.scm~ is the other half of the pair: 68 badges for the things a project ticks off one by one -- language and tool versions (~lang-python~, ~lang-go~, ~haskell-ghc910~, ~rust-185+~), build and package tooling (~build-cmake~, ~build-meson~, ~pkg-homebrew~), CI (~ci-buildkite~, ~ci-drone~, ~pipeline-succeeded~), tests, linting and formatting (~test-jest~, ~test-pytest~, ~lint-eslint~, ~fmt-prettier~), data and deployment (~db-postgresql~, ~db-redis~, ~deploy-kubernetes~, ~infra-terraform~), shells, editors, licenses, and the project badges of the tools ggg is built with. They wear the Catppuccin latte palette (the light flavor): the logo side is a dark latte gray (~subtext1~) with near-white ~base~ text (5.5:1 contrast), and every accent picks the ink that clears 4.5:1 -- light ~base~ on red and mauve, plain white on blue, and the near-black ~catppuccin-mocha-crust~ on the mid-tone accents (yellow, peach, green, teal, ...), where latte's own text shade would only reach about 3:1. The accents lean warm: warm neutrals for the licenses and docs, a peach for planning, a yellow for testing, and badges that stand for a brand keep that brand's hue.
 
 Both files are part of ~dist/~, and the gallery shows them next to each other. Because ggg clears its destination directory, the second file has to be rendered with ~-k~ / ~--keep~:
 

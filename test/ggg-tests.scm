@@ -397,17 +397,23 @@ creating a literal #f/ directory in the project root when TMPDIR is unset."
   (define (render-style style)
     (sxml->string* (mk-glyph (glyph-with-style style) #:resources resources)))
 
-  (define (canvas-width badge)
-    "The width attribute of BADGE as a number, whether it is still SXML or a
-string. MK-GLYPH returns a list holding the svg element."
+  (define (canvas-attribute badge attribute)
+    "ATTRIBUTE of BADGE as a number, whether it is still SXML or a string.
+MK-GLYPH returns a list holding the svg element."
     (let* ((element (if (and (pair? badge) (eq? 'svg (car badge)))
                         badge
                         (car badge)))
-           (value (svg-attribute element 'width)))
+           (value (svg-attribute element attribute)))
       (cond
         ((number? value) value)
         ((string? value) (string->number value))
         (else #f))))
+
+  (define (canvas-width badge)
+    (canvas-attribute badge 'width))
+
+  (define (canvas-height badge)
+    (canvas-attribute badge 'height))
 
   (test-equal "every style is listed"
     '(flat square shadow plastic frosted-glass material frutiger neon)
@@ -429,17 +435,12 @@ string. MK-GLYPH returns a list holding the svg element."
   (test-assert "square corners drop the corner radius"
     (string-contains (render-style 'square) "rx=\"0\" ry=\"0\""))
 
-  (let* ((flat (mk-glyph valid-glyph #:resources resources))
-         (shadow (mk-glyph (glyph-with-style 'shadow) #:resources resources))
-         (flat-width (canvas-width flat))
-         (shadow-width (canvas-width shadow)))
-    (test-assert "a shadow grows the canvas so it cannot be clipped"
-      (> shadow-width flat-width))
-    (test-assert "the shadow is a real drop shadow filter"
-      (let ((xml (sxml->string* shadow)))
-        (and (string-contains xml "<filter")
-             (string-contains xml "feGaussianBlur")
-             (string-contains xml "feOffset")))))
+  (test-assert "a shadow keeps the flat canvas so badge rows stay aligned"
+    (let ((xml (render-style 'shadow)))
+      (and (string-contains xml "url(#ggg-scheme-guile-test-shade)")
+           (string-contains xml "url(#ggg-scheme-guile-test-highlight)")
+           ;; The shadow is painted inside the badge, not around it.
+           (not (string-contains xml "<filter")))))
 
   (test-assert "plastic adds a clipped gloss and an inner bevel"
     (let ((xml (render-style 'plastic)))
@@ -453,10 +454,10 @@ string. MK-GLYPH returns a list holding the svg element."
            (string-contains xml "<ellipse")
            (string-contains xml "stroke-opacity=\"0.45\""))))
 
-  (test-assert "material adds an elevation shadow and a sheen"
+  (test-assert "material adds a sheen and an inner elevation shade"
     (let ((xml (render-style 'material)))
-      (and (string-contains xml "url(#ggg-scheme-guile-test-elevation)")
-           (string-contains xml "url(#ggg-scheme-guile-test-sheen)"))))
+      (and (string-contains xml "url(#ggg-scheme-guile-test-sheen)")
+           (string-contains xml "stroke-opacity=\"0.14\""))))
 
   (test-assert "frutiger rounds the corners much more and tints the glass"
     (let ((xml (render-style 'frutiger)))
@@ -464,25 +465,28 @@ string. MK-GLYPH returns a list holding the svg element."
            (string-contains xml "url(#ggg-scheme-guile-test-sky)")
            (string-contains xml "url(#ggg-scheme-guile-test-gloss)"))))
 
-  (test-assert "neon draws dark plates with glowing outlines and text"
+  (test-assert "neon draws dark plates with crisp glowing outlines and bright text"
     (let ((xml (render-style 'neon)))
       (and (string-contains xml "url(#ggg-scheme-guile-test-glow)")
-           (string-contains xml "url(#ggg-scheme-guile-test-text-glow)")
-           (string-contains xml "stroke-width=\"2\"")
+           (string-contains xml "stroke-width=\"1.8\"")
+           (string-contains xml "stroke-width=\"1\"")
+           ;; Text is brightened instead of blurred, so it stays legible.
+           (not (string-contains xml "text-glow"))
+           (not (string-contains xml "fill=\"#cdd6f4\""))
            ;; The section backgrounds are darkened into plates, so the
            ;; original background color survives only as an outline.
            (not (string-contains xml "fill=\"#585b70\"")))))
 
-  (test-assert "the styles do not change how wide the sections are"
+  (test-assert "every style keeps the exact flat canvas, so a row stays aligned"
     (let* ((flat (mk-glyph valid-glyph #:resources resources))
-           (flat-width (canvas-width flat))
-           (paddings '(0 0 2.84 0 1.31 2.18 1.75 4.37)))
-      (every (lambda (style padding)
-               (< (abs (- (canvas-width
-                           (mk-glyph (glyph-with-style style) #:resources resources))
-                          (+ flat-width (* 2 padding))))
-                  0.001))
-             style-names paddings)))
+           (width (canvas-width flat))
+           (height (canvas-height flat)))
+      (every (lambda (style)
+               (let ((badge (mk-glyph (glyph-with-style style)
+                                      #:resources resources)))
+                 (and (< (abs (- (canvas-width badge) width)) 0.001)
+                      (< (abs (- (canvas-height badge) height)) 0.001))))
+             style-names)))
 
   (test-assert "every style renders an svg"
     (every (lambda (style)
@@ -701,15 +705,79 @@ string. MK-GLYPH returns a list holding the svg element."
                '(catppuccin-mocha-mauve
                  catppuccin-macchiato-teal
                  catppuccin-frappe-peach
-                 catppuccin-latte-blue
+                 catppuccin-latte-mauve
                  doom-one-blue
                  doom-one-light-magenta
                  dracula-purple
                  dracula-alucard-pink
                  solarized-dark-cyan
-                 solarized-light-violet
+                 solarized-light-yellow
                  modus-operandi-red
                  modus-vivendi-green))))))
+
+;; ====== Contrast ======
+
+(test-group "contrast"
+  (define minimum-contrast 4.5)
+
+  (define (color-components color)
+    "The (red green blue) bytes of COLOR, a #rgb, #rgba, #rrggbb or #rrggbbaa
+string."
+    (let* ((digits (substring color 1))
+           (digits (case (string-length digits)
+                     ((3) (list->string
+                           (append-map (lambda (character)
+                                         (list character character))
+                                       (string->list digits))))
+                     ((4) (list->string
+                           (append-map (lambda (character)
+                                         (list character character))
+                                       (string->list (substring digits 0 3)))))
+                     ((6) digits)
+                     ((8) (substring digits 0 6))
+                     (else digits))))
+      (list (string->number (substring digits 0 2) 16)
+            (string->number (substring digits 2 4) 16)
+            (string->number (substring digits 4 6) 16))))
+
+  (define (linear-channel value)
+    (let ((channel (/ value 255.0)))
+      (if (<= channel 0.03928)
+          (/ channel 12.92)
+          (expt (/ (+ channel 0.055) 1.055) 2.4))))
+
+  (define (relative-luminance color)
+    (let ((components (color-components color)))
+      (+ (* 0.2126 (linear-channel (list-ref components 0)))
+         (* 0.7152 (linear-channel (list-ref components 1)))
+         (* 0.0722 (linear-channel (list-ref components 2))))))
+
+  (define (contrast-ratio one two)
+    (let* ((a (relative-luminance one))
+           (b (relative-luminance two)))
+      (/ (+ (max a b) 0.05) (+ (min a b) 0.05))))
+
+  (define (failing-sections glyph)
+    (let ((sections (lookup glyph 'sections)))
+      (filter-map
+       (lambda (section index)
+         (let* ((background (resolve-color (lookup section 'background)))
+                (ink (resolve-color (lookup section 'color)))
+                (ratio (contrast-ratio background ink)))
+           (and (< ratio minimum-contrast)
+                (format #f "~a section ~a: ~a on ~a is ~,2f:1"
+                        (glyph-id glyph) index
+                        (lookup section 'color)
+                        (lookup section 'background)
+                        ratio))))
+       sections
+       (iota (length sections) 1))))
+
+  (test-equal "every glyph section reaches at least 4.5:1 contrast"
+    '()
+    (append-map failing-sections
+                (append (load-glyph-file "jjba23.scm")
+                        (load-glyph-file "showcase.scm")))))
 
 ;; ====== Destination directory ======
 

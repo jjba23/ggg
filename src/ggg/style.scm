@@ -22,11 +22,8 @@
 ;; geometry it is handed.  `style-skin' answers with an alist that (ggg glyph)
 ;; applies:
 ;;
-;;   padding            extra canvas around the badge, so a shadow or a glow
-;;                      has room to be drawn instead of being clipped
 ;;   radius             the corner radius the badge should use
 ;;   defs               SVG <defs> (gradients, clip paths, filters)
-;;   background-filter  a filter applied to the group of section backgrounds
 ;;   background-fill    a procedure (section -> color) replacing the section
 ;;                      backgrounds, for styles that paint their own plate
 ;;   overlays           shapes drawn above the backgrounds, below the text
@@ -34,8 +31,9 @@
 ;;   text-fill          a procedure (section -> color) replacing the text color
 ;;   text-filter        a filter applied to the group of text labels
 ;;
-;; Every style keeps the compact shields.io geometry of the flat default, so
-;; asking for a style never changes how wide a badge is, only how it looks.
+;; Every style keeps the compact shields.io geometry of the flat default -- same
+;; width, same height, same canvas -- so a row of badges of mixed styles always
+;; lines up. Decorations are drawn inside the badge, never around it.
 
 (define-module (ggg style)
   #:declarative? #t
@@ -67,12 +65,12 @@
 (define style-descriptions
   '((flat . "flat colors with the usual rounded corners (the default)")
     (square . "sharp, square corners")
-    (shadow . "a soft drop shadow lifts the badge off the page")
+    (shadow . "a subtle shadow just under the content, in the same box as every other style")
     (plastic . "a glossy highlight and a bright inner bevel")
     (frosted-glass . "a translucent frost sheen behind a light hairline border")
-    (material . "a Material-style elevation shadow and a subtle sheen")
+    (material . "a Material-style sheen with a soft elevation shade")
     (frutiger . "glossy Frutiger Aero glass with a sky tint and a bright reflection")
-    (neon . "a dark plate with glowing neon outlines and glowing text")))
+    (neon . "a dark plate with crisp glowing outlines and bright text")))
 
 (define (style-name value)
   "The canonical style symbol for VALUE, or #f when it names no style.
@@ -297,28 +295,53 @@ drawn under a crisp copy of itself."
   `((radius . 0)))
 
 (define (shadow-skin ctx)
-  "A badge lifted by a soft drop shadow. The canvas grows so the shadow has
-room below the badge instead of being clipped."
-  (let ((filter (ctx-id ctx "shadow")))
-    `((padding . ,(scaled 2.6))
-      (defs . (,(drop-shadow-filter filter
-                                   #:dy 1.6 #:blur 1.1 #:opacity 0.45)))
-      (background-filter . ,(format #f "url(#~a)" filter)))))
+  "A subtle shadow just under the badge's content, drawn inside the badge so
+that every badge keeps the exact flat size and stays aligned in a row."
+  (let ((clip (ctx-id ctx "clip"))
+        (shade (ctx-id ctx "shade"))
+        (highlight (ctx-id ctx "highlight"))
+        (width (ctx-value ctx 'width))
+        (height (ctx-value ctx 'height))
+        (radius (ctx-value ctx 'radius)))
+    `((defs . (,(clip-rect clip width height radius)
+               ,(linear-gradient shade
+                                 '(("0%" "#000000" 0)
+                                   ("74%" "#000000" 0)
+                                   ("90%" "#000000" 0.12)
+                                   ("100%" "#000000" 0.32)))
+               ,(linear-gradient highlight
+                                 '(("0%" "#ffffff" 0.12)
+                                   ("35%" "#ffffff" 0.01)
+                                   ("100%" "#ffffff" 0)))))
+      (overlays . ((g (@ (clip-path ,(format #f "url(#~a)" clip)))
+                      ,(full-badge-rect ctx (format #f "url(#~a)" shade))
+                      ,(full-badge-rect ctx (format #f "url(#~a)" highlight))))))))
 
 (define (material-skin ctx)
-  "A Material-style badge: a tight elevation shadow plus a vertical sheen that
-is lighter at the top and slightly darker at the bottom."
-  (let ((filter (ctx-id ctx "elevation"))
-        (sheen (ctx-id ctx "sheen")))
-    `((padding . ,(scaled 2))
-      (defs . (,(drop-shadow-filter filter
-                                   #:dy 1.1 #:blur 0.8 #:opacity 0.32)
+  "A Material-style badge: a smooth sheen that is lighter at the top and
+settles into a soft elevation shade at the bottom, plus a faint inner edge."
+  (let ((clip (ctx-id ctx "clip"))
+        (sheen (ctx-id ctx "sheen"))
+        (width (ctx-value ctx 'width))
+        (height (ctx-value ctx 'height))
+        (radius (ctx-value ctx 'radius)))
+    `((defs . (,(clip-rect clip width height radius)
                ,(linear-gradient sheen
-                                 '(("0%" "#ffffff" 0.18)
-                                   ("48%" "#ffffff" 0.03)
-                                   ("100%" "#000000" 0.12)))))
-      (background-filter . ,(format #f "url(#~a)" filter))
-      (overlays . (,(full-badge-rect ctx (format #f "url(#~a)" sheen)))))))
+                                 '(("0%" "#ffffff" 0.16)
+                                   ("50%" "#ffffff" 0.04)
+                                   ("86%" "#000000" 0.02)
+                                   ("100%" "#000000" 0.24)))))
+      (overlays . ((g (@ (clip-path ,(format #f "url(#~a)" clip)))
+                      ,(full-badge-rect ctx (format #f "url(#~a)" sheen)))))
+      (border . ((rect (@ (x 0.3) (y 0.3)
+                          (width ,(rounded (- width 0.6)))
+                          (height ,(rounded (- height 0.6)))
+                          (rx ,(rounded (max 0 (- radius 0.3))))
+                          (ry ,(rounded (max 0 (- radius 0.3))))
+                          (fill "none")
+                          (stroke "#ffffff")
+                          (stroke-opacity 0.14)
+                          (stroke-width 0.6)) ""))))))
 
 (define (plastic-skin ctx)
   "A plastic badge: the top half catches a strong gloss while the bottom half
@@ -359,8 +382,7 @@ behind a light hairline border."
         (width (ctx-value ctx 'width))
         (height (ctx-value ctx 'height))
         (radius (ctx-value ctx 'radius)))
-    `((padding . ,(scaled 1.2))
-      (defs . (,(clip-rect clip width height radius)
+    `((defs . (,(clip-rect clip width height radius)
                ,(linear-gradient frost
                                  '(("0%" "#ffffff" 0.20)
                                    ("55%" "#ffffff" 0.07)
@@ -397,8 +419,7 @@ brighter, rounder border, the look of late-2000s glass."
          (width (ctx-value ctx 'width))
          (height (ctx-value ctx 'height))
          (radius (max (ctx-value ctx 'radius) (scaled 5.5))))
-    `((padding . ,(scaled 1.6))
-      (radius . ,radius)
+    `((radius . ,radius)
       (defs . (,(clip-rect clip width height radius)
                ,(linear-gradient sky
                                  '(("0%" "#9fe4ff" 0.28)
@@ -435,24 +456,21 @@ brighter, rounder border, the look of late-2000s glass."
                           (stroke-width 0.9)) ""))))))
 
 (define (neon-skin ctx)
-  "A neon badge: every section becomes a dark plate with a glowing outline in
-its own color, and the text glows in the same color."
-  (let ((glow (ctx-id ctx "glow"))
-        (text-glow (ctx-id ctx "text-glow")))
-    `((padding . ,(scaled 4))
-      (defs . (,(glow-filter glow #:blur 2 #:strength 2)
-               ,(glow-filter text-glow #:blur 1.2 #:strength 2)))
+  "A neon badge: every section becomes a dark plate with a crisp glowing
+outline in its own color, and the text is brightened for legibility without a
+blur that would soften it."
+  (let ((glow (ctx-id ctx "glow")))
+    `((defs . (,(glow-filter glow #:blur 0.8 #:strength 1)))
       (background-fill . ,(lambda (section)
-                            (shade (lookup section 'background) 0.78)))
+                            (shade (lookup section 'background) 0.82)))
       (text-fill . ,(lambda (section)
-                      (tint (lookup section 'background) 0.25)))
-      (text-filter . ,(format #f "url(#~a)" text-glow))
+                      (tint (lookup section 'background) 0.35)))
       (border . ((g (@ (shape-rendering "geometricPrecision")
                        (filter ,(format #f "url(#~a)" glow)))
-                    ,@(section-outlines ctx '((stroke-width 2)
-                                              (stroke-opacity 0.8))))
+                    ,@(section-outlines ctx '((stroke-width 1.8)
+                                              (stroke-opacity 0.6))))
                  (g (@ (shape-rendering "geometricPrecision"))
-                    ,@(section-outlines ctx '((stroke-width 0.9)
+                    ,@(section-outlines ctx '((stroke-width 1)
                                               (stroke-opacity 1)))))))))
 
 (define (style-skin style ctx)

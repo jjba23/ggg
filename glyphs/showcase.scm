@@ -590,7 +590,7 @@ flat, square, shadow, plastic, frosted-glass, material, frutiger and neon."
          #:theme 'catppuccin-frappe))
 
 (define glyph-theme-catppuccin-latte
-  (badge 'theme-catppuccin-latte "Catppuccin" 'paint "latte" 'blue
+  (badge 'theme-catppuccin-latte "Catppuccin" 'paint "latte" 'mauve
          #:theme 'catppuccin-latte))
 
 (define glyph-theme-doom-one
@@ -614,8 +614,8 @@ flat, square, shadow, plastic, frosted-glass, material, frutiger and neon."
          #:theme 'solarized-dark #:ink 'base03))
 
 (define glyph-theme-solarized-light
-  (badge 'theme-solarized-light "Solarized" 'paint "light" 'violet
-         #:theme 'solarized-light #:ink 'base3))
+  (badge 'theme-solarized-light "Solarized" 'paint "light" 'yellow
+         #:theme 'solarized-light #:ink 'base03))
 
 (define glyph-theme-modus-operandi
   (badge 'theme-modus-operandi "Modus" 'paint "operandi" 'red
