@@ -179,7 +179,15 @@ creating a literal #f/ directory in the project root when TMPDIR is unset."
   (test-assert "the shipped logos are listed"
     (every (lambda (name)
              (member (symbol->string name) (logo-names #:resources resources)))
-           '(emacs gear guix rust scala)))
+           '(emacs gear ggg ggg-warm guix rust scala)))
+
+  (test-assert "the ggg glyph logo is white so it works inside a badge"
+    (let ((contents (call-with-input-file
+                        (logo-file-path 'ggg #:resources resources)
+                      get-string-all)))
+      (and (string-contains contents "#ffffff")
+           (not (string-contains contents "linearGradient"))
+           (not (string-contains contents "#3b2a24")))))
 
   (test-group "logo discovery"
     (test-equal "only .svg files count as logos"

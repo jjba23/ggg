@@ -36,6 +36,8 @@ several shapes, gradients, groups and transforms.
 - compass
 - database-stack
 - flame
+- ggg
+- ggg-warm
 - heart
 - leaf
 - planet

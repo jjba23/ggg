@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ggg project avatar, drawn for ggg and licensed AGPL-3.0-or-later -->
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <title>ggg</title>
+  <defs>
+    <linearGradient id="ggg-avatar-warm" x1="70" y1="50" x2="450" y2="470" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fab387" />
+      <stop offset="1" stop-color="#f9e2af" />
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="512" height="512" rx="150" fill="url(#ggg-avatar-warm)" />
+  <rect x="4" y="4" width="504" height="504" rx="146"
+        fill="none" stroke="#3b2a24" stroke-opacity="0.12" stroke-width="4" />
+  <g transform="translate(44 52) scale(4)">
+    <circle cx="46" cy="41" r="15" fill="none" stroke="#3b2a24" stroke-width="8" />
+    <path d="M61 35 V61 C61 72 55 79 46 79 C39 79 34 74 32 69" fill="none"
+          stroke="#3b2a24" stroke-width="8" stroke-linecap="round" />
+    <path d="M74 18l1.8 4.7 4.7 1.8-4.7 1.8L74 31l-1.8-4.7L67.5 24.5l4.7-1.8z"
+          fill="#fff4e6" />
+  </g>
+</svg>

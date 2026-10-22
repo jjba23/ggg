@@ -189,7 +189,7 @@ ggg ships several hundred logos, so most badges can be written without drawing a
 
 - the original ggg logos (GNU, Guix, Emacs, Rust, Scala, ...),
 - a curated set of tech logos from the [[https://simpleicons.org/][Simple Icons]] collection (CC0-1.0), covering languages, frameworks, databases, editors, distributions, cloud providers, CI systems and more,
-- hand-authored logos such as ~sparkle~, ~flame~, ~planet~, ~leaf~, ~shield-check~, ~database-stack~, ~terminal-prompt~, ~atom-orbit~, ~compass~, ~anchor~, ~bolt~ and ~heart~ that show gradients, groups and multi-shape drawings.
+- hand-authored logos such as ~ggg~, ~ggg-warm~, ~sparkle~, ~flame~, ~planet~, ~leaf~, ~shield-check~, ~database-stack~, ~terminal-prompt~, ~atom-orbit~, ~compass~, ~anchor~, ~bolt~ and ~heart~ that show gradients, groups and multi-shape drawings.
 
 [[./CREDITS.org][CREDITS.org]] lists every logo with where it comes from and its license, and notes which brand marks were deliberately left out because their upstream license is not a free one.
 
@@ -511,6 +511,10 @@ In summary, we foster an inclusive, respectful, and cooperative environment for 
 ---------
 
 * GGG Project
+
+[[./resources/logos/ggg-warm.svg]]
+
+/The ggg mark: a warm lowercase g; the white ~ggg~ logo is the one to use in a badge./
 
 Contributing to free software is a uniquely beautiful act because it embodies principles of generosity, collaboration, and empowerment.
 

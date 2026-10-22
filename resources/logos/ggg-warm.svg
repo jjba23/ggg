@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ggg project mark, drawn for ggg and licensed AGPL-3.0-or-later -->
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="21 14 64 74">
+  <title>ggg warm</title>
+  <defs>
+    <linearGradient id="ggg-logo-warm" x1="24" y1="26" x2="70" y2="78" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fab387" />
+      <stop offset="1" stop-color="#f9e2af" />
+    </linearGradient>
+  </defs>
+  <circle cx="46" cy="41" r="15" fill="none" stroke="#3b2a24" stroke-width="12" />
+  <path d="M61 35 V61 C61 72 55 79 46 79 C39 79 34 74 32 69" fill="none"
+        stroke="#3b2a24" stroke-width="12" stroke-linecap="round" />
+  <circle cx="46" cy="41" r="15" fill="none" stroke="url(#ggg-logo-warm)" stroke-width="8" />
+  <path d="M61 35 V61 C61 72 55 79 46 79 C39 79 34 74 32 69" fill="none"
+        stroke="url(#ggg-logo-warm)" stroke-width="8" stroke-linecap="round" />
+  <path d="M74 18l1.8 4.7 4.7 1.8-4.7 1.8L74 31l-1.8-4.7L67.5 24.5l4.7-1.8z"
+        fill="#3b2a24" />
+</svg>
