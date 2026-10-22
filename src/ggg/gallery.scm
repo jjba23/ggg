@@ -29,7 +29,8 @@
   #:use-module (ggg prelude)
   #:use-module (ggg sxml)
   #:export (gallery-html write-gallery-page logo-display-name logo-markup
-                        gallery-badge-tile badge-markup badge-search-text))
+                        gallery-badge-tile badge-markup badge-search-text
+                        palette-section))
 
 ;; ====== Logo helpers ======
 
@@ -226,6 +227,75 @@ quotes readable in a double-quoted attribute."
             (else (string character))))
         (string->list (format #f "~a" text)))))
 
+;; ====== Color palettes ======
+
+(define (palette-color-name theme qualified)
+  "The name of QUALIFIED without its THEME prefix, e.g. 'red' for
+'catppuccin-mocha-red'."
+  (let ((prefix (string-append theme "-")))
+    (if (string-prefix? prefix qualified)
+        (substring qualified (string-length prefix))
+        qualified)))
+
+(define (palette-swatch theme entry)
+  "One copyable swatch for a color of THEME. ENTRY is a
+(qualified-name . hex) pair."
+  (let* ((qualified (car entry))
+         (hex (cdr entry))
+         (name (palette-color-name theme qualified)))
+    (format #f "\
+        <button type=\"button\" class=\"swatch\" data-copy=\"~a\" data-label=\"~a\" title=\"Copy ~a\">
+          <span class=\"chip\" style=\"background: ~a\"></span>
+          <span class=\"swatch-text\">
+            <span class=\"name\">~a</span>
+            <span class=\"title\">~a</span>
+          </span>
+        </button>"
+            (html-attribute-escape qualified)
+            (html-attribute-escape qualified)
+            (html-escape qualified)
+            (html-escape hex)
+            (html-escape name)
+            (html-escape hex))))
+
+(define (palette-group theme colors)
+  "The HTML of one theme card: its name and a swatch per color."
+  (format #f "\
+      <section class=\"palette-group\">
+        <h2>~a <span class=\"meta\">~a color~a</span></h2>
+        <div class=\"palette\">
+~a
+        </div>
+      </section>"
+          (html-escape theme)
+          (length colors)
+          (if (= (length colors) 1) "" "s")
+          (string-join (map (lambda (entry)
+                              (palette-swatch theme entry))
+                            colors)
+                       "\n")))
+
+(define (palette-section)
+  "The gallery section that shows every named color, grouped by theme."
+  (let* ((themes (colors-by-theme))
+         (color-count (fold (lambda (theme total)
+                              (+ total (length (cdr theme))))
+                            0 themes)))
+    (format #f "\
+      <div class=\"palettes\">
+        <h2 class=\"section-heading\">Color palettes <span class=\"meta\">~a theme~a, ~a color~a</span></h2>
+        <p class=\"lede\">Every named color that a glyph file can use, grouped by theme. Click a swatch to copy its qualified name.</p>
+~a
+      </div>"
+            (length themes)
+            (if (= (length themes) 1) "" "s")
+            color-count
+            (if (= color-count 1) "" "s")
+            (string-join (map (lambda (theme)
+                                (palette-group (car theme) (cdr theme)))
+                              themes)
+                         "\n"))))
+
 (define (palette-css template)
   "TEMPLATE with each @name@ replaced by that Catppuccin mocha color, so the
 gallery is painted with the same palette as the badges."
@@ -310,6 +380,31 @@ gallery is painted with the same palette as the badges."
   }
   button.snippet:hover { color: @lavender@; border-color: @surface1@; background: @surface0@; }
   button.snippet:focus-visible { outline: 2px solid @lavender@; outline-offset: 1px; }
+
+  .palettes { max-width: 76rem; margin: 0 auto; }
+  .palette-group { margin-top: 1.5rem; }
+  .palette-group h2 { font-size: 1rem; margin: 0 0 .7rem; }
+  .palette {
+    display: grid; gap: .4rem;
+    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  }
+  button.swatch {
+    display: flex; align-items: center; gap: .55rem; padding: .3rem .45rem;
+    background: @mantle@; border: 1px solid @surface0@; border-radius: .4rem;
+    color: inherit; font: inherit; text-align: left; cursor: pointer;
+    min-width: 0;
+  }
+  button.swatch:hover { border-color: @surface2@; background: @surface0@; }
+  button.swatch:focus-visible { outline: 2px solid @lavender@; outline-offset: 1px; }
+  button.swatch .chip {
+    width: 1.6rem; height: 1.6rem; border-radius: .3rem; flex: none;
+    border: 1px solid @surface1@;
+  }
+  button.swatch .swatch-text {
+    display: flex; flex-direction: column; min-width: 0;
+  }
+  button.swatch .name { font-size: .78rem; text-align: left; }
+  button.swatch .title { font-size: .68rem; margin-top: .05rem; }
   .toast {
     position: fixed; left: 50%; bottom: 1.4rem; z-index: 10;
     transform: translate(-50%, .8rem); opacity: 0; pointer-events: none;
@@ -329,8 +424,10 @@ gallery is painted with the same palette as the badges."
   const count = document.querySelector('.count');
   const badges = document.querySelectorAll('figure.badge-tile').length;
   const logos = document.querySelectorAll('figure.tile').length;
+  const colors = document.querySelectorAll('button.swatch').length;
   const noun = (n, word) => n + ' ' + word + (n === 1 ? '' : 's');
   const summary = () => [badges ? noun(badges, 'badge') : '',
+                         colors ? noun(colors, 'color') : '',
                          logos ? noun(logos, 'logo') : '']
                           .filter(Boolean).join(' · ');
   const filter = () => {
@@ -375,11 +472,14 @@ gallery is painted with the same palette as the badges."
       return copied;
     }
   };
-  document.querySelectorAll('button.snippet').forEach((button) => {
+  document.querySelectorAll('[data-copy]').forEach((button) => {
     button.addEventListener('click', async () => {
-      const name = button.closest('figure').querySelector('.name').textContent;
+      const figure = button.closest('figure');
+      const label = (figure && figure.querySelector('.name')
+                      ? figure.querySelector('.name').textContent
+                      : button.dataset.label) || button.dataset.copy;
       const copied = await copyText(button.dataset.copy);
-      notify(copied ? 'Copied ' + name : 'Could not copy ' + name);
+      notify(copied ? 'Copied ' + label : 'Could not copy ' + label);
     });
   });
 ")
@@ -408,26 +508,28 @@ gallery is painted with the same palette as the badges."
 (define (gallery-lede badge-count glyph-file-count logo-count)
   (if (zero? badge-count)
       (string-append
-       "Every logo that ggg ships, inlined from its "
-       "<code>resources/logos/&lt;name&gt;.svg</code> file. Logos are drawn white "
-       "on the same gray a badge uses. Use one in a glyph file with "
-       "<code>(logo . name)</code>. See <code>CREDITS.org</code> "
+       "Every color of every theme, followed by every logo that ggg ships, "
+       "inlined from its <code>resources/logos/&lt;name&gt;.svg</code> file. "
+       "Logos are drawn white on the same gray a badge uses. Use a logo in a "
+       "glyph file with <code>(logo . name)</code>. See <code>CREDITS.org</code> "
        "for where each logo comes from.")
       (format #f
               "Every badge from ~a glyph file~a, rendered at its real size with the \
-theme colors it asks for, followed by all ~a logos that ggg ships. Use a logo in a \
-glyph file with <code>(logo . name)</code>. See \
-<code>CREDITS.org</code> for where each logo comes from."
+theme colors it asks for, followed by the color palettes of every theme and all \
+~a logos that ggg ships. Use a logo in a glyph file with \
+<code>(logo . name)</code>. See <code>CREDITS.org</code> for where each logo \
+comes from."
               glyph-file-count
               (if (= glyph-file-count 1) "" "s")
               logo-count)))
 
 (define* (gallery-html #:key resources (glyph-groups '()) (title "GGG badge gallery"))
-  "A self-contained HTML page showing every badge in GLYPH-GROUPS and every
-logo in RESOURCES with its name."
+  "A self-contained HTML page showing every badge in GLYPH-GROUPS, every color
+of every theme, and every logo in RESOURCES with its name."
   (let* ((names (logo-names #:resources resources))
          (badge-count (gallery-badge-count glyph-groups))
          (logo-count (length names))
+         (color-count (length named-colors))
          (summary (string-join
                    (filter-map (lambda (part) part)
                                (list (if (> badge-count 0)
@@ -435,6 +537,9 @@ logo in RESOURCES with its name."
                                                  badge-count
                                                  (if (= badge-count 1) "" "s"))
                                          #f)
+                                     (format #f "~a color~a"
+                                             color-count
+                                             (if (= color-count 1) "" "s"))
                                      (format #f "~a logo~a"
                                              logo-count
                                              (if (= logo-count 1) "" "s"))))
@@ -461,6 +566,7 @@ logo in RESOURCES with its name."
     </header>
 ~a
     <main>
+~a
       <h2 class=\"section-heading\">Logo library <span class=\"meta\">~a</span></h2>
       <div class=\"grid\">
 ~a
@@ -480,6 +586,7 @@ logo in RESOURCES with its name."
             (gallery-lede badge-count (length glyph-groups) logo-count)
             summary
             (gallery-badge-groups glyph-groups resources)
+            (palette-section)
             (format #f "~a logo~a" logo-count (if (= logo-count 1) "" "s"))
             (string-join (map (lambda (name)
                                 (gallery-tile name #:resources resources))

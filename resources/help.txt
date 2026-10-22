@@ -50,8 +50,9 @@ OPTIONS:
 
         --gallery FILE
         Write a self-contained HTML gallery showing every badge from
-        --glyphs together with every logo, then exit. Handy for browsing
-        the badge and logo libraries.
+        --glyphs, every named color of every theme, and every logo,
+        then exit. Handy for browsing the badge, color and logo
+        libraries.
 
         --glyphs PATH
         A glyph file, or a directory of .scm glyph files, to render as

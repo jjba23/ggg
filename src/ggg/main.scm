@@ -296,7 +296,7 @@ USAGE: ggg [OPTIONS]
         --list-colors        show every named color, grouped by theme
         --list-logos         show the available logos
         --list-styles        show the badge styles and what they look like
-        --gallery FILE       write an HTML gallery of every logo
+        --gallery FILE       write an HTML gallery of badges, palettes and logos
         --glyphs PATH        glyph file or directory to show in --gallery
     -V, --version            show the version and exit
     -h, --help               show this help

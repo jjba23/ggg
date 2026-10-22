@@ -73,6 +73,31 @@
   }
   button.snippet:hover { color: #b4befe; border-color: #45475a; background: #313244; }
   button.snippet:focus-visible { outline: 2px solid #b4befe; outline-offset: 1px; }
+
+  .palettes { max-width: 76rem; margin: 0 auto; }
+  .palette-group { margin-top: 1.5rem; }
+  .palette-group h2 { font-size: 1rem; margin: 0 0 .7rem; }
+  .palette {
+    display: grid; gap: .4rem;
+    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  }
+  button.swatch {
+    display: flex; align-items: center; gap: .55rem; padding: .3rem .45rem;
+    background: #181825; border: 1px solid #313244; border-radius: .4rem;
+    color: inherit; font: inherit; text-align: left; cursor: pointer;
+    min-width: 0;
+  }
+  button.swatch:hover { border-color: #585b70; background: #313244; }
+  button.swatch:focus-visible { outline: 2px solid #b4befe; outline-offset: 1px; }
+  button.swatch .chip {
+    width: 1.6rem; height: 1.6rem; border-radius: .3rem; flex: none;
+    border: 1px solid #45475a;
+  }
+  button.swatch .swatch-text {
+    display: flex; flex-direction: column; min-width: 0;
+  }
+  button.swatch .name { font-size: .78rem; text-align: left; }
+  button.swatch .title { font-size: .68rem; margin-top: .05rem; }
   .toast {
     position: fixed; left: 50%; bottom: 1.4rem; z-index: 10;
     transform: translate(-50%, .8rem); opacity: 0; pointer-events: none;
@@ -90,11 +115,11 @@
     <header>
       <h1>GGG badge gallery</h1>
       <p class="lede">
-        Every badge from 2 glyph files, rendered at its real size with the theme colors it asks for, followed by all 282 logos that ggg ships. Use a logo in a glyph file with <code>(logo . name)</code>. See <code>CREDITS.org</code> for where each logo comes from.
+        Every badge from 2 glyph files, rendered at its real size with the theme colors it asks for, followed by the color palettes of every theme and all 282 logos that ggg ships. Use a logo in a glyph file with <code>(logo . name)</code>. See <code>CREDITS.org</code> for where each logo comes from.
       </p>
       <div class="toolbar">
         <input type="search" placeholder="Filter badges and logos…" aria-label="Filter badges and logos">
-        <span class="count">245 badges · 282 logos</span>
+        <span class="count">245 badges · 236 colors · 282 logos</span>
       </div>
     </header>
     <section class="badge-group">
@@ -1823,6 +1848,1722 @@
       </div>
     </section>
     <main>
+      <div class="palettes">
+        <h2 class="section-heading">Color palettes <span class="meta">12 themes, 236 colors</span></h2>
+        <p class="lede">Every named color that a glyph file can use, grouped by theme. Click a swatch to copy its qualified name.</p>
+      <section class="palette-group">
+        <h2>catppuccin-mocha <span class="meta">26 colors</span></h2>
+        <div class="palette">
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-rosewater" data-label="catppuccin-mocha-rosewater" title="Copy catppuccin-mocha-rosewater">
+          <span class="chip" style="background: #f5e0dc"></span>
+          <span class="swatch-text">
+            <span class="name">rosewater</span>
+            <span class="title">#f5e0dc</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-flamingo" data-label="catppuccin-mocha-flamingo" title="Copy catppuccin-mocha-flamingo">
+          <span class="chip" style="background: #f2cdcd"></span>
+          <span class="swatch-text">
+            <span class="name">flamingo</span>
+            <span class="title">#f2cdcd</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-pink" data-label="catppuccin-mocha-pink" title="Copy catppuccin-mocha-pink">
+          <span class="chip" style="background: #f5c2e7"></span>
+          <span class="swatch-text">
+            <span class="name">pink</span>
+            <span class="title">#f5c2e7</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-mauve" data-label="catppuccin-mocha-mauve" title="Copy catppuccin-mocha-mauve">
+          <span class="chip" style="background: #cba6f7"></span>
+          <span class="swatch-text">
+            <span class="name">mauve</span>
+            <span class="title">#cba6f7</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-red" data-label="catppuccin-mocha-red" title="Copy catppuccin-mocha-red">
+          <span class="chip" style="background: #f38ba8"></span>
+          <span class="swatch-text">
+            <span class="name">red</span>
+            <span class="title">#f38ba8</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-maroon" data-label="catppuccin-mocha-maroon" title="Copy catppuccin-mocha-maroon">
+          <span class="chip" style="background: #eba0ac"></span>
+          <span class="swatch-text">
+            <span class="name">maroon</span>
+            <span class="title">#eba0ac</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-peach" data-label="catppuccin-mocha-peach" title="Copy catppuccin-mocha-peach">
+          <span class="chip" style="background: #fab387"></span>
+          <span class="swatch-text">
+            <span class="name">peach</span>
+            <span class="title">#fab387</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-yellow" data-label="catppuccin-mocha-yellow" title="Copy catppuccin-mocha-yellow">
+          <span class="chip" style="background: #f9e2af"></span>
+          <span class="swatch-text">
+            <span class="name">yellow</span>
+            <span class="title">#f9e2af</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-green" data-label="catppuccin-mocha-green" title="Copy catppuccin-mocha-green">
+          <span class="chip" style="background: #a6e3a1"></span>
+          <span class="swatch-text">
+            <span class="name">green</span>
+            <span class="title">#a6e3a1</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-teal" data-label="catppuccin-mocha-teal" title="Copy catppuccin-mocha-teal">
+          <span class="chip" style="background: #94e2d5"></span>
+          <span class="swatch-text">
+            <span class="name">teal</span>
+            <span class="title">#94e2d5</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-sky" data-label="catppuccin-mocha-sky" title="Copy catppuccin-mocha-sky">
+          <span class="chip" style="background: #89dceb"></span>
+          <span class="swatch-text">
+            <span class="name">sky</span>
+            <span class="title">#89dceb</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-sapphire" data-label="catppuccin-mocha-sapphire" title="Copy catppuccin-mocha-sapphire">
+          <span class="chip" style="background: #74c7ec"></span>
+          <span class="swatch-text">
+            <span class="name">sapphire</span>
+            <span class="title">#74c7ec</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-blue" data-label="catppuccin-mocha-blue" title="Copy catppuccin-mocha-blue">
+          <span class="chip" style="background: #89b4fa"></span>
+          <span class="swatch-text">
+            <span class="name">blue</span>
+            <span class="title">#89b4fa</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-lavender" data-label="catppuccin-mocha-lavender" title="Copy catppuccin-mocha-lavender">
+          <span class="chip" style="background: #b4befe"></span>
+          <span class="swatch-text">
+            <span class="name">lavender</span>
+            <span class="title">#b4befe</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-text" data-label="catppuccin-mocha-text" title="Copy catppuccin-mocha-text">
+          <span class="chip" style="background: #cdd6f4"></span>
+          <span class="swatch-text">
+            <span class="name">text</span>
+            <span class="title">#cdd6f4</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-subtext1" data-label="catppuccin-mocha-subtext1" title="Copy catppuccin-mocha-subtext1">
+          <span class="chip" style="background: #bac2de"></span>
+          <span class="swatch-text">
+            <span class="name">subtext1</span>
+            <span class="title">#bac2de</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-subtext0" data-label="catppuccin-mocha-subtext0" title="Copy catppuccin-mocha-subtext0">
+          <span class="chip" style="background: #a6adc8"></span>
+          <span class="swatch-text">
+            <span class="name">subtext0</span>
+            <span class="title">#a6adc8</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-overlay2" data-label="catppuccin-mocha-overlay2" title="Copy catppuccin-mocha-overlay2">
+          <span class="chip" style="background: #9399b2"></span>
+          <span class="swatch-text">
+            <span class="name">overlay2</span>
+            <span class="title">#9399b2</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-overlay1" data-label="catppuccin-mocha-overlay1" title="Copy catppuccin-mocha-overlay1">
+          <span class="chip" style="background: #7f849c"></span>
+          <span class="swatch-text">
+            <span class="name">overlay1</span>
+            <span class="title">#7f849c</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-overlay0" data-label="catppuccin-mocha-overlay0" title="Copy catppuccin-mocha-overlay0">
+          <span class="chip" style="background: #6c7086"></span>
+          <span class="swatch-text">
+            <span class="name">overlay0</span>
+            <span class="title">#6c7086</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-surface2" data-label="catppuccin-mocha-surface2" title="Copy catppuccin-mocha-surface2">
+          <span class="chip" style="background: #585b70"></span>
+          <span class="swatch-text">
+            <span class="name">surface2</span>
+            <span class="title">#585b70</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-surface1" data-label="catppuccin-mocha-surface1" title="Copy catppuccin-mocha-surface1">
+          <span class="chip" style="background: #45475a"></span>
+          <span class="swatch-text">
+            <span class="name">surface1</span>
+            <span class="title">#45475a</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-surface0" data-label="catppuccin-mocha-surface0" title="Copy catppuccin-mocha-surface0">
+          <span class="chip" style="background: #313244"></span>
+          <span class="swatch-text">
+            <span class="name">surface0</span>
+            <span class="title">#313244</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-base" data-label="catppuccin-mocha-base" title="Copy catppuccin-mocha-base">
+          <span class="chip" style="background: #1e1e2e"></span>
+          <span class="swatch-text">
+            <span class="name">base</span>
+            <span class="title">#1e1e2e</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-mantle" data-label="catppuccin-mocha-mantle" title="Copy catppuccin-mocha-mantle">
+          <span class="chip" style="background: #181825"></span>
+          <span class="swatch-text">
+            <span class="name">mantle</span>
+            <span class="title">#181825</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-mocha-crust" data-label="catppuccin-mocha-crust" title="Copy catppuccin-mocha-crust">
+          <span class="chip" style="background: #11111b"></span>
+          <span class="swatch-text">
+            <span class="name">crust</span>
+            <span class="title">#11111b</span>
+          </span>
+        </button>
+        </div>
+      </section>
+      <section class="palette-group">
+        <h2>catppuccin-macchiato <span class="meta">26 colors</span></h2>
+        <div class="palette">
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-rosewater" data-label="catppuccin-macchiato-rosewater" title="Copy catppuccin-macchiato-rosewater">
+          <span class="chip" style="background: #f4dbd6"></span>
+          <span class="swatch-text">
+            <span class="name">rosewater</span>
+            <span class="title">#f4dbd6</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-flamingo" data-label="catppuccin-macchiato-flamingo" title="Copy catppuccin-macchiato-flamingo">
+          <span class="chip" style="background: #f0c6c6"></span>
+          <span class="swatch-text">
+            <span class="name">flamingo</span>
+            <span class="title">#f0c6c6</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-pink" data-label="catppuccin-macchiato-pink" title="Copy catppuccin-macchiato-pink">
+          <span class="chip" style="background: #f5bde6"></span>
+          <span class="swatch-text">
+            <span class="name">pink</span>
+            <span class="title">#f5bde6</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-mauve" data-label="catppuccin-macchiato-mauve" title="Copy catppuccin-macchiato-mauve">
+          <span class="chip" style="background: #c6a0f6"></span>
+          <span class="swatch-text">
+            <span class="name">mauve</span>
+            <span class="title">#c6a0f6</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-red" data-label="catppuccin-macchiato-red" title="Copy catppuccin-macchiato-red">
+          <span class="chip" style="background: #ed8796"></span>
+          <span class="swatch-text">
+            <span class="name">red</span>
+            <span class="title">#ed8796</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-maroon" data-label="catppuccin-macchiato-maroon" title="Copy catppuccin-macchiato-maroon">
+          <span class="chip" style="background: #ee99a0"></span>
+          <span class="swatch-text">
+            <span class="name">maroon</span>
+            <span class="title">#ee99a0</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-peach" data-label="catppuccin-macchiato-peach" title="Copy catppuccin-macchiato-peach">
+          <span class="chip" style="background: #f5a97f"></span>
+          <span class="swatch-text">
+            <span class="name">peach</span>
+            <span class="title">#f5a97f</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-yellow" data-label="catppuccin-macchiato-yellow" title="Copy catppuccin-macchiato-yellow">
+          <span class="chip" style="background: #eed49f"></span>
+          <span class="swatch-text">
+            <span class="name">yellow</span>
+            <span class="title">#eed49f</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-green" data-label="catppuccin-macchiato-green" title="Copy catppuccin-macchiato-green">
+          <span class="chip" style="background: #a6da95"></span>
+          <span class="swatch-text">
+            <span class="name">green</span>
+            <span class="title">#a6da95</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-teal" data-label="catppuccin-macchiato-teal" title="Copy catppuccin-macchiato-teal">
+          <span class="chip" style="background: #8bd5ca"></span>
+          <span class="swatch-text">
+            <span class="name">teal</span>
+            <span class="title">#8bd5ca</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-sky" data-label="catppuccin-macchiato-sky" title="Copy catppuccin-macchiato-sky">
+          <span class="chip" style="background: #91d7e3"></span>
+          <span class="swatch-text">
+            <span class="name">sky</span>
+            <span class="title">#91d7e3</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-sapphire" data-label="catppuccin-macchiato-sapphire" title="Copy catppuccin-macchiato-sapphire">
+          <span class="chip" style="background: #7dc4e4"></span>
+          <span class="swatch-text">
+            <span class="name">sapphire</span>
+            <span class="title">#7dc4e4</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-blue" data-label="catppuccin-macchiato-blue" title="Copy catppuccin-macchiato-blue">
+          <span class="chip" style="background: #8aadf4"></span>
+          <span class="swatch-text">
+            <span class="name">blue</span>
+            <span class="title">#8aadf4</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-lavender" data-label="catppuccin-macchiato-lavender" title="Copy catppuccin-macchiato-lavender">
+          <span class="chip" style="background: #b7bdf8"></span>
+          <span class="swatch-text">
+            <span class="name">lavender</span>
+            <span class="title">#b7bdf8</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-text" data-label="catppuccin-macchiato-text" title="Copy catppuccin-macchiato-text">
+          <span class="chip" style="background: #cad3f5"></span>
+          <span class="swatch-text">
+            <span class="name">text</span>
+            <span class="title">#cad3f5</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-subtext1" data-label="catppuccin-macchiato-subtext1" title="Copy catppuccin-macchiato-subtext1">
+          <span class="chip" style="background: #b8c0e0"></span>
+          <span class="swatch-text">
+            <span class="name">subtext1</span>
+            <span class="title">#b8c0e0</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-subtext0" data-label="catppuccin-macchiato-subtext0" title="Copy catppuccin-macchiato-subtext0">
+          <span class="chip" style="background: #a5adcb"></span>
+          <span class="swatch-text">
+            <span class="name">subtext0</span>
+            <span class="title">#a5adcb</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-overlay2" data-label="catppuccin-macchiato-overlay2" title="Copy catppuccin-macchiato-overlay2">
+          <span class="chip" style="background: #939ab7"></span>
+          <span class="swatch-text">
+            <span class="name">overlay2</span>
+            <span class="title">#939ab7</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-overlay1" data-label="catppuccin-macchiato-overlay1" title="Copy catppuccin-macchiato-overlay1">
+          <span class="chip" style="background: #8087a2"></span>
+          <span class="swatch-text">
+            <span class="name">overlay1</span>
+            <span class="title">#8087a2</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-overlay0" data-label="catppuccin-macchiato-overlay0" title="Copy catppuccin-macchiato-overlay0">
+          <span class="chip" style="background: #6e738d"></span>
+          <span class="swatch-text">
+            <span class="name">overlay0</span>
+            <span class="title">#6e738d</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-surface2" data-label="catppuccin-macchiato-surface2" title="Copy catppuccin-macchiato-surface2">
+          <span class="chip" style="background: #5b6078"></span>
+          <span class="swatch-text">
+            <span class="name">surface2</span>
+            <span class="title">#5b6078</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-surface1" data-label="catppuccin-macchiato-surface1" title="Copy catppuccin-macchiato-surface1">
+          <span class="chip" style="background: #494d64"></span>
+          <span class="swatch-text">
+            <span class="name">surface1</span>
+            <span class="title">#494d64</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-surface0" data-label="catppuccin-macchiato-surface0" title="Copy catppuccin-macchiato-surface0">
+          <span class="chip" style="background: #363a4f"></span>
+          <span class="swatch-text">
+            <span class="name">surface0</span>
+            <span class="title">#363a4f</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-base" data-label="catppuccin-macchiato-base" title="Copy catppuccin-macchiato-base">
+          <span class="chip" style="background: #24273a"></span>
+          <span class="swatch-text">
+            <span class="name">base</span>
+            <span class="title">#24273a</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-mantle" data-label="catppuccin-macchiato-mantle" title="Copy catppuccin-macchiato-mantle">
+          <span class="chip" style="background: #1e2030"></span>
+          <span class="swatch-text">
+            <span class="name">mantle</span>
+            <span class="title">#1e2030</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-macchiato-crust" data-label="catppuccin-macchiato-crust" title="Copy catppuccin-macchiato-crust">
+          <span class="chip" style="background: #181926"></span>
+          <span class="swatch-text">
+            <span class="name">crust</span>
+            <span class="title">#181926</span>
+          </span>
+        </button>
+        </div>
+      </section>
+      <section class="palette-group">
+        <h2>catppuccin-frappe <span class="meta">26 colors</span></h2>
+        <div class="palette">
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-rosewater" data-label="catppuccin-frappe-rosewater" title="Copy catppuccin-frappe-rosewater">
+          <span class="chip" style="background: #f2d5cf"></span>
+          <span class="swatch-text">
+            <span class="name">rosewater</span>
+            <span class="title">#f2d5cf</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-flamingo" data-label="catppuccin-frappe-flamingo" title="Copy catppuccin-frappe-flamingo">
+          <span class="chip" style="background: #eebebe"></span>
+          <span class="swatch-text">
+            <span class="name">flamingo</span>
+            <span class="title">#eebebe</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-pink" data-label="catppuccin-frappe-pink" title="Copy catppuccin-frappe-pink">
+          <span class="chip" style="background: #f4b8e4"></span>
+          <span class="swatch-text">
+            <span class="name">pink</span>
+            <span class="title">#f4b8e4</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-mauve" data-label="catppuccin-frappe-mauve" title="Copy catppuccin-frappe-mauve">
+          <span class="chip" style="background: #ca9ee6"></span>
+          <span class="swatch-text">
+            <span class="name">mauve</span>
+            <span class="title">#ca9ee6</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-red" data-label="catppuccin-frappe-red" title="Copy catppuccin-frappe-red">
+          <span class="chip" style="background: #e78284"></span>
+          <span class="swatch-text">
+            <span class="name">red</span>
+            <span class="title">#e78284</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-maroon" data-label="catppuccin-frappe-maroon" title="Copy catppuccin-frappe-maroon">
+          <span class="chip" style="background: #ea999c"></span>
+          <span class="swatch-text">
+            <span class="name">maroon</span>
+            <span class="title">#ea999c</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-peach" data-label="catppuccin-frappe-peach" title="Copy catppuccin-frappe-peach">
+          <span class="chip" style="background: #ef9f76"></span>
+          <span class="swatch-text">
+            <span class="name">peach</span>
+            <span class="title">#ef9f76</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-yellow" data-label="catppuccin-frappe-yellow" title="Copy catppuccin-frappe-yellow">
+          <span class="chip" style="background: #e5c890"></span>
+          <span class="swatch-text">
+            <span class="name">yellow</span>
+            <span class="title">#e5c890</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-green" data-label="catppuccin-frappe-green" title="Copy catppuccin-frappe-green">
+          <span class="chip" style="background: #a6d189"></span>
+          <span class="swatch-text">
+            <span class="name">green</span>
+            <span class="title">#a6d189</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-teal" data-label="catppuccin-frappe-teal" title="Copy catppuccin-frappe-teal">
+          <span class="chip" style="background: #81c8be"></span>
+          <span class="swatch-text">
+            <span class="name">teal</span>
+            <span class="title">#81c8be</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-sky" data-label="catppuccin-frappe-sky" title="Copy catppuccin-frappe-sky">
+          <span class="chip" style="background: #99d1db"></span>
+          <span class="swatch-text">
+            <span class="name">sky</span>
+            <span class="title">#99d1db</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-sapphire" data-label="catppuccin-frappe-sapphire" title="Copy catppuccin-frappe-sapphire">
+          <span class="chip" style="background: #85c1dc"></span>
+          <span class="swatch-text">
+            <span class="name">sapphire</span>
+            <span class="title">#85c1dc</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-blue" data-label="catppuccin-frappe-blue" title="Copy catppuccin-frappe-blue">
+          <span class="chip" style="background: #8caaee"></span>
+          <span class="swatch-text">
+            <span class="name">blue</span>
+            <span class="title">#8caaee</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-lavender" data-label="catppuccin-frappe-lavender" title="Copy catppuccin-frappe-lavender">
+          <span class="chip" style="background: #babbf1"></span>
+          <span class="swatch-text">
+            <span class="name">lavender</span>
+            <span class="title">#babbf1</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-text" data-label="catppuccin-frappe-text" title="Copy catppuccin-frappe-text">
+          <span class="chip" style="background: #c6d0f5"></span>
+          <span class="swatch-text">
+            <span class="name">text</span>
+            <span class="title">#c6d0f5</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-subtext1" data-label="catppuccin-frappe-subtext1" title="Copy catppuccin-frappe-subtext1">
+          <span class="chip" style="background: #b5bfe2"></span>
+          <span class="swatch-text">
+            <span class="name">subtext1</span>
+            <span class="title">#b5bfe2</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-subtext0" data-label="catppuccin-frappe-subtext0" title="Copy catppuccin-frappe-subtext0">
+          <span class="chip" style="background: #a5adce"></span>
+          <span class="swatch-text">
+            <span class="name">subtext0</span>
+            <span class="title">#a5adce</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-overlay2" data-label="catppuccin-frappe-overlay2" title="Copy catppuccin-frappe-overlay2">
+          <span class="chip" style="background: #949cbb"></span>
+          <span class="swatch-text">
+            <span class="name">overlay2</span>
+            <span class="title">#949cbb</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-overlay1" data-label="catppuccin-frappe-overlay1" title="Copy catppuccin-frappe-overlay1">
+          <span class="chip" style="background: #838ba7"></span>
+          <span class="swatch-text">
+            <span class="name">overlay1</span>
+            <span class="title">#838ba7</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-overlay0" data-label="catppuccin-frappe-overlay0" title="Copy catppuccin-frappe-overlay0">
+          <span class="chip" style="background: #737994"></span>
+          <span class="swatch-text">
+            <span class="name">overlay0</span>
+            <span class="title">#737994</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-surface2" data-label="catppuccin-frappe-surface2" title="Copy catppuccin-frappe-surface2">
+          <span class="chip" style="background: #626880"></span>
+          <span class="swatch-text">
+            <span class="name">surface2</span>
+            <span class="title">#626880</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-surface1" data-label="catppuccin-frappe-surface1" title="Copy catppuccin-frappe-surface1">
+          <span class="chip" style="background: #51576d"></span>
+          <span class="swatch-text">
+            <span class="name">surface1</span>
+            <span class="title">#51576d</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-surface0" data-label="catppuccin-frappe-surface0" title="Copy catppuccin-frappe-surface0">
+          <span class="chip" style="background: #414559"></span>
+          <span class="swatch-text">
+            <span class="name">surface0</span>
+            <span class="title">#414559</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-base" data-label="catppuccin-frappe-base" title="Copy catppuccin-frappe-base">
+          <span class="chip" style="background: #303446"></span>
+          <span class="swatch-text">
+            <span class="name">base</span>
+            <span class="title">#303446</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-mantle" data-label="catppuccin-frappe-mantle" title="Copy catppuccin-frappe-mantle">
+          <span class="chip" style="background: #292c3c"></span>
+          <span class="swatch-text">
+            <span class="name">mantle</span>
+            <span class="title">#292c3c</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-frappe-crust" data-label="catppuccin-frappe-crust" title="Copy catppuccin-frappe-crust">
+          <span class="chip" style="background: #232634"></span>
+          <span class="swatch-text">
+            <span class="name">crust</span>
+            <span class="title">#232634</span>
+          </span>
+        </button>
+        </div>
+      </section>
+      <section class="palette-group">
+        <h2>catppuccin-latte <span class="meta">26 colors</span></h2>
+        <div class="palette">
+        <button type="button" class="swatch" data-copy="catppuccin-latte-rosewater" data-label="catppuccin-latte-rosewater" title="Copy catppuccin-latte-rosewater">
+          <span class="chip" style="background: #dc8a78"></span>
+          <span class="swatch-text">
+            <span class="name">rosewater</span>
+            <span class="title">#dc8a78</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-latte-flamingo" data-label="catppuccin-latte-flamingo" title="Copy catppuccin-latte-flamingo">
+          <span class="chip" style="background: #dd7878"></span>
+          <span class="swatch-text">
+            <span class="name">flamingo</span>
+            <span class="title">#dd7878</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-latte-pink" data-label="catppuccin-latte-pink" title="Copy catppuccin-latte-pink">
+          <span class="chip" style="background: #ea76cb"></span>
+          <span class="swatch-text">
+            <span class="name">pink</span>
+            <span class="title">#ea76cb</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-latte-mauve" data-label="catppuccin-latte-mauve" title="Copy catppuccin-latte-mauve">
+          <span class="chip" style="background: #8839ef"></span>
+          <span class="swatch-text">
+            <span class="name">mauve</span>
+            <span class="title">#8839ef</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-latte-red" data-label="catppuccin-latte-red" title="Copy catppuccin-latte-red">
+          <span class="chip" style="background: #d20f39"></span>
+          <span class="swatch-text">
+            <span class="name">red</span>
+            <span class="title">#d20f39</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-latte-maroon" data-label="catppuccin-latte-maroon" title="Copy catppuccin-latte-maroon">
+          <span class="chip" style="background: #e64553"></span>
+          <span class="swatch-text">
+            <span class="name">maroon</span>
+            <span class="title">#e64553</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-latte-peach" data-label="catppuccin-latte-peach" title="Copy catppuccin-latte-peach">
+          <span class="chip" style="background: #fe640b"></span>
+          <span class="swatch-text">
+            <span class="name">peach</span>
+            <span class="title">#fe640b</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-latte-yellow" data-label="catppuccin-latte-yellow" title="Copy catppuccin-latte-yellow">
+          <span class="chip" style="background: #df8e1d"></span>
+          <span class="swatch-text">
+            <span class="name">yellow</span>
+            <span class="title">#df8e1d</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-latte-green" data-label="catppuccin-latte-green" title="Copy catppuccin-latte-green">
+          <span class="chip" style="background: #40a02b"></span>
+          <span class="swatch-text">
+            <span class="name">green</span>
+            <span class="title">#40a02b</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-latte-teal" data-label="catppuccin-latte-teal" title="Copy catppuccin-latte-teal">
+          <span class="chip" style="background: #179299"></span>
+          <span class="swatch-text">
+            <span class="name">teal</span>
+            <span class="title">#179299</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-latte-sky" data-label="catppuccin-latte-sky" title="Copy catppuccin-latte-sky">
+          <span class="chip" style="background: #04a5e5"></span>
+          <span class="swatch-text">
+            <span class="name">sky</span>
+            <span class="title">#04a5e5</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-latte-sapphire" data-label="catppuccin-latte-sapphire" title="Copy catppuccin-latte-sapphire">
+          <span class="chip" style="background: #209fb5"></span>
+          <span class="swatch-text">
+            <span class="name">sapphire</span>
+            <span class="title">#209fb5</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-latte-blue" data-label="catppuccin-latte-blue" title="Copy catppuccin-latte-blue">
+          <span class="chip" style="background: #1e66f5"></span>
+          <span class="swatch-text">
+            <span class="name">blue</span>
+            <span class="title">#1e66f5</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-latte-lavender" data-label="catppuccin-latte-lavender" title="Copy catppuccin-latte-lavender">
+          <span class="chip" style="background: #7287fd"></span>
+          <span class="swatch-text">
+            <span class="name">lavender</span>
+            <span class="title">#7287fd</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-latte-text" data-label="catppuccin-latte-text" title="Copy catppuccin-latte-text">
+          <span class="chip" style="background: #4c4f69"></span>
+          <span class="swatch-text">
+            <span class="name">text</span>
+            <span class="title">#4c4f69</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-latte-subtext1" data-label="catppuccin-latte-subtext1" title="Copy catppuccin-latte-subtext1">
+          <span class="chip" style="background: #5c5f77"></span>
+          <span class="swatch-text">
+            <span class="name">subtext1</span>
+            <span class="title">#5c5f77</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-latte-subtext0" data-label="catppuccin-latte-subtext0" title="Copy catppuccin-latte-subtext0">
+          <span class="chip" style="background: #6c6f85"></span>
+          <span class="swatch-text">
+            <span class="name">subtext0</span>
+            <span class="title">#6c6f85</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-latte-overlay2" data-label="catppuccin-latte-overlay2" title="Copy catppuccin-latte-overlay2">
+          <span class="chip" style="background: #7c7f93"></span>
+          <span class="swatch-text">
+            <span class="name">overlay2</span>
+            <span class="title">#7c7f93</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-latte-overlay1" data-label="catppuccin-latte-overlay1" title="Copy catppuccin-latte-overlay1">
+          <span class="chip" style="background: #8c8fa1"></span>
+          <span class="swatch-text">
+            <span class="name">overlay1</span>
+            <span class="title">#8c8fa1</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-latte-overlay0" data-label="catppuccin-latte-overlay0" title="Copy catppuccin-latte-overlay0">
+          <span class="chip" style="background: #9ca0b0"></span>
+          <span class="swatch-text">
+            <span class="name">overlay0</span>
+            <span class="title">#9ca0b0</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-latte-surface2" data-label="catppuccin-latte-surface2" title="Copy catppuccin-latte-surface2">
+          <span class="chip" style="background: #acb0be"></span>
+          <span class="swatch-text">
+            <span class="name">surface2</span>
+            <span class="title">#acb0be</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-latte-surface1" data-label="catppuccin-latte-surface1" title="Copy catppuccin-latte-surface1">
+          <span class="chip" style="background: #bcc0cc"></span>
+          <span class="swatch-text">
+            <span class="name">surface1</span>
+            <span class="title">#bcc0cc</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-latte-surface0" data-label="catppuccin-latte-surface0" title="Copy catppuccin-latte-surface0">
+          <span class="chip" style="background: #ccd0da"></span>
+          <span class="swatch-text">
+            <span class="name">surface0</span>
+            <span class="title">#ccd0da</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-latte-base" data-label="catppuccin-latte-base" title="Copy catppuccin-latte-base">
+          <span class="chip" style="background: #eff1f5"></span>
+          <span class="swatch-text">
+            <span class="name">base</span>
+            <span class="title">#eff1f5</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-latte-mantle" data-label="catppuccin-latte-mantle" title="Copy catppuccin-latte-mantle">
+          <span class="chip" style="background: #e6e9ef"></span>
+          <span class="swatch-text">
+            <span class="name">mantle</span>
+            <span class="title">#e6e9ef</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="catppuccin-latte-crust" data-label="catppuccin-latte-crust" title="Copy catppuccin-latte-crust">
+          <span class="chip" style="background: #dce0e8"></span>
+          <span class="swatch-text">
+            <span class="name">crust</span>
+            <span class="title">#dce0e8</span>
+          </span>
+        </button>
+        </div>
+      </section>
+      <section class="palette-group">
+        <h2>doom-one <span class="meta">25 colors</span></h2>
+        <div class="palette">
+        <button type="button" class="swatch" data-copy="doom-one-bg" data-label="doom-one-bg" title="Copy doom-one-bg">
+          <span class="chip" style="background: #282c34"></span>
+          <span class="swatch-text">
+            <span class="name">bg</span>
+            <span class="title">#282c34</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-bg-alt" data-label="doom-one-bg-alt" title="Copy doom-one-bg-alt">
+          <span class="chip" style="background: #21242b"></span>
+          <span class="swatch-text">
+            <span class="name">bg-alt</span>
+            <span class="title">#21242b</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-base0" data-label="doom-one-base0" title="Copy doom-one-base0">
+          <span class="chip" style="background: #1b1f24"></span>
+          <span class="swatch-text">
+            <span class="name">base0</span>
+            <span class="title">#1b1f24</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-base1" data-label="doom-one-base1" title="Copy doom-one-base1">
+          <span class="chip" style="background: #21242b"></span>
+          <span class="swatch-text">
+            <span class="name">base1</span>
+            <span class="title">#21242b</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-base2" data-label="doom-one-base2" title="Copy doom-one-base2">
+          <span class="chip" style="background: #282c34"></span>
+          <span class="swatch-text">
+            <span class="name">base2</span>
+            <span class="title">#282c34</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-base3" data-label="doom-one-base3" title="Copy doom-one-base3">
+          <span class="chip" style="background: #2d3138"></span>
+          <span class="swatch-text">
+            <span class="name">base3</span>
+            <span class="title">#2d3138</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-base4" data-label="doom-one-base4" title="Copy doom-one-base4">
+          <span class="chip" style="background: #353a42"></span>
+          <span class="swatch-text">
+            <span class="name">base4</span>
+            <span class="title">#353a42</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-base5" data-label="doom-one-base5" title="Copy doom-one-base5">
+          <span class="chip" style="background: #3c4149"></span>
+          <span class="swatch-text">
+            <span class="name">base5</span>
+            <span class="title">#3c4149</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-base6" data-label="doom-one-base6" title="Copy doom-one-base6">
+          <span class="chip" style="background: #484d55"></span>
+          <span class="swatch-text">
+            <span class="name">base6</span>
+            <span class="title">#484d55</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-base7" data-label="doom-one-base7" title="Copy doom-one-base7">
+          <span class="chip" style="background: #525860"></span>
+          <span class="swatch-text">
+            <span class="name">base7</span>
+            <span class="title">#525860</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-base8" data-label="doom-one-base8" title="Copy doom-one-base8">
+          <span class="chip" style="background: #5b6268"></span>
+          <span class="swatch-text">
+            <span class="name">base8</span>
+            <span class="title">#5b6268</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-fg" data-label="doom-one-fg" title="Copy doom-one-fg">
+          <span class="chip" style="background: #bbc2cf"></span>
+          <span class="swatch-text">
+            <span class="name">fg</span>
+            <span class="title">#bbc2cf</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-fg-alt" data-label="doom-one-fg-alt" title="Copy doom-one-fg-alt">
+          <span class="chip" style="background: #5b6268"></span>
+          <span class="swatch-text">
+            <span class="name">fg-alt</span>
+            <span class="title">#5b6268</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-grey" data-label="doom-one-grey" title="Copy doom-one-grey">
+          <span class="chip" style="background: #3f444a"></span>
+          <span class="swatch-text">
+            <span class="name">grey</span>
+            <span class="title">#3f444a</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-red" data-label="doom-one-red" title="Copy doom-one-red">
+          <span class="chip" style="background: #ff6c6b"></span>
+          <span class="swatch-text">
+            <span class="name">red</span>
+            <span class="title">#ff6c6b</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-orange" data-label="doom-one-orange" title="Copy doom-one-orange">
+          <span class="chip" style="background: #da8548"></span>
+          <span class="swatch-text">
+            <span class="name">orange</span>
+            <span class="title">#da8548</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-green" data-label="doom-one-green" title="Copy doom-one-green">
+          <span class="chip" style="background: #98be65"></span>
+          <span class="swatch-text">
+            <span class="name">green</span>
+            <span class="title">#98be65</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-teal" data-label="doom-one-teal" title="Copy doom-one-teal">
+          <span class="chip" style="background: #1abc9c"></span>
+          <span class="swatch-text">
+            <span class="name">teal</span>
+            <span class="title">#1abc9c</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-yellow" data-label="doom-one-yellow" title="Copy doom-one-yellow">
+          <span class="chip" style="background: #ecbe7b"></span>
+          <span class="swatch-text">
+            <span class="name">yellow</span>
+            <span class="title">#ecbe7b</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-blue" data-label="doom-one-blue" title="Copy doom-one-blue">
+          <span class="chip" style="background: #51afef"></span>
+          <span class="swatch-text">
+            <span class="name">blue</span>
+            <span class="title">#51afef</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-dark-blue" data-label="doom-one-dark-blue" title="Copy doom-one-dark-blue">
+          <span class="chip" style="background: #2257a0"></span>
+          <span class="swatch-text">
+            <span class="name">dark-blue</span>
+            <span class="title">#2257a0</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-magenta" data-label="doom-one-magenta" title="Copy doom-one-magenta">
+          <span class="chip" style="background: #c678dd"></span>
+          <span class="swatch-text">
+            <span class="name">magenta</span>
+            <span class="title">#c678dd</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-violet" data-label="doom-one-violet" title="Copy doom-one-violet">
+          <span class="chip" style="background: #a9a1e1"></span>
+          <span class="swatch-text">
+            <span class="name">violet</span>
+            <span class="title">#a9a1e1</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-cyan" data-label="doom-one-cyan" title="Copy doom-one-cyan">
+          <span class="chip" style="background: #46d9ff"></span>
+          <span class="swatch-text">
+            <span class="name">cyan</span>
+            <span class="title">#46d9ff</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-dark-cyan" data-label="doom-one-dark-cyan" title="Copy doom-one-dark-cyan">
+          <span class="chip" style="background: #5699af"></span>
+          <span class="swatch-text">
+            <span class="name">dark-cyan</span>
+            <span class="title">#5699af</span>
+          </span>
+        </button>
+        </div>
+      </section>
+      <section class="palette-group">
+        <h2>doom-one-light <span class="meta">25 colors</span></h2>
+        <div class="palette">
+        <button type="button" class="swatch" data-copy="doom-one-light-bg" data-label="doom-one-light-bg" title="Copy doom-one-light-bg">
+          <span class="chip" style="background: #fafafa"></span>
+          <span class="swatch-text">
+            <span class="name">bg</span>
+            <span class="title">#fafafa</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-light-bg-alt" data-label="doom-one-light-bg-alt" title="Copy doom-one-light-bg-alt">
+          <span class="chip" style="background: #efefef"></span>
+          <span class="swatch-text">
+            <span class="name">bg-alt</span>
+            <span class="title">#efefef</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-light-base0" data-label="doom-one-light-base0" title="Copy doom-one-light-base0">
+          <span class="chip" style="background: #f0f0f0"></span>
+          <span class="swatch-text">
+            <span class="name">base0</span>
+            <span class="title">#f0f0f0</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-light-base1" data-label="doom-one-light-base1" title="Copy doom-one-light-base1">
+          <span class="chip" style="background: #e7e7e7"></span>
+          <span class="swatch-text">
+            <span class="name">base1</span>
+            <span class="title">#e7e7e7</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-light-base2" data-label="doom-one-light-base2" title="Copy doom-one-light-base2">
+          <span class="chip" style="background: #dfdfdf"></span>
+          <span class="swatch-text">
+            <span class="name">base2</span>
+            <span class="title">#dfdfdf</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-light-base3" data-label="doom-one-light-base3" title="Copy doom-one-light-base3">
+          <span class="chip" style="background: #c6c7c7"></span>
+          <span class="swatch-text">
+            <span class="name">base3</span>
+            <span class="title">#c6c7c7</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-light-base4" data-label="doom-one-light-base4" title="Copy doom-one-light-base4">
+          <span class="chip" style="background: #b9b9b9"></span>
+          <span class="swatch-text">
+            <span class="name">base4</span>
+            <span class="title">#b9b9b9</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-light-base5" data-label="doom-one-light-base5" title="Copy doom-one-light-base5">
+          <span class="chip" style="background: #b2b2b2"></span>
+          <span class="swatch-text">
+            <span class="name">base5</span>
+            <span class="title">#b2b2b2</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-light-base6" data-label="doom-one-light-base6" title="Copy doom-one-light-base6">
+          <span class="chip" style="background: #939395"></span>
+          <span class="swatch-text">
+            <span class="name">base6</span>
+            <span class="title">#939395</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-light-base7" data-label="doom-one-light-base7" title="Copy doom-one-light-base7">
+          <span class="chip" style="background: #696969"></span>
+          <span class="swatch-text">
+            <span class="name">base7</span>
+            <span class="title">#696969</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-light-base8" data-label="doom-one-light-base8" title="Copy doom-one-light-base8">
+          <span class="chip" style="background: #383a42"></span>
+          <span class="swatch-text">
+            <span class="name">base8</span>
+            <span class="title">#383a42</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-light-fg" data-label="doom-one-light-fg" title="Copy doom-one-light-fg">
+          <span class="chip" style="background: #383a42"></span>
+          <span class="swatch-text">
+            <span class="name">fg</span>
+            <span class="title">#383a42</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-light-fg-alt" data-label="doom-one-light-fg-alt" title="Copy doom-one-light-fg-alt">
+          <span class="chip" style="background: #a0a1a7"></span>
+          <span class="swatch-text">
+            <span class="name">fg-alt</span>
+            <span class="title">#a0a1a7</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-light-grey" data-label="doom-one-light-grey" title="Copy doom-one-light-grey">
+          <span class="chip" style="background: #b9b9b9"></span>
+          <span class="swatch-text">
+            <span class="name">grey</span>
+            <span class="title">#b9b9b9</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-light-red" data-label="doom-one-light-red" title="Copy doom-one-light-red">
+          <span class="chip" style="background: #e45649"></span>
+          <span class="swatch-text">
+            <span class="name">red</span>
+            <span class="title">#e45649</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-light-orange" data-label="doom-one-light-orange" title="Copy doom-one-light-orange">
+          <span class="chip" style="background: #da8548"></span>
+          <span class="swatch-text">
+            <span class="name">orange</span>
+            <span class="title">#da8548</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-light-green" data-label="doom-one-light-green" title="Copy doom-one-light-green">
+          <span class="chip" style="background: #50a14f"></span>
+          <span class="swatch-text">
+            <span class="name">green</span>
+            <span class="title">#50a14f</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-light-teal" data-label="doom-one-light-teal" title="Copy doom-one-light-teal">
+          <span class="chip" style="background: #1abc9c"></span>
+          <span class="swatch-text">
+            <span class="name">teal</span>
+            <span class="title">#1abc9c</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-light-yellow" data-label="doom-one-light-yellow" title="Copy doom-one-light-yellow">
+          <span class="chip" style="background: #c18401"></span>
+          <span class="swatch-text">
+            <span class="name">yellow</span>
+            <span class="title">#c18401</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-light-blue" data-label="doom-one-light-blue" title="Copy doom-one-light-blue">
+          <span class="chip" style="background: #4078f2"></span>
+          <span class="swatch-text">
+            <span class="name">blue</span>
+            <span class="title">#4078f2</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-light-dark-blue" data-label="doom-one-light-dark-blue" title="Copy doom-one-light-dark-blue">
+          <span class="chip" style="background: #2257a0"></span>
+          <span class="swatch-text">
+            <span class="name">dark-blue</span>
+            <span class="title">#2257a0</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-light-magenta" data-label="doom-one-light-magenta" title="Copy doom-one-light-magenta">
+          <span class="chip" style="background: #a626a4"></span>
+          <span class="swatch-text">
+            <span class="name">magenta</span>
+            <span class="title">#a626a4</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-light-violet" data-label="doom-one-light-violet" title="Copy doom-one-light-violet">
+          <span class="chip" style="background: #a9a1e1"></span>
+          <span class="swatch-text">
+            <span class="name">violet</span>
+            <span class="title">#a9a1e1</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-light-cyan" data-label="doom-one-light-cyan" title="Copy doom-one-light-cyan">
+          <span class="chip" style="background: #0184bc"></span>
+          <span class="swatch-text">
+            <span class="name">cyan</span>
+            <span class="title">#0184bc</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="doom-one-light-dark-cyan" data-label="doom-one-light-dark-cyan" title="Copy doom-one-light-dark-cyan">
+          <span class="chip" style="background: #5699af"></span>
+          <span class="swatch-text">
+            <span class="name">dark-cyan</span>
+            <span class="title">#5699af</span>
+          </span>
+        </button>
+        </div>
+      </section>
+      <section class="palette-group">
+        <h2>dracula <span class="meta">11 colors</span></h2>
+        <div class="palette">
+        <button type="button" class="swatch" data-copy="dracula-background" data-label="dracula-background" title="Copy dracula-background">
+          <span class="chip" style="background: #282a36"></span>
+          <span class="swatch-text">
+            <span class="name">background</span>
+            <span class="title">#282a36</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="dracula-current-line" data-label="dracula-current-line" title="Copy dracula-current-line">
+          <span class="chip" style="background: #44475a"></span>
+          <span class="swatch-text">
+            <span class="name">current-line</span>
+            <span class="title">#44475a</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="dracula-foreground" data-label="dracula-foreground" title="Copy dracula-foreground">
+          <span class="chip" style="background: #f8f8f2"></span>
+          <span class="swatch-text">
+            <span class="name">foreground</span>
+            <span class="title">#f8f8f2</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="dracula-comment" data-label="dracula-comment" title="Copy dracula-comment">
+          <span class="chip" style="background: #6272a4"></span>
+          <span class="swatch-text">
+            <span class="name">comment</span>
+            <span class="title">#6272a4</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="dracula-cyan" data-label="dracula-cyan" title="Copy dracula-cyan">
+          <span class="chip" style="background: #8be9fd"></span>
+          <span class="swatch-text">
+            <span class="name">cyan</span>
+            <span class="title">#8be9fd</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="dracula-green" data-label="dracula-green" title="Copy dracula-green">
+          <span class="chip" style="background: #50fa7b"></span>
+          <span class="swatch-text">
+            <span class="name">green</span>
+            <span class="title">#50fa7b</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="dracula-orange" data-label="dracula-orange" title="Copy dracula-orange">
+          <span class="chip" style="background: #ffb86c"></span>
+          <span class="swatch-text">
+            <span class="name">orange</span>
+            <span class="title">#ffb86c</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="dracula-pink" data-label="dracula-pink" title="Copy dracula-pink">
+          <span class="chip" style="background: #ff79c6"></span>
+          <span class="swatch-text">
+            <span class="name">pink</span>
+            <span class="title">#ff79c6</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="dracula-purple" data-label="dracula-purple" title="Copy dracula-purple">
+          <span class="chip" style="background: #bd93f9"></span>
+          <span class="swatch-text">
+            <span class="name">purple</span>
+            <span class="title">#bd93f9</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="dracula-red" data-label="dracula-red" title="Copy dracula-red">
+          <span class="chip" style="background: #ff5555"></span>
+          <span class="swatch-text">
+            <span class="name">red</span>
+            <span class="title">#ff5555</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="dracula-yellow" data-label="dracula-yellow" title="Copy dracula-yellow">
+          <span class="chip" style="background: #f1fa8c"></span>
+          <span class="swatch-text">
+            <span class="name">yellow</span>
+            <span class="title">#f1fa8c</span>
+          </span>
+        </button>
+        </div>
+      </section>
+      <section class="palette-group">
+        <h2>dracula-alucard <span class="meta">11 colors</span></h2>
+        <div class="palette">
+        <button type="button" class="swatch" data-copy="dracula-alucard-background" data-label="dracula-alucard-background" title="Copy dracula-alucard-background">
+          <span class="chip" style="background: #fffbeb"></span>
+          <span class="swatch-text">
+            <span class="name">background</span>
+            <span class="title">#fffbeb</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="dracula-alucard-current-line" data-label="dracula-alucard-current-line" title="Copy dracula-alucard-current-line">
+          <span class="chip" style="background: #cfcfde"></span>
+          <span class="swatch-text">
+            <span class="name">current-line</span>
+            <span class="title">#cfcfde</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="dracula-alucard-foreground" data-label="dracula-alucard-foreground" title="Copy dracula-alucard-foreground">
+          <span class="chip" style="background: #1f1f1f"></span>
+          <span class="swatch-text">
+            <span class="name">foreground</span>
+            <span class="title">#1f1f1f</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="dracula-alucard-comment" data-label="dracula-alucard-comment" title="Copy dracula-alucard-comment">
+          <span class="chip" style="background: #6c664b"></span>
+          <span class="swatch-text">
+            <span class="name">comment</span>
+            <span class="title">#6c664b</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="dracula-alucard-cyan" data-label="dracula-alucard-cyan" title="Copy dracula-alucard-cyan">
+          <span class="chip" style="background: #036a96"></span>
+          <span class="swatch-text">
+            <span class="name">cyan</span>
+            <span class="title">#036a96</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="dracula-alucard-green" data-label="dracula-alucard-green" title="Copy dracula-alucard-green">
+          <span class="chip" style="background: #14710a"></span>
+          <span class="swatch-text">
+            <span class="name">green</span>
+            <span class="title">#14710a</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="dracula-alucard-orange" data-label="dracula-alucard-orange" title="Copy dracula-alucard-orange">
+          <span class="chip" style="background: #a34d14"></span>
+          <span class="swatch-text">
+            <span class="name">orange</span>
+            <span class="title">#a34d14</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="dracula-alucard-pink" data-label="dracula-alucard-pink" title="Copy dracula-alucard-pink">
+          <span class="chip" style="background: #a3144d"></span>
+          <span class="swatch-text">
+            <span class="name">pink</span>
+            <span class="title">#a3144d</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="dracula-alucard-purple" data-label="dracula-alucard-purple" title="Copy dracula-alucard-purple">
+          <span class="chip" style="background: #644ac9"></span>
+          <span class="swatch-text">
+            <span class="name">purple</span>
+            <span class="title">#644ac9</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="dracula-alucard-red" data-label="dracula-alucard-red" title="Copy dracula-alucard-red">
+          <span class="chip" style="background: #cb3a2a"></span>
+          <span class="swatch-text">
+            <span class="name">red</span>
+            <span class="title">#cb3a2a</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="dracula-alucard-yellow" data-label="dracula-alucard-yellow" title="Copy dracula-alucard-yellow">
+          <span class="chip" style="background: #846e15"></span>
+          <span class="swatch-text">
+            <span class="name">yellow</span>
+            <span class="title">#846e15</span>
+          </span>
+        </button>
+        </div>
+      </section>
+      <section class="palette-group">
+        <h2>solarized-dark <span class="meta">16 colors</span></h2>
+        <div class="palette">
+        <button type="button" class="swatch" data-copy="solarized-dark-base03" data-label="solarized-dark-base03" title="Copy solarized-dark-base03">
+          <span class="chip" style="background: #002b36"></span>
+          <span class="swatch-text">
+            <span class="name">base03</span>
+            <span class="title">#002b36</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-dark-base02" data-label="solarized-dark-base02" title="Copy solarized-dark-base02">
+          <span class="chip" style="background: #073642"></span>
+          <span class="swatch-text">
+            <span class="name">base02</span>
+            <span class="title">#073642</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-dark-base01" data-label="solarized-dark-base01" title="Copy solarized-dark-base01">
+          <span class="chip" style="background: #586e75"></span>
+          <span class="swatch-text">
+            <span class="name">base01</span>
+            <span class="title">#586e75</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-dark-base00" data-label="solarized-dark-base00" title="Copy solarized-dark-base00">
+          <span class="chip" style="background: #657b83"></span>
+          <span class="swatch-text">
+            <span class="name">base00</span>
+            <span class="title">#657b83</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-dark-base0" data-label="solarized-dark-base0" title="Copy solarized-dark-base0">
+          <span class="chip" style="background: #839496"></span>
+          <span class="swatch-text">
+            <span class="name">base0</span>
+            <span class="title">#839496</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-dark-base1" data-label="solarized-dark-base1" title="Copy solarized-dark-base1">
+          <span class="chip" style="background: #93a1a1"></span>
+          <span class="swatch-text">
+            <span class="name">base1</span>
+            <span class="title">#93a1a1</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-dark-base2" data-label="solarized-dark-base2" title="Copy solarized-dark-base2">
+          <span class="chip" style="background: #eee8d5"></span>
+          <span class="swatch-text">
+            <span class="name">base2</span>
+            <span class="title">#eee8d5</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-dark-base3" data-label="solarized-dark-base3" title="Copy solarized-dark-base3">
+          <span class="chip" style="background: #fdf6e3"></span>
+          <span class="swatch-text">
+            <span class="name">base3</span>
+            <span class="title">#fdf6e3</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-dark-yellow" data-label="solarized-dark-yellow" title="Copy solarized-dark-yellow">
+          <span class="chip" style="background: #b58900"></span>
+          <span class="swatch-text">
+            <span class="name">yellow</span>
+            <span class="title">#b58900</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-dark-orange" data-label="solarized-dark-orange" title="Copy solarized-dark-orange">
+          <span class="chip" style="background: #cb4b16"></span>
+          <span class="swatch-text">
+            <span class="name">orange</span>
+            <span class="title">#cb4b16</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-dark-red" data-label="solarized-dark-red" title="Copy solarized-dark-red">
+          <span class="chip" style="background: #dc322f"></span>
+          <span class="swatch-text">
+            <span class="name">red</span>
+            <span class="title">#dc322f</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-dark-magenta" data-label="solarized-dark-magenta" title="Copy solarized-dark-magenta">
+          <span class="chip" style="background: #d33682"></span>
+          <span class="swatch-text">
+            <span class="name">magenta</span>
+            <span class="title">#d33682</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-dark-violet" data-label="solarized-dark-violet" title="Copy solarized-dark-violet">
+          <span class="chip" style="background: #6c71c4"></span>
+          <span class="swatch-text">
+            <span class="name">violet</span>
+            <span class="title">#6c71c4</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-dark-blue" data-label="solarized-dark-blue" title="Copy solarized-dark-blue">
+          <span class="chip" style="background: #268bd2"></span>
+          <span class="swatch-text">
+            <span class="name">blue</span>
+            <span class="title">#268bd2</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-dark-cyan" data-label="solarized-dark-cyan" title="Copy solarized-dark-cyan">
+          <span class="chip" style="background: #2aa198"></span>
+          <span class="swatch-text">
+            <span class="name">cyan</span>
+            <span class="title">#2aa198</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-dark-green" data-label="solarized-dark-green" title="Copy solarized-dark-green">
+          <span class="chip" style="background: #859900"></span>
+          <span class="swatch-text">
+            <span class="name">green</span>
+            <span class="title">#859900</span>
+          </span>
+        </button>
+        </div>
+      </section>
+      <section class="palette-group">
+        <h2>solarized-light <span class="meta">16 colors</span></h2>
+        <div class="palette">
+        <button type="button" class="swatch" data-copy="solarized-light-base03" data-label="solarized-light-base03" title="Copy solarized-light-base03">
+          <span class="chip" style="background: #002b36"></span>
+          <span class="swatch-text">
+            <span class="name">base03</span>
+            <span class="title">#002b36</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-light-base02" data-label="solarized-light-base02" title="Copy solarized-light-base02">
+          <span class="chip" style="background: #073642"></span>
+          <span class="swatch-text">
+            <span class="name">base02</span>
+            <span class="title">#073642</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-light-base01" data-label="solarized-light-base01" title="Copy solarized-light-base01">
+          <span class="chip" style="background: #586e75"></span>
+          <span class="swatch-text">
+            <span class="name">base01</span>
+            <span class="title">#586e75</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-light-base00" data-label="solarized-light-base00" title="Copy solarized-light-base00">
+          <span class="chip" style="background: #657b83"></span>
+          <span class="swatch-text">
+            <span class="name">base00</span>
+            <span class="title">#657b83</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-light-base0" data-label="solarized-light-base0" title="Copy solarized-light-base0">
+          <span class="chip" style="background: #839496"></span>
+          <span class="swatch-text">
+            <span class="name">base0</span>
+            <span class="title">#839496</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-light-base1" data-label="solarized-light-base1" title="Copy solarized-light-base1">
+          <span class="chip" style="background: #93a1a1"></span>
+          <span class="swatch-text">
+            <span class="name">base1</span>
+            <span class="title">#93a1a1</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-light-base2" data-label="solarized-light-base2" title="Copy solarized-light-base2">
+          <span class="chip" style="background: #eee8d5"></span>
+          <span class="swatch-text">
+            <span class="name">base2</span>
+            <span class="title">#eee8d5</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-light-base3" data-label="solarized-light-base3" title="Copy solarized-light-base3">
+          <span class="chip" style="background: #fdf6e3"></span>
+          <span class="swatch-text">
+            <span class="name">base3</span>
+            <span class="title">#fdf6e3</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-light-yellow" data-label="solarized-light-yellow" title="Copy solarized-light-yellow">
+          <span class="chip" style="background: #b58900"></span>
+          <span class="swatch-text">
+            <span class="name">yellow</span>
+            <span class="title">#b58900</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-light-orange" data-label="solarized-light-orange" title="Copy solarized-light-orange">
+          <span class="chip" style="background: #cb4b16"></span>
+          <span class="swatch-text">
+            <span class="name">orange</span>
+            <span class="title">#cb4b16</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-light-red" data-label="solarized-light-red" title="Copy solarized-light-red">
+          <span class="chip" style="background: #dc322f"></span>
+          <span class="swatch-text">
+            <span class="name">red</span>
+            <span class="title">#dc322f</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-light-magenta" data-label="solarized-light-magenta" title="Copy solarized-light-magenta">
+          <span class="chip" style="background: #d33682"></span>
+          <span class="swatch-text">
+            <span class="name">magenta</span>
+            <span class="title">#d33682</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-light-violet" data-label="solarized-light-violet" title="Copy solarized-light-violet">
+          <span class="chip" style="background: #6c71c4"></span>
+          <span class="swatch-text">
+            <span class="name">violet</span>
+            <span class="title">#6c71c4</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-light-blue" data-label="solarized-light-blue" title="Copy solarized-light-blue">
+          <span class="chip" style="background: #268bd2"></span>
+          <span class="swatch-text">
+            <span class="name">blue</span>
+            <span class="title">#268bd2</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-light-cyan" data-label="solarized-light-cyan" title="Copy solarized-light-cyan">
+          <span class="chip" style="background: #2aa198"></span>
+          <span class="swatch-text">
+            <span class="name">cyan</span>
+            <span class="title">#2aa198</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="solarized-light-green" data-label="solarized-light-green" title="Copy solarized-light-green">
+          <span class="chip" style="background: #859900"></span>
+          <span class="swatch-text">
+            <span class="name">green</span>
+            <span class="title">#859900</span>
+          </span>
+        </button>
+        </div>
+      </section>
+      <section class="palette-group">
+        <h2>modus-operandi <span class="meta">14 colors</span></h2>
+        <div class="palette">
+        <button type="button" class="swatch" data-copy="modus-operandi-bg-main" data-label="modus-operandi-bg-main" title="Copy modus-operandi-bg-main">
+          <span class="chip" style="background: #ffffff"></span>
+          <span class="swatch-text">
+            <span class="name">bg-main</span>
+            <span class="title">#ffffff</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-operandi-bg-dim" data-label="modus-operandi-bg-dim" title="Copy modus-operandi-bg-dim">
+          <span class="chip" style="background: #f0f0f0"></span>
+          <span class="swatch-text">
+            <span class="name">bg-dim</span>
+            <span class="title">#f0f0f0</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-operandi-bg-active" data-label="modus-operandi-bg-active" title="Copy modus-operandi-bg-active">
+          <span class="chip" style="background: #c4c4c4"></span>
+          <span class="swatch-text">
+            <span class="name">bg-active</span>
+            <span class="title">#c4c4c4</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-operandi-bg-inactive" data-label="modus-operandi-bg-inactive" title="Copy modus-operandi-bg-inactive">
+          <span class="chip" style="background: #e0e0e0"></span>
+          <span class="swatch-text">
+            <span class="name">bg-inactive</span>
+            <span class="title">#e0e0e0</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-operandi-fg-main" data-label="modus-operandi-fg-main" title="Copy modus-operandi-fg-main">
+          <span class="chip" style="background: #000000"></span>
+          <span class="swatch-text">
+            <span class="name">fg-main</span>
+            <span class="title">#000000</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-operandi-fg-dim" data-label="modus-operandi-fg-dim" title="Copy modus-operandi-fg-dim">
+          <span class="chip" style="background: #595959"></span>
+          <span class="swatch-text">
+            <span class="name">fg-dim</span>
+            <span class="title">#595959</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-operandi-fg-active" data-label="modus-operandi-fg-active" title="Copy modus-operandi-fg-active">
+          <span class="chip" style="background: #000000"></span>
+          <span class="swatch-text">
+            <span class="name">fg-active</span>
+            <span class="title">#000000</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-operandi-fg-alt" data-label="modus-operandi-fg-alt" title="Copy modus-operandi-fg-alt">
+          <span class="chip" style="background: #a6a6a6"></span>
+          <span class="swatch-text">
+            <span class="name">fg-alt</span>
+            <span class="title">#a6a6a6</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-operandi-red" data-label="modus-operandi-red" title="Copy modus-operandi-red">
+          <span class="chip" style="background: #a60000"></span>
+          <span class="swatch-text">
+            <span class="name">red</span>
+            <span class="title">#a60000</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-operandi-green" data-label="modus-operandi-green" title="Copy modus-operandi-green">
+          <span class="chip" style="background: #006800"></span>
+          <span class="swatch-text">
+            <span class="name">green</span>
+            <span class="title">#006800</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-operandi-yellow" data-label="modus-operandi-yellow" title="Copy modus-operandi-yellow">
+          <span class="chip" style="background: #6f5500"></span>
+          <span class="swatch-text">
+            <span class="name">yellow</span>
+            <span class="title">#6f5500</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-operandi-blue" data-label="modus-operandi-blue" title="Copy modus-operandi-blue">
+          <span class="chip" style="background: #0031a9"></span>
+          <span class="swatch-text">
+            <span class="name">blue</span>
+            <span class="title">#0031a9</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-operandi-magenta" data-label="modus-operandi-magenta" title="Copy modus-operandi-magenta">
+          <span class="chip" style="background: #721045"></span>
+          <span class="swatch-text">
+            <span class="name">magenta</span>
+            <span class="title">#721045</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-operandi-cyan" data-label="modus-operandi-cyan" title="Copy modus-operandi-cyan">
+          <span class="chip" style="background: #00538b"></span>
+          <span class="swatch-text">
+            <span class="name">cyan</span>
+            <span class="title">#00538b</span>
+          </span>
+        </button>
+        </div>
+      </section>
+      <section class="palette-group">
+        <h2>modus-vivendi <span class="meta">14 colors</span></h2>
+        <div class="palette">
+        <button type="button" class="swatch" data-copy="modus-vivendi-bg-main" data-label="modus-vivendi-bg-main" title="Copy modus-vivendi-bg-main">
+          <span class="chip" style="background: #000000"></span>
+          <span class="swatch-text">
+            <span class="name">bg-main</span>
+            <span class="title">#000000</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-vivendi-bg-dim" data-label="modus-vivendi-bg-dim" title="Copy modus-vivendi-bg-dim">
+          <span class="chip" style="background: #1e1e1e"></span>
+          <span class="swatch-text">
+            <span class="name">bg-dim</span>
+            <span class="title">#1e1e1e</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-vivendi-bg-active" data-label="modus-vivendi-bg-active" title="Copy modus-vivendi-bg-active">
+          <span class="chip" style="background: #535353"></span>
+          <span class="swatch-text">
+            <span class="name">bg-active</span>
+            <span class="title">#535353</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-vivendi-bg-inactive" data-label="modus-vivendi-bg-inactive" title="Copy modus-vivendi-bg-inactive">
+          <span class="chip" style="background: #303030"></span>
+          <span class="swatch-text">
+            <span class="name">bg-inactive</span>
+            <span class="title">#303030</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-vivendi-fg-main" data-label="modus-vivendi-fg-main" title="Copy modus-vivendi-fg-main">
+          <span class="chip" style="background: #ffffff"></span>
+          <span class="swatch-text">
+            <span class="name">fg-main</span>
+            <span class="title">#ffffff</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-vivendi-fg-dim" data-label="modus-vivendi-fg-dim" title="Copy modus-vivendi-fg-dim">
+          <span class="chip" style="background: #989898"></span>
+          <span class="swatch-text">
+            <span class="name">fg-dim</span>
+            <span class="title">#989898</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-vivendi-fg-active" data-label="modus-vivendi-fg-active" title="Copy modus-vivendi-fg-active">
+          <span class="chip" style="background: #ffffff"></span>
+          <span class="swatch-text">
+            <span class="name">fg-active</span>
+            <span class="title">#ffffff</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-vivendi-fg-alt" data-label="modus-vivendi-fg-alt" title="Copy modus-vivendi-fg-alt">
+          <span class="chip" style="background: #c6c6c6"></span>
+          <span class="swatch-text">
+            <span class="name">fg-alt</span>
+            <span class="title">#c6c6c6</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-vivendi-red" data-label="modus-vivendi-red" title="Copy modus-vivendi-red">
+          <span class="chip" style="background: #ff5f59"></span>
+          <span class="swatch-text">
+            <span class="name">red</span>
+            <span class="title">#ff5f59</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-vivendi-green" data-label="modus-vivendi-green" title="Copy modus-vivendi-green">
+          <span class="chip" style="background: #44bc44"></span>
+          <span class="swatch-text">
+            <span class="name">green</span>
+            <span class="title">#44bc44</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-vivendi-yellow" data-label="modus-vivendi-yellow" title="Copy modus-vivendi-yellow">
+          <span class="chip" style="background: #d0bc00"></span>
+          <span class="swatch-text">
+            <span class="name">yellow</span>
+            <span class="title">#d0bc00</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-vivendi-blue" data-label="modus-vivendi-blue" title="Copy modus-vivendi-blue">
+          <span class="chip" style="background: #2fafff"></span>
+          <span class="swatch-text">
+            <span class="name">blue</span>
+            <span class="title">#2fafff</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-vivendi-magenta" data-label="modus-vivendi-magenta" title="Copy modus-vivendi-magenta">
+          <span class="chip" style="background: #feacd0"></span>
+          <span class="swatch-text">
+            <span class="name">magenta</span>
+            <span class="title">#feacd0</span>
+          </span>
+        </button>
+        <button type="button" class="swatch" data-copy="modus-vivendi-cyan" data-label="modus-vivendi-cyan" title="Copy modus-vivendi-cyan">
+          <span class="chip" style="background: #00d3d0"></span>
+          <span class="swatch-text">
+            <span class="name">cyan</span>
+            <span class="title">#00d3d0</span>
+          </span>
+        </button>
+        </div>
+      </section>
+      </div>
       <h2 class="section-heading">Logo library <span class="meta">282 logos</span></h2>
       <div class="grid">
     <figure class="tile" data-name="actix Actix">
@@ -4093,8 +5834,10 @@
   const count = document.querySelector('.count');
   const badges = document.querySelectorAll('figure.badge-tile').length;
   const logos = document.querySelectorAll('figure.tile').length;
+  const colors = document.querySelectorAll('button.swatch').length;
   const noun = (n, word) => n + ' ' + word + (n === 1 ? '' : 's');
   const summary = () => [badges ? noun(badges, 'badge') : '',
+                         colors ? noun(colors, 'color') : '',
                          logos ? noun(logos, 'logo') : '']
                           .filter(Boolean).join(' · ');
   const filter = () => {
@@ -4139,11 +5882,14 @@
       return copied;
     }
   };
-  document.querySelectorAll('button.snippet').forEach((button) => {
+  document.querySelectorAll('[data-copy]').forEach((button) => {
     button.addEventListener('click', async () => {
-      const name = button.closest('figure').querySelector('.name').textContent;
+      const figure = button.closest('figure');
+      const label = (figure && figure.querySelector('.name')
+                      ? figure.querySelector('.name').textContent
+                      : button.dataset.label) || button.dataset.copy;
       const copied = await copyText(button.dataset.copy);
-      notify(copied ? 'Copied ' + name : 'Could not copy ' + name);
+      notify(copied ? 'Copied ' + label : 'Could not copy ' + label);
     });
   });
 </script>

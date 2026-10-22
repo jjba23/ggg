@@ -547,7 +547,27 @@ string. MK-GLYPH returns a list holding the svg element."
     (test-assert "logo ids are namespaced so they cannot clash"
       (and (string-contains html "id=\"logo-sparkle-sparkle-shine\"")
            (string-contains html "url(#logo-sparkle-sparkle-shine)")
-           (not (string-contains html "url(#sparkle-shine)")))))
+           (not (string-contains html "url(#sparkle-shine)"))))
+    (test-assert "the gallery shows the color palettes"
+      (and (string-contains html "Color palettes")
+           (string-contains html "class=\"palette\"")))
+    (test-assert "every theme palette is shown"
+      (every (lambda (theme)
+               (string-contains html
+                                (format #f ">~a <span class=\"meta\">"
+                                        (symbol->string theme))))
+             (theme-names)))
+    (test-assert "every named color gets a swatch"
+      (every (lambda (entry)
+               (string-contains html
+                                (format #f "data-copy=\"~a\"" (car entry))))
+             named-colors))
+    (test-assert "swatches carry their hex value"
+      (and (string-contains html "data-copy=\"catppuccin-mocha-red\"")
+           (string-contains html "background: #f38ba8")))
+    (test-equal "the palette section has one swatch per color"
+      (length named-colors)
+      (count-substring "class=\"swatch\"" (palette-section))))
 
   (let ((groups ((@@ (ggg main) load-glyph-groups)
                  (string-append project-root "/glyphs")

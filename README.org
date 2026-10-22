@@ -13,6 +13,8 @@ Be proud and appreciate technologies and techniques you use, distinguish clearly
 
 With flexible support for badges with any number of parts.
 
+*Browse every badge, logo and color palette in the gallery →* [[https://jointhefreeworld.org/ggg/dist/gallery.html][https://jointhefreeworld.org/ggg/dist/gallery.html]]
+
 If you like my work, please support me by [[https://bmc.link/jjbigorra][buying me a cup of coffee ☕]] so I can continue with a lot of motivation.
 
 ---------------
@@ -193,17 +195,17 @@ ggg ships several hundred logos, so most badges can be written without drawing a
 
 One entry deserves a note. ~java.svg~ is the Java coffee-cup mark, Oracle's trademark. Simple Icons used to ship it and removed it in 2022 after Oracle asked for its removal; ggg keeps the cup as a nominative reference to Java, which is why the credits call it out separately from the other logos.
 
-** Browsing badges and logos
+** Browsing badges, colors and logos
 
-Run ~ggg --list-logos~ for the names, or generate the gallery, a single self-contained HTML page that renders every badge of your glyph files at its real size and inlines every logo with its name and the snippet to use:
+Run ~ggg --list-logos~ for the names, or generate the gallery, a single self-contained HTML page that renders every badge of your glyph files at its real size, inlines every logo with its name and the snippet to use, and shows every named color of every theme as a copyable swatch:
 
 #+begin_src shell
 ggg --gallery ./test/gallery.html --glyphs ./glyphs
 #+end_src
 
-~--glyphs~ takes a glyph file or a directory of ~.scm~ files; the gallery groups the badges by file. Click the snippet under any badge or logo to copy its definition to the clipboard. Without ~--glyphs~ you still get the logo library. [[./test/gallery.html][test/gallery.html]] is that page, and ~maak gallery~ regenerates it, so it always matches the glyphs in ~glyphs/~ and the logos in ~resources/logos/~.
+~--glyphs~ takes a glyph file or a directory of ~.scm~ files; the gallery groups the badges by file. Click the snippet under any badge or logo to copy its definition to the clipboard, or click a color swatch to copy its qualified name (such as ~catppuccin-mocha-red~) to paste into a glyph. Without ~--glyphs~ you still get the color palettes and the logo library. [[./test/gallery.html][test/gallery.html]] is that page, and ~maak gallery~ regenerates it, so it always matches the glyphs in ~glyphs/~, the colors in ~src/ggg/colors.scm~ and the logos in ~resources/logos/~.
 
-~maak deploy~ (the task the Woodpecker/Byggsteg job runs on every push) writes the same page to ~dist/gallery.html~, so the deployed copy is available at https://jointhefreeworld.org/ggg/dist/gallery.html .
+~maak deploy~ (the task the Woodpecker/Byggsteg job runs on every push) writes the same page to ~dist/gallery.html~. The deployed gallery is at [[https://jointhefreeworld.org/ggg/dist/gallery.html][jointhefreeworld.org/ggg/dist/gallery.html]].
 
 ** The badge showcase
 
@@ -263,7 +265,7 @@ Useful helpers while working on glyphs:
 - ~ggg --list-colors~ :: list every theme color available to glyph files, grouped by theme.
 - ~ggg --list-logos~ :: list the logos found in the resources directory.
 - ~ggg --list-styles~ :: list the badge styles (flat, square, shadow, plastic, frosted-glass, material, frutiger, neon) and what each one looks like.
-- ~ggg --gallery FILE [--glyphs PATH]~ :: write an HTML gallery of every badge and logo (see [[./test/gallery.html][test/gallery.html]]).
+- ~ggg --gallery FILE [--glyphs PATH]~ :: write an HTML gallery of every badge, color palette and logo (see [[./test/gallery.html][test/gallery.html]]).
 - ~ggg -k~ / ~--keep~ :: render a second glyph file into a destination directory without clearing it first.
 - ~ggg -V~ / ~--version~ :: print the version, license and homepage.
 - ~maak showcase~ :: regenerate the popular-logo badges of [[./glyphs/showcase.scm][glyphs/showcase.scm]] in ~dist/~.
