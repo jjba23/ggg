@@ -1,0 +1,5 @@
+addFilter("spelling-error .*Scheme")
+addFilter("spelling-error .*S-expression")
+addFilter("spelling-error .*ImageMagick")
+addFilter("spelling-error .*Inkscape")
+addFilter("spelling-error .*Glyph")

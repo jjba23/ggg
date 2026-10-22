@@ -37,7 +37,7 @@
 (define-public ggg
   (package
     (name "ggg")
-    (version "0.12.0")
+    (version "0.16.1")
     (source
      (local-file %source-dir
                  #:recursive? #t
@@ -56,9 +56,9 @@
               (let ((bin (string-append #$output "/bin"))
                     (share (string-append #$output "/share")))
                 (install-file "resources/help.txt"
-                              (string-append share "/resources"))
+                              (string-append share "/ggg/resources"))
                 (copy-recursively "resources/logos"
-                                  (string-append share "/resources/logos"))
+                                  (string-append share "/ggg/resources/logos"))
                 (install-file "scripts/ggg" bin)
                 (chmod (string-append bin "/ggg") #o755))))
           (add-after 'unpack 'fix-paths

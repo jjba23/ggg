@@ -1,0 +1,63 @@
+#!/usr/bin/make -f
+
+export DH_VERBOSE = 1
+
+GUILE_VER = 3.0
+SITE_DIR = debian/ggg/usr/share/guile/site/$(GUILE_VER)
+BUILD_SITE = build/site
+BUILD_CCACHE = build/ccache
+
+# Guile finds byte-compiled modules under the site-ccache directory, which
+# Debian places in the multiarch libdir
+# (/usr/lib/x86_64-linux-gnu/guile/3.0/site-ccache).  Ask Guile's pkg-config
+# file for it instead of assuming a path that would be wrong on the next
+# architecture.
+CCACHE_DIR = $(shell pkg-config --variable=siteccachedir guile-3.0)
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	# Nothing to configure: the program is Scheme sources plus a bash
+	# launcher, installed by hand below.
+
+override_dh_auto_build:
+	mkdir -p $(BUILD_SITE)/ggg $(BUILD_CCACHE)/ggg
+
+	cp -r src/ggg/. $(BUILD_SITE)/ggg/
+
+	# Byte-compile every module so that starting ggg does not compile it
+	# again on first run.
+	find $(BUILD_SITE)/ggg -name '*.scm' | while read -r scm_file; do \
+		rel_path="$${scm_file#$(BUILD_SITE)/}"; \
+		go_file="$(BUILD_CCACHE)/$${rel_path%.scm}.go"; \
+		mkdir -p "$$(dirname "$$go_file")"; \
+		guild compile -L $(BUILD_SITE) -o "$$go_file" "$$scm_file"; \
+	done
+
+override_dh_auto_test:
+	guile -L ./src ./test/ggg-tests.scm
+
+override_dh_auto_install:
+	# Launcher.  It resolves its Guile modules and resources relative to its
+	# own prefix, so it must live in $(SITE_DIR)'s prefix: /usr/bin/ggg.
+	install -Dm 0755 scripts/ggg debian/ggg/usr/bin/ggg
+
+	# Scheme sources and the byte-compiled copies.
+	mkdir -p $(SITE_DIR) debian/ggg$(CCACHE_DIR)
+	cp -r $(BUILD_SITE)/ggg $(SITE_DIR)/
+	cp -r $(BUILD_CCACHE)/ggg debian/ggg$(CCACHE_DIR)/
+
+	# Resources: the help text and the logo library.
+	mkdir -p debian/ggg/usr/share/ggg/resources
+	install -m 0644 resources/help.txt debian/ggg/usr/share/ggg/resources/help.txt
+	cp -r resources/logos debian/ggg/usr/share/ggg/resources/
+
+	# Example glyph files, so the package shows what a badge description
+	# looks like without shipping the whole repository.
+	mkdir -p debian/ggg/usr/share/doc/ggg/examples
+	install -m 0644 glyphs/*.scm debian/ggg/usr/share/doc/ggg/examples/
+
+override_dh_auto_clean:
+	rm -rf build
+	dh_auto_clean

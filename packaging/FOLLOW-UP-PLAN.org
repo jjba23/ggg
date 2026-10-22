@@ -1,0 +1,235 @@
+#+title: ggg packaging: what is here, and what comes next
+
+#+author: Josep Bigorra
+
+This file records the packaging that now lives in ~packaging/~ and in the
+nixpkgs checkout, what was actually built and tested, and the order in which the
+rest should be done. It is a working document: delete the sections once their
+work has landed.
+
+* What exists now
+
+| Path                              | For        | Built with                       |
+|-----------------------------------+------------+----------------------------------|
+| ~packaging/debian~                | Debian     | ~dpkg-buildpackage~ (debhelper)  |
+| ~packaging/opensuse/ggg.spec~     | openSUSE   | ~rpmbuild~ / OBS                 |
+| ~packaging/opensuse/_service~     | OBS        | ~obs_scm~ + ~tar~ + ~set_version~|
+| ~packaging/opensuse/ggg-rpmlintrc~| openSUSE   | ~rpmlint~                        |
+| ~packaging/arch/PKGBUILD~         | Arch / AUR | ~makepkg~                        |
+| ~default.nix~, ~flake.nix~        | Nix        | ~nix-build~ / ~nix build~        |
+| ~nixpkgs: pkgs/by-name/gg/ggg/package.nix~ | nixpkgs | ~nix-build~           |
+
+All four install the same layout, because ~scripts/ggg~ derives its load and
+resource paths from its own prefix (~$(dirname $0)/..~):
+
+- ~PREFIX/bin/ggg~ :: the launcher.
+- ~PREFIX/share/guile/site/3.0/ggg/*.scm~ :: the modules.
+- ~PREFIX/lib/guile/3.0/site-ccache/ggg/*.go~ :: the byte-compiled modules. On
+  Debian this is ~/usr/lib/$(DEB_HOST_MULTIARCH)/guile/3.0/site-ccache~; the
+  recipes ask Guile's own ~pkg-config~ file (~siteccachedir~) rather than
+  hard-coding a path, so the same recipe works on every architecture.
+- ~PREFIX/share/ggg/resources/~ :: ~help.txt~ and the logo library. The
+  resources used to live in the generic ~PREFIX/share/resources~, which made
+  ggg the owner of a top-level ~/usr/share~ directory; the launcher, ~default.nix~,
+  ~guix.scm~, the Debian rules, the spec and the Arch recipe now agree on the
+  namespaced path. Two recipes still install the old one because they build from
+  the ~v0.16.0~ tarball, whose launcher only knows that layout: the ~PKGBUILD~ and
+  the nixpkgs expression. Both carry a note and flip in the same commit as their
+  next version bump.
+- ~PREFIX/share/doc/ggg/...~ :: ~README.org~, ~CREDITS.org~ and the two example
+  glyph files, so a user can render something without cloning the repository.
+
+The version was also brought back in line with the tags: ~src/ggg/version.scm~
+and ~guix.scm~ now say ~0.16.0~, which is what ~v0.16.0~ was tagged as.
+
+* What was verified
+
+Built and exercised on this machine on 2026-10-22:
+
+- Nix, in-repo :: ~nix-build default.nix~ builds ~ggg-0.16.0~; ~ggg --version~
+  prints ~ggg 0.16.0~; ~glyphs/showcase.scm~ renders 177 badges.
+- Nix, nixpkgs :: ~nix-build ~/Hacking/nixpkgs -A ggg~ builds from the ~v0.16.0~
+  tag, runs the 122-check test suite in ~checkPhase~, and the wrapper finds the
+  byte-compiled modules (~GUILE_AUTO_COMPILE=0~ still works) and renders 177
+  badges.
+- Debian :: ~dpkg-buildpackage -us -uc -b~ on ~debian:trixie~ runs the 122
+  checks; the ~.deb~ installs on a clean ~trixie~ and renders 177 badges.
+- openSUSE :: ~rpmbuild~ runs the 122 checks in ~%check~; the ~.rpm~ installs on
+  ~opensuse/tumbleweed~, ~ggg --version~ prints ~ggg 0.16.0~ and it renders 177
+  badges. ~rpmlint~ is clean apart from ~no-changelogname-tag~, which the OBS
+  changes file fills in.
+- Arch :: ~makepkg~ runs the 122 checks; ~pacman -U~ installs on ~archlinux~ and
+  it renders 177 badges.
+
+Known environment quirks seen while testing (not package bugs): the ~archlinux~
+and ~opensuse/tumbleweed~ container images set ~NoExtract~ / ~excludedocs~, so
+documentation files are not unpacked there; and the ~archlinux~ image has no
+ImageMagick, so ~--convert~ fails until it is installed (it is an optional
+dependency on purpose).
+
+* Follow-up plan
+
+** 1. Cut a release that carries the packaging (blocking)
+
+Everything else waits on this. The ~v0.16.0~ tag predates both the packaging
+directory and the version fix, and it still reports ~ggg 0.12.0~ from
+~ggg --version~, which any reviewer will notice.
+
+1. Decide the version. Either ~0.16.1~ (the tag and the tree differ, which is
+   exactly what a patch release is for) or ~0.17.0~ if the packaging counts as a
+   feature. Edit ~src/ggg/version.scm~ only, then   ~maak release~, which writes
+   ~guix.scm~, commits and tags.
+2. Bump the version literals in the recipes with it: ~packaging/arch/PKGBUILD~
+   (~pkgver~), ~packaging/opensuse/ggg.spec~ (~Version:~), the top entry of
+   ~packaging/debian/changelog~, and the nixpkgs ~package.nix~. This is the
+   perfect place for a ~maak~ task (see section 6).
+3. Check the tagged tarball, not just the checkout: unpack
+   ~https://codeberg.org/jjba23/ggg/archive/vX.Y.Z.tar.gz~ somewhere else and run
+   the three recipes against it. The recipes point at released artefacts, so a
+   mistake here is invisible until a reviewer hits it.
+
+** 2. Nix: land the package in nixpkgs
+
+~pkgs/by-name/gg/ggg/package.nix~ is written and builds against the ~v0.16.0~
+tag, which means two things still have to happen before it is submitted.
+
+1. Retarget it at the release from step 1: change ~version~, recompute the
+   ~hash~ (~nix-prefetch-url --unpack~ or ~nix-update ggg~), move the resources
+   install to ~share/ggg/resources~, and rebuild.
+2. Run ~nixfmt-rfc-style~ on the file (the tree is currently formatted by hand),
+   then ~nix-build -A ggg~ and ~nix-shell -p nixpkgs-review --run "nixpkgs-review
+   pr"~ once it is a PR.
+3. Commit style matters here: one commit for the package, a separate one only if
+   the maintainer entry is missing (it is not, ~jjba23~ is already in
+   ~maintainers/maintainer-list.nix~). Open the PR against ~NixOS/nixpkgs~,
+   mention that the package is also in the repo's ~default.nix~, and answer
+   ~ofBorg~ automatically.
+4. Worth deciding in the same PR: whether the in-repo ~default.nix~/~flake.nix~
+   stay. They are useful for hacking on ggg, but once nixpkgs has the package the
+   two can drift. If they stay, add a comment in both files pointing at the
+   nixpkgs entry as the released one.
+
+** 3. openSUSE: publish on the Open Build Service
+
+1. Create an OBS project (~home:jjba23~ first, then request a slot in a devel
+   project once it is green) and add a package named ~ggg~.
+2. Copy ~packaging/opensuse/_service~, ~ggg.spec~ and ~ggg-rpmlintrc~ into it,
+   run ~osc service ra~ to fetch the sources into the package, and commit.
+3. Enable the repositories that matter: ~openSUSE_Tumbleweed~, the Slowroll
+   flavour (this machine runs it), ~openSUSE_Leap_16.0~ and ~aarch64~.
+4. Generate a ~.changes~ file (~osc vc~) so that ~changesgenerate~ in the
+   ~_service~ has something to append to; without it the package builds but the
+   changelog stays empty.
+5. When everything is green, request submission to a devel project (for example
+   ~devel:tools~) and from there to openSUSE Factory. Factory review will ask
+   about the empty ~%changelog~ section: that is deliberate, OBS writes it.
+
+** 4. Debian: ITP, then a sponsor
+
+Debian does not accept a package without a bug number and a sponsor, so the
+packaging is only the beginning.
+
+1. Convert the version into a real source upload: build
+   ~ggg_X.Y.Z.orig.tar.gz~ from the release tag (not from the working tree), put
+   ~debian/~ at the top of the unpacked tree, and keep it out of the orig
+   tarball. ~packaging/debian~ is the canonical copy; a ~debian~ directory at the
+   root of the repository is what a sponsor will expect to see in the end, so
+   consider symlinking or copying it there at release time.
+2. Add ~debian/watch~ pointing at the Codeberg tags, so ~uscan~ can find future
+   releases.
+3. File the ITP (~wnpp~), then put the package in a Salsa repository under your
+   namespace and run ~lintian~ (including ~--pedantic~) until it is clean.
+4. Ask on ~debian-mentors~ (or a Debian developer you know) for a sponsor. Expect
+   review comments about:
+   - the resources directory :: now namespaced under ~/usr/share/ggg/resources~,
+     which is what a reviewer wants to see; do not reintroduce a top-level
+     ~/usr/share/resources~, and make sure the upload is built from a release
+     whose launcher already looks there.
+   - ~Architecture: any~ :: correct while the package ships byte-compiled
+     modules in a multiarch path, even though the package is source-only. If a
+     reviewer insists on ~all~, install the ~.go~ files under
+     ~/usr/share/guile/site/3.0~ instead and let Guile recompile them.
+   - the licence mix of ~resources/logos~ :: ~debian/copyright~ records it and
+     points at ~CREDITS.org~, which ships in the package. Be ready to name a few
+     individual files if asked.
+5. Only after the upload: apply for an Ubuntu sync, and consider a
+   ~debian-backports~ upload once the package is in testing.
+
+** 5. Arch: publish in the AUR
+
+1. ~packaging/arch/PKGBUILD~ is ready and builds cleanly. Bump ~pkgver~, move
+   the resources install to ~/usr/share/ggg/resources~, recompute
+   ~sha256sums~ for the new release tarball
+   (~updpkgsums~), then run ~makepkg --printsrcinfo > .SRCINFO~ and ~namcap~ on
+   the built package.
+2. Create the ~ggg~ AUR repository, add ~PKGBUILD~ and ~.SRCINFO~, push. The AUR
+   requires the maintainer line to match an AUR account, so the email in
+   ~packaging/arch/PKGBUILD~ must be the one on that account.
+3. Nothing else is needed for Arch proper: the AUR is the distribution channel
+   for a tool this size. A move to ~extra~ would only make sense after the
+   package has real usage.
+
+** 6. Keep the version in one place
+
+There are now five places that name a version: ~version.scm~, ~guix.scm~, the
+~PKGBUILD~, the spec and the Debian changelog (plus the nixpkgs file). The
+current release history shows how that goes wrong: ~v0.14.0~, ~v0.15.0~ and
+~v0.16.0~ were tagged while ~version.scm~ still said ~0.12.0~.
+
+1. Extend the ~release~ task in ~maak.scm~, which already rewrites ~guix.scm~,
+   to also rewrite ~packaging/arch/PKGBUILD~, ~packaging/opensuse/ggg.spec~ and
+   to prepend a ~packaging/debian/changelog~ entry. It should read the version
+   from ~version.scm~ like everything else does.
+2. Make the task refuse to release when a recipe's version does not match after
+   the rewrite, the same way it already refuses to re-tag an existing version.
+3. Add a ~maak check-version~-style task (or fold it into ~maak test~) that
+   greps the four files and fails when they disagree, so CI catches it instead of
+   a packager.
+
+** 7. CI for the packages
+
+The Woodpecker pipeline only ships the site today (~maak deploy~ through
+Byggsteg). The packaging has no automated check at all, which means a change to
+~scripts/ggg~ or to the module layout can break all four recipes silently.
+
+1. Add a pipeline that runs on tags: build the ~.deb~ in ~debian:trixie~, the
+   ~.rpm~ in ~opensuse/tumbleweed~, the Arch package in ~archlinux~ with
+   ~makepkg~, and ~nix-build default.nix~. Each of them already runs the 122-check
+   suite, so the pipeline doubles as a test matrix on three more Guile versions.
+2. Add the linters that cost nothing: ~rpmlint~, ~lintian~ and ~namcap~, failing
+   the job on new tags of output.
+3. Keep the container images pinned by tag so a pipeline does not go red because
+   a distribution moved.
+
+** 8. Smaller cleanups worth doing with the next release
+
+- Manual page :: there is none. ~manifest.scm~ already pulls in
+  ~guile-documenta~, so a ~man/ggg.1~ could be generated from the docstrings and
+  installed by all four recipes. Debian and openSUSE reviewers will ask.
+- Shell completions :: ~default.nix~ looks for ~scripts/ggg-completion.{bash,fish,zsh}~
+  and installs them when present, and the Debian and openSUSE recipes have a
+  slot for them too, but the files do not exist yet. Writing them turns an
+  already-prepared install step on.
+- Resources directory :: the move to ~share/ggg/resources~ is done upstream and
+  in three of the four recipes. The Arch ~PKGBUILD~ and the nixpkgs expression
+  still install ~share/resources~ because they build from the ~v0.16.0~ tarball;
+  flip both in the release commit that bumps their version, and drop the notes
+  that explain why.
+- ~--convert~ documentation :: the PNG path needs ImageMagick or Inkscape and
+  fails with a good hint when neither is installed. That is already handled, but
+  the packages should keep it as an optional dependency and say so in the
+  description, which they currently do.
+
+* Order of work
+
+1. Bump, release, verify from the tarball (section 1). Nothing else can be
+   submitted before this, and the release is also what lets the Arch and nixpkgs
+   recipes move to ~share/ggg/resources~ with their version bump.
+2. nixpkgs PR (section 2) -- fastest external win, and the review is public, so
+   it doubles as feedback on the whole layout.
+4. AUR (section 5) -- a single push, no review process.
+5. OBS (section 3) -- green builds first, Factory submission last.
+6. Debian ITP and sponsorship (section 4) -- the slowest, start it as early as
+   possible even though it finishes last.
+7. Version automation (section 6) and the CI matrix (section 7) once two of the
+   four channels are public.

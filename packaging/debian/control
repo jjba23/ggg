@@ -1,0 +1,36 @@
+Source: ggg
+Section: graphics
+Priority: optional
+Maintainer: Josep Bigorra <jjbigorra@gmail.com>
+Build-Depends:
+ debhelper-compat (= 13),
+ guile-3.0,
+ guile-3.0-dev,
+ pkg-config
+Standards-Version: 4.6.2
+Homepage: https://codeberg.org/jjba23/ggg
+Vcs-Git: https://codeberg.org/jjba23/ggg.git
+Vcs-Browser: https://codeberg.org/jjba23/ggg
+Rules-Requires-Root: no
+
+Package: ggg
+Architecture: any
+Depends:
+ ${misc:Depends},
+ ${shlibs:Depends},
+ bash,
+ coreutils,
+ guile-3.0,
+ util-linux
+Suggests:
+ imagemagick,
+ inkscape
+Description: SVG badge and glyph generator written in Guile Scheme
+ GGG (Guile Glyph Generator) generates the SVG badges projects use to
+ announce the technologies they build with, the versions they support and
+ the projects they appreciate.
+ .
+ Badges are described in ordinary Scheme files, can have one, two or three
+ sections, and are rendered from S-expressions, so a badge is a value in
+ your build rather than a screenshot.  Converting the badges to PNG is
+ optional and is done with ImageMagick, falling back to Inkscape.

@@ -349,6 +349,39 @@ nix build
 ./result/bin/ggg --file ./glyphs/jjba23.scm -d ./dist
 #+end_src
 
+** On Debian, openSUSE and Arch
+
+The source tree carries the packaging for the distributions that Guix, Nix and
+the container image do not cover:
+
+- ~packaging/debian~ :: debhelper packaging, built with ~dpkg-buildpackage~.
+- ~packaging/opensuse~ :: a spec file for ~rpmbuild~, plus the OBS ~_service~
+  that fetches the sources from Codeberg.
+- ~packaging/arch~ :: a ~PKGBUILD~, built with ~makepkg~.
+
+The three install the same layout -- ~/usr/bin/ggg~, the Scheme modules under
+~/usr/share/guile/site/3.0/ggg~, their byte-compiled copies in the
+interpreter's ~site-ccache~ directory, and the help text and logo library under
+~/usr/share/ggg/resources~ -- which is the layout ~scripts/ggg~ resolves
+relative to its own prefix at runtime. The Arch recipe is pinned to the ~v0.16.0~
+tarball, whose launcher still reads ~/usr/share/resources~, so it keeps that
+path until its next version bump.
+
+#+begin_src shell
+# Debian/Ubuntu: the debian/ directory belongs at the top of the source tree
+cp -r packaging/debian debian
+dpkg-buildpackage -us -uc -b
+
+# openSUSE, from a tarball unpacked as ggg-0.16.0
+rpmbuild -ba packaging/opensuse/ggg.spec
+
+# Arch
+cd packaging/arch && makepkg -si
+#+end_src
+
+See [[./packaging/FOLLOW-UP-PLAN.org][packaging/FOLLOW-UP-PLAN.org]] for what is still missing before each of them
+can be submitted to the distributions.
+
 --------
 
 * Licensing

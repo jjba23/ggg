@@ -37,7 +37,7 @@ set -euo pipefail
 script_dir=$(dirname "$0")
 store_dir=$(readlink -f "$script_dir/..")
 scheme_sources_dir="$store_dir/share/guile/site/3.0"
-resources_dir="$store_dir/share/resources"
+resources_dir="$store_dir/share/ggg/resources"
 scripts_dir="$store_dir/share/scripts"
 
 bold_text='\033[1m'
