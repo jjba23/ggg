@@ -314,7 +314,7 @@ are turned into the number a shell would report here, 127 when git never ran."
 
 (define (push-docker-tag)
   "Push the locally generated Docker image to Dockerhub."
-  ($ '("git fetch --all"))
+  (git-fetch "--all")
   (let* ((latest-tag (syscall-with-output "git describe --tags --abbrev=0")))
     ($ (list (~ "podman push localhost/~a:latest" project-name)
              (~ "docker.io/jjba23/~a:~a" project-name latest-tag))
