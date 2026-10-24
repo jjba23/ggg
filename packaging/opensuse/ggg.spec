@@ -21,7 +21,7 @@
 %global debug_package %{nil}
 
 Name:           ggg
-Version:        0.16.1
+Version:        0.16.4
 Release:        0
 Summary:        SVG badge and glyph generator written in Guile Scheme
 License:        AGPL-3.0-or-later

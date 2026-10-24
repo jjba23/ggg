@@ -17,10 +17,12 @@
 
 (define-module (maak)
   #:use-module (maak maak)
-  #:use-module (ice-9 format)
-  #:use-module (ice-9 popen)
+  ;; The git and container helpers are imported under prefixes because this file
+  ;; names a task `run', which hides the runner of that name, and because a
+  ;; release's git is the library's rather than a task of this file.
+  #:use-module ((maak git) #:prefix git:)
+  #:use-module ((maak container) #:prefix ct:)
   #:use-module (ice-9 regex)
-  #:use-module (ice-9 textual-ports)
   #:use-module (srfi srfi-1)
   #:declarative? #t)
 
@@ -39,13 +41,6 @@
 
 (define hot-reload-file-types
   '(scm))
-
-;; ====== Maak abstractions ======
-
-(define (syscall-with-output cmd)
-  (let* ((process (open-input-pipe cmd))
-         (process-output (get-string-all process)))
-    (close-pipe process) process-output))
 
 ;; ====== Releases ======
 
@@ -72,17 +67,16 @@
   "The version written in DIRECTORY's version source, as a string."
   (let* ((file (if (string=? directory ".")
                    version-source
-                   (string-append directory "/" version-source)))
-         (text (and (file-exists? file)
-                    (call-with-input-file file get-string-all)))
+                   (~ "~a/~a" directory version-source)))
+         (text (if (file-exists? file) (read-file file) #f))
          (found (and text
                      (string-match
                       "ggg-version[ \t\n]+\"([0-9]+\\.[0-9]+\\.[0-9]+)\""
                       text))))
     (unless found
-      (error (format #f
-                     "release: ~a does not define ggg-version as a version"
-                     file)))
+      (task-error "release: ~a does not define ggg-version as a version"
+                  #:args (list file)
+                  #:hint "Write (define ggg-version \"X.Y.Z\") in it."))
     (match:substring found 1)))
 
 (define* (release #:optional (directory "."))
@@ -111,19 +105,18 @@ so that the release commit carries the images it describes."
   (define (path file)
     (if (string=? directory ".")
         file
-        (string-append directory "/" file)))
+        (~ "~a/~a" directory file)))
 
   (define (read-text file)
     (let ((full (path file)))
       (if (file-exists? full)
-          (call-with-input-file full get-string-all)
-          (error (format #f
-                         "release: no ~a in ~a; name the checkout's root"
-                         file directory)))))
+          (read-file full)
+          (task-error "release: no ~a in ~a; name the checkout's root"
+                      #:args (list file directory)
+                      #:hint "Name the checkout's root as DIRECTORY."))))
 
   (define (write-text file text)
-    (call-with-output-file (path file)
-      (lambda (port) (display text port))))
+    (write-file (path file) text))
 
   (define (sites-of file)
     (filter (lambda (site) (string=? (car site) file)) version-sites))
@@ -165,18 +158,8 @@ so that the release commit carries the images it describes."
 
   ;; ---- The commit and the tag --------------------------------------------
   ;;
-  ;; git runs as a program with its arguments, never through a shell, and is
-  ;; pointed at DIRECTORY with `-C' so a release of another checkout commits
-  ;; there and not wherever maak was started from.
-
-  (define (git . arguments)
-    "Run git in the checkout, and return the exit code it ended with.
-
-`system*' answers with the wait status rather than the exit code, so a command
-that exited 1 reads as 256 and one that could not be started reads as #f; both
-are turned into the number a shell would report here, 127 when git never ran."
-    (let ((status (apply system* "git" "-C" repo arguments)))
-      (or (and status (status:exit-val status)) 127)))
+  ;; The library wrappers take `#:directory', so a release of another checkout
+  ;; commits there rather than wherever maak was started from.
 
   (define (checkout?)
     "Return whether DIRECTORY is a git checkout."
@@ -184,65 +167,63 @@ are turned into the number a shell would report here, 127 when git never ran."
 
   (define (tag-exists? tag)
     "Return whether TAG is already a tag of the checkout."
-    (zero? (git "rev-parse" "--verify" "--quiet"
-                (string-append "refs/tags/" tag))))
+    (member tag (git:git-tags #:directory repo)))
 
   (define (changes-to-commit?)
     "Return whether anything tracked differs from the last commit."
-    (case (git "diff" "--quiet" "HEAD")
-      ((0) #f)
-      ((1) #t)
-      (else
-       (error (format #f
-                      "release: git could not compare ~a with a commit; is it a checkout with one?"
-                      repo)))))
+    (not (string=? ""
+                   (string-trim-both
+                    (git:git-output (list "diff" "--name-only" "HEAD")
+                                    #:directory repo)))))
 
   (define (commit-release version)
     "Commit every tracked change as the release VERSION, and return the message."
-    (let ((message (format #f "chore: Release v~a" version)))
-      (unless (zero? (git "commit" "-am" message))
-        (error "release: git commit failed, so nothing was tagged"))
+    (let ((message (~ "chore: Release v~a" version)))
+      (unless (git:git (list "commit" "--all" "-m" message)
+                       #:directory repo #:allow-failure? #t)
+        (task-error "release: git commit failed, so nothing was tagged"
+                    #:hint "Commit or stash what git refuses, then run it again."))
       message))
 
   (define (tag-release version)
     "Tag the current commit as the release VERSION, and return the tag."
-    (let ((tag (string-append "v" version)))
-      (unless (zero? (git "tag" tag))
-        (error (format #f
-                       "release: `git tag ~a' failed; the release was committed, but not tagged"
-                       tag)))
+    (let ((tag (~ "v~a" version)))
+      (unless (git:git (list "tag" tag)
+                       #:directory repo #:allow-failure? #t)
+        (task-error "release: `git tag ~a' failed; the release was committed, but not tagged"
+                    #:args (list tag)
+                    #:hint "Tag the release by hand once the reason is fixed."))
       tag))
 
   (let* ((version (read-version directory))
-         (tag (string-append "v" version)))
+         (tag (~ "v~a" version)))
     (unless (checkout?)
-      (error (format #f
-                     "release: ~a is not a git checkout, so there is nothing to commit or tag"
-                     repo)))
+      (task-error "release: ~a is not a git checkout, so there is nothing to commit or tag"
+                  #:args (list repo)
+                  #:hint "Run it inside a checkout, or name one as DIRECTORY."))
     (when (tag-exists? tag)
-      (error (format #f
-                     "release: ~a is already released as ~a; bump ~a first"
-                     version tag version-source)))
+      (task-error "release: ~a is already released as ~a; bump ~a first"
+                  #:args (list version tag version-source)
+                  #:hint "Write the next version into that file."))
     (let ((changed (sync-copies! version)))
       (if (null? changed)
-          (format #t "Every file that names the version already says ~a.~%" version)
+          (log-info "Every file that names the version already says ~a." version)
           (for-each (lambda (file)
-                      (format #t "Wrote ~a into ~a.~%" version file))
+                      (log-info "Wrote ~a into ~a." version file))
                     changed))
       (if (changes-to-commit?)
           (let ((message (commit-release version)))
             (tag-release version)
-            (format #t "Committed `~a' and tagged ~a.~%" message tag))
+            (log-info "Committed `~a' and tagged ~a." message tag))
           (begin
             (tag-release version)
-            (format #t "Nothing to commit; tagged ~a at the current commit.~%"
-                    tag))))))
+            (log-info "Nothing to commit; tagged ~a at the current commit." tag))))))
 
 ;; ====== Maak tasks ======
 
 (define (help)
   "Display program help screen."
-  (time-machine-program-shell '("ggg --help")))
+  (time-machine-program-shell (list "ggg" "--help")))
 
 (define (default)
   "Default task to run, call program's help."
@@ -250,26 +231,32 @@ are turned into the number a shell would report here, 127 when git never ran."
 
 (define (version)
   "Print ggg's version, as written in src/ggg/version.scm."
-  (format #t "ggg ~a~%" (read-version)))
+  (log-info "ggg ~a" (read-version)))
 
 (define (fmt)
   "Format Scheme source code files according to the Guix style guide."
-  ($ '("find . -maxdepth 8 -name '*.scm'" "-type f -exec guix style -f {} \\;")
-     #:verbose? #t))
+  ;; `run' names a task of this file, so the library's runner is named in full
+  ;; rather than called through the binding the task replaced.
+  ((@ (maak maak) run)
+   (list "find" "." "-maxdepth" "8" "-name" "*.scm" "-type" "f"
+         "-exec" "guix" "style" "-f" "{}" ";")
+   #:verbose? #t))
 
 (define (repl)
   "Development REPL."
-  (time-machine-manifest-shell '("guile -L ./src"
-                    "-c '((@ (ares server) run-nrepl-server))'")))
+  (time-machine-manifest-shell
+   (list "guile" "-L" "./src"
+         "-c" "'((@ (ares server) run-nrepl-server))'")))
 
 (define (test)
   "Run ggg's test suite."
-  (time-machine-manifest-shell '("guile -L ./src ./test/ggg-tests.scm")))
+  (time-machine-manifest-shell (list "guile" "-L" "./src"
+                                     "./test/ggg-tests.scm")))
 
 (define (write-gallery destination)
   "Write the HTML gallery of every badge in ./glyphs and every logo."
-  (time-machine-program-shell (list (~ "ggg --gallery ~a" destination)
-                                    "--glyphs ./glyphs")))
+  (time-machine-program-shell (list "ggg" "--gallery" destination
+                                    "--glyphs" "./glyphs")))
 
 (define (gallery)
   "Generate the HTML gallery of every badge and logo."
@@ -278,12 +265,20 @@ are turned into the number a shell would report here, 127 when git never ran."
 (define (docs)
   "Generate technical API documentation for Maak."
   (delete-file-recursively "doc")
-  (time-machine-manifest-shell (list (~ "documenta api ./src/~a && " project-name)
-                        (~ "texi2any -v --html --css-ref=~a" api-docs-css-url)
-                        "./doc/api/index.texi"))
+  ;; Two calls rather than one `&&': each step fails where it happens, and the
+  ;; documentation of the API is written before the manual page is built.
+  (time-machine-manifest-shell
+   (list "documenta" "api" (~ "./src/~a" project-name)))
+  (time-machine-manifest-shell
+   (list "texi2any" "-v" "--html"
+         (~ "--css-ref=~a" api-docs-css-url)
+         "./doc/api/index.texi"))
   (mv "./index" "./doc/api-dist"))
 
 (define (deploy)
+  ;; `run' here is this file's badge task, not the library's runner: the badges
+  ;; are rendered again so the gallery and the `dist/' that ships are the ones
+  ;; the current glyphs describe.
   (run)
   ;; The gallery ships with dist/ so the CI deployment publishes it:
   ;; https://jointhefreeworld.org/ggg/dist/gallery.html
@@ -297,62 +292,78 @@ are turned into the number a shell would report here, 127 when git never ran."
   ;; Deploy API docs
   (remkdir-p (~ "~a/api-docs/~a" deploy-dir project-name))
   (mv "doc/api-dist/*"
-      (~ "~a/api-docs/~a" deploy-dir project-name))
+      (~ "~a/api-docs/~a" deploy-dir project-name)
+      #:expand? #t)
   (delete-file-recursively "doc"))
 
 (define (package-docker)
-  "Create a Docker image for GGG."
-  ($ '("guix pack --file=./guix.scm" "--format=docker" "--image-tag=ggg"
-       "-S /bin=bin" "bash coreutils util-linux-with-udev guile imagemagick")
-     #:verbose? #t))
+  "Build the Docker image for GGG."
+  (guix-pack '()
+             #:format "docker"
+             #:image-tag "ggg"
+             #:symlinks '("/bin=bin")
+             #:extra-packages '("bash" "coreutils" "util-linux-with-udev"
+                                "guile" "imagemagick")
+             #:verbose? #t))
 
 (define (push-docker-latest)
   "Push the latest locally generated Docker image to Dockerhub."
-  ($ (list (~ "podman push localhost/~a:latest" project-name)
-           (~ "docker.io/jjba23/~a:latest" project-name))
-     #:verbose? #t))
+  (ct:container (list "push"
+                      (~ "localhost/~a:latest" project-name)
+                      (~ "docker.io/jjba23/~a:latest" project-name))
+                #:verbose? #t))
 
 (define (push-docker-tag)
   "Push the locally generated Docker image to Dockerhub."
-  (git-fetch "--all")
-  (let* ((latest-tag (syscall-with-output "git describe --tags --abbrev=0")))
-    ($ (list (~ "podman push localhost/~a:latest" project-name)
-             (~ "docker.io/jjba23/~a:~a" project-name latest-tag))
-       #:verbose? #t)))
+  (git:git-fetch "--all")
+  (let ((latest-tag (git:git-describe-tag)))
+    (ct:container (list "push"
+                        (~ "localhost/~a:latest" project-name)
+                        (~ "docker.io/jjba23/~a:~a" project-name latest-tag))
+                  #:verbose? #t)))
 
 (define (dev-run)
-  (time-machine-manifest-shell '("guile -L ./src -c '((@(ggg main) main))'"
-                    "--file /home/joe/Hacking/ggg/glyphs/jjba23.scm"
-                    "--destination ./dist" "--resources ./resources")))
+  (time-machine-manifest-shell
+   (list "guile" "-L" "./src" "-c" "'((@(ggg main) main))'"
+         "--file" "/home/joe/Hacking/ggg/glyphs/jjba23.scm"
+         "--destination" "./dist"
+         "--resources" "./resources")))
 
 (define (run)
   "Generate every badge into ./dist, including the logo showcase."
-  (time-machine-program-shell '("ggg --file ./glyphs/jjba23.scm" "--destination ./dist"))
+  (time-machine-program-shell (list "ggg" "--file" "./glyphs/jjba23.scm"
+                                    "--destination" "./dist"))
   ;; ggg clears the destination directory, so the second file has to keep it.
-  (time-machine-program-shell '("ggg --file ./glyphs/showcase.scm" "--destination ./dist"
-                                "--keep")))
+  (time-machine-program-shell (list "ggg" "--file" "./glyphs/showcase.scm"
+                                    "--destination" "./dist" "--keep")))
 
 (define (run-convert)
   "Like run, but also write a PNG next to every SVG."
-  (time-machine-program-shell '("ggg --file ./glyphs/jjba23.scm" "--destination ./dist"
-                                "--convert"))
-  (time-machine-program-shell '("ggg --file ./glyphs/showcase.scm" "--destination ./dist"
-                                "--keep" "--convert")))
+  (time-machine-program-shell (list "ggg" "--file" "./glyphs/jjba23.scm"
+                                    "--destination" "./dist" "--convert"))
+  (time-machine-program-shell (list "ggg" "--file" "./glyphs/showcase.scm"
+                                    "--destination" "./dist" "--keep" "--convert")))
 
 (define (showcase)
   "Generate only the badges of the popular-logo showcase into ./dist."
-  (time-machine-program-shell '("ggg --file ./glyphs/showcase.scm" "--destination ./dist"
-                                "--keep")))
+  (time-machine-program-shell (list "ggg" "--file" "./glyphs/showcase.scm"
+                                    "--destination" "./dist" "--keep")))
 
 (define (run-stdin)
-  ($ '("cat ./glyphs/jjba23.scm |" "guix shell -f guix.scm --"
-       "ggg -i -d ./dist")))
+  ;; A pipe, without a shell: the file is fed to ggg in the project's Guix
+  ;; environment.
+  (run-pipeline (list (list "cat" "./glyphs/jjba23.scm")
+                      (list "guix" "shell" "-f" "guix.scm" "--"
+                            "ggg" "-i" "-d" "./dist"))))
 
 (define (run-stdout)
-  (time-machine-program-shell '("ggg --file ./glyphs/jjba23.scm --stdout")))
+  (time-machine-program-shell (list "ggg" "--file" "./glyphs/jjba23.scm"
+                                    "--stdout")))
 
 (define (run-stdin-stdout)
-  ($ '("cat ./glyphs/jjba23.scm |" "guix shell -f guix.scm --" "ggg -i -o")))
+  (run-pipeline (list (list "cat" "./glyphs/jjba23.scm")
+                      (list "guix" "shell" "-f" "guix.scm" "--"
+                            "ggg" "-i" "-o"))))
 
 (define (hot-reload)
   "Hot-reloading developer's setup."
@@ -363,9 +374,9 @@ are turned into the number a shell would report here, 127 when git never ran."
                                                       hot-reload-file-types)
                                                      ","))
                                      "--on-busy-update=restart"
-                                     "--shell bash"
-                                     "--watch . --"
-                                     "maak run")))
+                                     "--shell" "bash"
+                                     "--watch" "." "--"
+                                     "maak" "run")))
 
 (define (hr)
   (hot-reload))
