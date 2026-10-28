@@ -4,7 +4,7 @@ GGG: Guile Glyph Generator
     leveraging the power of Lisp (Guile Scheme).
 
     See more at: https://codeberg.org/jjba23/ggg
-    Software licensed under the GNU AGPL v3 or newer.
+    Software licensed under the MIT license.
 
     With flexible support for badges with any number of parts.
 

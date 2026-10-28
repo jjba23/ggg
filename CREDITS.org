@@ -27,7 +27,7 @@ Licensing section explains the licenses of the whole project.
 * Hand-authored logos
 
 These were drawn for ggg and are distributed under the project license
-(GNU AGPL-3.0-or-later). They show off what the full-SVG logo format can do:
+(MIT). They show off what the full-SVG logo format can do:
 several shapes, gradients, groups and transforms.
 
 - anchor
@@ -48,7 +48,7 @@ several shapes, gradients, groups and transforms.
 * Logos for jjba23 projects
 
 Drawn for ggg to represent the projects that live alongside it, distributed
-under the project license (GNU AGPL-3.0-or-later):
+under the project license (MIT):
 
 - bewaking
 - byggsteg
