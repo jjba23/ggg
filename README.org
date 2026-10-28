@@ -426,16 +426,16 @@ what it controls:
   dedicate it to the public domain under the terms of
   [[https://creativecommons.org/publicdomain/zero/1.0/][CC0-1.0]].
 - Any logo drawn from ~resources/logos/~, which keeps its own license and
-  trademark status (see below). A badge that embeds an AGPL-licensed logo — for
-  example one of the hand-drawn ggg logos — redistributes that artwork under
-  the AGPL, while a badge that embeds a CC0 logo carries no such condition.
-  The composed badge is yours, but the little picture in the corner belongs to
-  whoever drew it.
+  trademark status (see below). A badge that embeds, say, a ~GPL-3.0-or-later~
+  logo redistributes that artwork under the GPL, while a badge that embeds a
+  CC0 logo carries no such condition. The composed badge is yours, but the
+  little picture in the corner belongs to whoever drew it.
 
 So if you need a badge that is unambiguously free of any third-party terms, use
 no logo at all or one you drew yourself; the output ggg writes is never
 restricted by ggg itself.
 
+** The bundled logo library
 
 The ~resources/logos/~ directory ships 280+ ready-made logos. They are not all
 under the same terms, so [[./CREDITS.org][CREDITS.org]] lists every single one
@@ -444,7 +444,7 @@ with its origin and the license recorded for it upstream. In summary:
 - The logos drawn for ggg itself, and the logos drawn for the ~jjba23~
   projects (~byggsteg~, ~lucidplan~, ~maak~, ~bewaking~, ~hygguile~,
   ~veritas~ and ~symbanta~), are part of this project and are distributed
-  under the same GNU AGPL-3.0-or-later as the source code.
+  under the same MIT License as the source code.
 - The tech logos come from the [[https://simpleicons.org/][Simple Icons]] collection. Most of
   them are released there under [[https://creativecommons.org/publicdomain/zero/1.0/][CC0-1.0]], which places them in the public
   domain and carries no attribution requirement. A handful record a different
@@ -481,7 +481,7 @@ on their behalf.
 
 If you add a logo to ~resources/logos/~, add its source, author and license to
 [[./CREDITS.org][CREDITS.org]] in the same change. By contributing artwork that you authored you
-agree it may be distributed with ggg under the GNU AGPL-3.0-or-later. Artwork
+agree it may be distributed with ggg under the MIT License. Artwork
 from another project keeps its own license and is only redistributed here under
 that license.
 
@@ -489,9 +489,9 @@ that license.
 
 ggg is distributed in the hope that it will be useful, but *without any
 warranty*, without even the implied warranty of merchantability or fitness for
-a particular purpose; see the GNU AGPL for the exact terms. This section
+a particular purpose; see the MIT License for the exact terms. This section
 describes how the project is licensed, not legal advice: it is a summary of the
-licenses recorded in ~COPYING~ and [[./CREDITS.org][CREDITS.org]], and those files govern. If you
+licenses recorded in ~LICENSE~ and [[./CREDITS.org][CREDITS.org]], and those files govern. If you
 redistribute ggg, its logos or generated badges, you are responsible for
 keeping the applicable notices and for complying with any third-party terms
 that apply to the artwork you ship.
