@@ -187,8 +187,14 @@ flat, square, shadow, plastic, frosted-glass, material, frutiger and neon."
 (define glyph-springboot
   (badge 'springboot "Spring Boot" 'springboot "framework" 'green))
 
+(define glyph-ktor
+  (badge 'ktor "Ktor" 'ktor "framework" 'lavender))
+
 (define glyph-flutter
   (badge 'flutter "Flutter" 'flutter "framework" 'blue))
+
+(define glyph-jetpackcompose
+  (badge 'jetpackcompose "Jetpack Compose" 'jetpackcompose "ui" 'sky))
 
 (define glyph-electron
   (badge 'electron "Electron" 'electron "framework" 'teal))
@@ -687,7 +693,9 @@ flat, square, shadow, plastic, frosted-glass, material, frutiger and neon."
         glyph-flask
         glyph-laravel
         glyph-springboot
+        glyph-ktor
         glyph-flutter
+        glyph-jetpackcompose
         glyph-electron
         glyph-express
         glyph-nestjs

@@ -93,6 +93,24 @@
     (style . shadow)
     (id . byggsteg)))
 
+(define glyph-byggsteg-github
+  `((sections ((background . catppuccin-latte-subtext1) (text . "byggsteg")
+               (color . catppuccin-latte-base)
+               (logo . byggsteg))
+              ((background . catppuccin-mocha-overlay2) (text . "GitHub")
+               (color . catppuccin-mocha-base)))
+    (style . shadow)
+    (id . byggsteg-github)))
+
+(define glyph-github-mirror
+  `((sections ((background . catppuccin-latte-subtext1) (text . "GitHub")
+               (color . catppuccin-latte-base)
+               (logo . github))
+              ((background . catppuccin-mocha-overlay2) (text . "mirror")
+               (color . catppuccin-mocha-base)))
+    (style . shadow)
+    (id . github-mirror)))
+
 (define glyph-lucidplan
   `((sections ((background . catppuccin-latte-subtext1) (text . "LucidPlan")
                (color . catppuccin-latte-base)
@@ -351,6 +369,15 @@
                (color . catppuccin-mocha-base)))
     (style . shadow)
     (id . kotlin-2)))
+
+(define glyph-springboot
+  `((sections ((background . catppuccin-latte-subtext1) (text . "Spring")
+               (color . catppuccin-latte-base)
+               (logo . springboot))
+              ((background . catppuccin-mocha-green) (text . "Boot")
+               (color . catppuccin-mocha-base)))
+    (style . shadow)
+    (id . spring-boot)))
 
 (define glyph-scala-3
   `((sections ((background . catppuccin-latte-subtext1) (text . "Scala")
@@ -678,6 +705,8 @@
         glyph-cargo
         glyph-maak
         glyph-byggsteg
+        glyph-byggsteg-github
+        glyph-github-mirror
         glyph-lucidplan
         glyph-bewaking
         glyph-hygguile
@@ -685,6 +714,7 @@
         glyph-symbanta
         glyph-java-25
         glyph-kotlin-2
+        glyph-springboot
         glyph-scala-3
         glyph-build-gradle
         glyph-build-maven

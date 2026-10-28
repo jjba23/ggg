@@ -204,6 +204,7 @@ here only to refer to those projects. See Simple Icons'
 | ~javascript.svg~        | JavaScript         | MIT                       |
 | ~jest.svg~              | Jest               | CC0-1.0 (repo default)    |
 | ~jetbrains.svg~         | JetBrains          | CC0-1.0 (repo default)    |
+| ~jetpackcompose.svg~    | Jetpack Compose    | CC0-1.0 (repo default)    |
 | ~jira.svg~              | Jira               | CC0-1.0 (repo default)    |
 | ~jquery.svg~            | jQuery             | CC0-1.0 (repo default)    |
 | ~json.svg~              | JSON               | CC0-1.0 (repo default)    |
@@ -215,6 +216,7 @@ here only to refer to those projects. See Simple Icons'
 | ~kibana.svg~            | Kibana             | CC0-1.0 (repo default)    |
 | ~kotlin.svg~            | Kotlin             | CC0-1.0 (repo default)    |
 | ~krita.svg~             | Krita              | CC0-1.0 (repo default)    |
+| ~ktor.svg~              | Ktor               | CC0-1.0 (repo default)    |
 | ~kubernetes.svg~        | Kubernetes         | CC0-1.0 (repo default)    |
 | ~langchain.svg~         | LangChain          | CC0-1.0 (repo default)    |
 | ~laravel.svg~           | Laravel            | CC0-1.0 (repo default)    |
