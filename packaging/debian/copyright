@@ -5,53 +5,41 @@ Source: https://codeberg.org/jjba23/ggg
 
 Files: *
 Copyright: 2026 Josep Bigorra <jjbigorra@gmail.com>
-License: AGPL-3.0-or-later
+License: MIT
 
 Files: README.org
        resources/help.txt
 Copyright: 2026 Josep Bigorra <jjbigorra@gmail.com>
-License: FDL-1.3-or-later
+License: CC-BY-4.0
 
 Files: resources/logos/*
 Copyright: the respective upstream projects, listed in CREDITS.org
 Comment:
  The logo library is deliberately not under a single license.  The logos
- drawn for ggg and for the jjba23 projects are AGPL-3.0-or-later; most of
- the tech logos come from Simple Icons under CC0-1.0, and a handful record
- another free license (Apache-2.0, MIT, GPL-2.0-only, GPL-2.0-or-later,
- GPL-3.0-or-later or the Unlicense).  CREDITS.org names each file with its
- origin and license and is installed with this package.
-License: AGPL-3.0-or-later or CC0-1.0 or Apache-2.0 or MIT or GPL-2.0-only or GPL-2.0-or-later or GPL-3.0-or-later or Unlicense
+ drawn for ggg and for the jjba23 projects are MIT, the project's own
+ license; most of the tech logos come from Simple Icons under CC0-1.0, and a
+ handful record another free license (Apache-2.0, MIT, GPL-2.0-only,
+ GPL-2.0-or-later, GPL-3.0-or-later or the Unlicense).  CREDITS.org names
+ each file with its origin and license and is installed with this package.
+License: MIT or CC0-1.0 or Apache-2.0 or GPL-2.0-only or GPL-2.0-or-later or GPL-3.0-or-later or Unlicense
  All of these are free licenses; the per-file choice is recorded in
  CREDITS.org.
 
 Files: glyphs/*
        debian/*
 Copyright: 2026 Josep Bigorra <jjbigorra@gmail.com>
-License: AGPL-3.0-or-later
+License: MIT
 
-License: AGPL-3.0-or-later
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU Affero General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
+License: CC-BY-4.0
+ This work is licensed under the Creative Commons Attribution 4.0
+ International License.  You are free to share (copy and redistribute the
+ material in any medium or format) and adapt (remix, transform and build
+ upon the material) for any purpose, even commercially, provided you give
+ appropriate credit, provide a link to the license and indicate if changes
+ were made.
  .
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Affero General Public License for more details.
- .
- On Debian systems, the full text of the GNU Affero General Public License
- version 3 can be found in "/usr/share/common-licenses/AGPL-3".
-
-License: FDL-1.3-or-later
- Permission is granted to copy, distribute and/or modify this document
- under the terms of the GNU Free Documentation License, Version 1.3 or any
- later version published by the Free Software Foundation; with no Invariant
- Sections, no Front-Cover Texts, and no Back-Cover Texts.
- .
- On Debian systems, the full text of the GNU Free Documentation License
- version 1.3 can be found in "/usr/share/common-licenses/GFDL-1.3".
+ The full text of the CC BY 4.0 license is available at
+ https://creativecommons.org/licenses/by/4.0/legalcode
 
 License: CC0-1.0
  The person who associated a work with this deed has dedicated the work to

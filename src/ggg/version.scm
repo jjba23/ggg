@@ -1,19 +1,7 @@
 ;; ggg: guile glyph generator
-
+;;
+;; Spdx-License-Identifier: MIT
 ;; Copyright © Josep Bigorra <jjbigorra@gmail.com>
-
-;; ggg is free software: you can redistribute it and/or modify
-;; it under the terms of the GNU Affero General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
-
-;; ggg is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU Affero General Public License for more details.
-
-;; You should have received a copy of the GNU Affero General Public License
-;; along with ggg.  If not, see <https://www.gnu.org/licenses/>.
 
 (define-module (ggg version)
   ;; Deliberately not declarative.  A declarative module lets Guile inline its
@@ -39,7 +27,7 @@
   "https://codeberg.org/jjba23/ggg")
 
 (define ggg-license
-  "AGPL-3.0-or-later")
+  "MIT")
 
 (define (ggg-version-string)
   "Return the one-line version banner printed by `ggg --version'."

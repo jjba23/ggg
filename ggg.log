@@ -1,0 +1,1040 @@
+%%%% Starting test ggg
+Group begin: ggg
+Group begin: colors
+Test begin:
+  test-name: "catppuccin colors resolve to their hex values"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 75
+  source-form: (test-equal "catppuccin colors resolve to their hex values" "#f38ba8" (resolve-color (quote catppuccin-mocha-red)))
+Test end:
+  result-kind: pass
+  actual-value: "#f38ba8"
+  expected-value: "#f38ba8"
+Test begin:
+  test-name: "every theme family is available"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 78
+  source-form: (test-equal "every theme family is available" (quote (catppuccin-mocha catppuccin-macchiato catppuccin-frappe catppuccin-latte doom-one doom-one-light dracula dracula-alucard solarized-dark solarized-light modus-operandi modus-vivendi)) (theme-names))
+Test end:
+  result-kind: pass
+  actual-value: (catppuccin-mocha catppuccin-macchiato catppuccin-frappe catppuccin-latte doom-one doom-one-light dracula dracula-alucard solarized-dark solarized-light modus-operandi modus-vivendi)
+  expected-value: (catppuccin-mocha catppuccin-macchiato catppuccin-frappe catppuccin-latte doom-one doom-one-light dracula dracula-alucard solarized-dark solarized-light modus-operandi modus-vivendi)
+Test begin:
+  test-name: "doom colors resolve to their hex values"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 83
+  source-form: (test-equal "doom colors resolve to their hex values" "#51afef" (resolve-color (quote doom-one-blue)))
+Test end:
+  result-kind: pass
+  actual-value: "#51afef"
+  expected-value: "#51afef"
+Test begin:
+  test-name: "dracula colors resolve to their hex values"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 86
+  source-form: (test-equal "dracula colors resolve to their hex values" "#bd93f9" (resolve-color (quote dracula-purple)))
+Test end:
+  result-kind: pass
+  actual-value: "#bd93f9"
+  expected-value: "#bd93f9"
+Test begin:
+  test-name: "solarized colors resolve to their hex values"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 89
+  source-form: (test-equal "solarized colors resolve to their hex values" "#fdf6e3" (resolve-color (quote solarized-light-base3)))
+Test end:
+  result-kind: pass
+  actual-value: "#fdf6e3"
+  expected-value: "#fdf6e3"
+Test begin:
+  test-name: "modus colors resolve to their hex values"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 92
+  source-form: (test-equal "modus colors resolve to their hex values" "#44bc44" (resolve-color (quote modus-vivendi-green)))
+Test end:
+  result-kind: pass
+  actual-value: "#44bc44"
+  expected-value: "#44bc44"
+Test begin:
+  test-name: "every color is named after its theme"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 95
+  source-form: (test-assert "every color is named after its theme" (every (lambda (theme) (every (lambda (name) (string-prefix? (string-append (symbol->string theme) "-") (symbol->string name))) (theme-color-names theme))) (theme-names)))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Test begin:
+  test-name: "no two themes share a color name"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 102
+  source-form: (test-equal "no two themes share a color name" (length named-colors) (length (delete-duplicates (map car named-colors))))
+Test end:
+  result-kind: pass
+  actual-value: 236
+  expected-value: 236
+Test begin:
+  test-name: "every palette color is a valid color"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 105
+  source-form: (test-assert "every palette color is a valid color" (every (lambda (entry) (not (color-error (cdr entry)))) named-colors))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Test begin:
+  test-name: "colors are grouped by theme for display"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 108
+  source-form: (test-equal "colors are grouped by theme for display" (map symbol->string (theme-names)) (map car (colors-by-theme)))
+Test end:
+  result-kind: pass
+  actual-value: ("catppuccin-mocha" "catppuccin-macchiato" "catppuccin-frappe" "catppuccin-latte" "doom-one" "doom-one-light" "dracula" "dracula-alucard" "solarized-dark" "solarized-light" "modus-operandi" "modus-vivendi")
+  expected-value: ("catppuccin-mocha" "catppuccin-macchiato" "catppuccin-frappe" "catppuccin-latte" "doom-one" "doom-one-light" "dracula" "dracula-alucard" "solarized-dark" "solarized-light" "modus-operandi" "modus-vivendi")
+Test begin:
+  test-name: "hex strings pass through"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 111
+  source-form: (test-equal "hex strings pass through" "#abcdef" (resolve-color "#abcdef"))
+Test end:
+  result-kind: pass
+  actual-value: "#abcdef"
+  expected-value: "#abcdef"
+Test begin:
+  test-name: "short hex strings are valid"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 114
+  source-form: (test-assert "short hex strings are valid" (not (color-error "#fff")))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Test begin:
+  test-name: "invalid hex colors are reported"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 116
+  source-form: (test-assert "invalid hex colors are reported" (color-error "#12345"))
+Test end:
+  result-kind: pass
+  actual-value: "invalid hex color \"#12345\" (expected #rgb, #rgba, #rrggbb or #rrggbbaa)"
+Test begin:
+  test-name: "unknown color names are reported"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 118
+  source-form: (test-assert "unknown color names are reported" (color-error (quote not-a-color)))
+Test end:
+  result-kind: pass
+  actual-value: "unknown color name 'not-a-color'"
+Test begin:
+  test-name: "colors without a theme are not accepted"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 120
+  source-form: (test-assert "colors without a theme are not accepted" (color-error (quote red)))
+Test end:
+  result-kind: pass
+  actual-value: "unknown color name 'red'"
+Test begin:
+  test-name: "unknown color names get a suggestion"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 122
+  source-form: (test-assert "unknown color names get a suggestion" (string-contains (color-error (quote catppuccin-mocha-surfce2)) "catppuccin-mocha-surface2"))
+Test end:
+  result-kind: pass
+  actual-value: 61
+Test begin:
+  test-name: "error messages can carry a context"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 125
+  source-form: (test-assert "error messages can carry a context" (string-contains (color-error (quote nope) #:context "glyph 'x', section 1") "glyph 'x', section 1"))
+Test end:
+  result-kind: pass
+  actual-value: 0
+Group end: colors
+Group begin: geometry
+Test begin:
+  test-name: "the badge scale is 9.18% (6%, then a further 3%)"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 132
+  source-form: (test-assert "the badge scale is 9.18% (6%, then a further 3%)" (< (abs (- badge-scale 1.0918)) 1.0e-9))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Test begin:
+  test-name: "the default geometry is scaled and kept to two decimals"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 134
+  source-form: (test-equal "the default geometry is scaled and kept to two decimals" (quote (21.84 15.29 6.55 15.29 3.28 3.28 12.01)) (list (scaled 20) (scaled 14) (scaled 6) (scaled 14) (scaled 3) (scaled 3) (scaled 11)))
+Test end:
+  result-kind: pass
+  actual-value: (21.84 15.29 6.55 15.29 3.28 3.28 12.01)
+  expected-value: (21.84 15.29 6.55 15.29 3.28 3.28 12.01)
+Test begin:
+  test-name: "coordinates built from scaled dimensions stay short"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 138
+  source-form: (test-equal "coordinates built from scaled dimensions stay short" 67.74 (rounded (- 71.02 (scaled 3))))
+Test end:
+  result-kind: pass
+  actual-value: 67.74
+  expected-value: 67.74
+Test begin:
+  test-name: "text is measured at the unscaled font size, then scaled"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 141
+  source-form: (test-equal "text is measured at the unscaled font size, then scaled" 54 (length-for-text "Scheme" #:font-size 11))
+Test end:
+  result-kind: pass
+  actual-value: 54
+  expected-value: 54
+Group end: geometry
+Group begin: version
+Test begin:
+  test-name: "the version is a three-part version number"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 149
+  source-form: (test-assert "the version is a three-part version number" (string-match "^[0-9]+\\.[0-9]+\\.[0-9]+$" ggg-version))
+Test end:
+  result-kind: pass
+  actual-value: #("0.16.4" (0 . 6))
+Test begin:
+  test-name: "the version banner names ggg and the version"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 151
+  source-form: (test-equal "the version banner names ggg and the version" (string-append "ggg " ggg-version) (ggg-version-string))
+Test end:
+  result-kind: pass
+  actual-value: "ggg 0.16.4"
+  expected-value: "ggg 0.16.4"
+Test begin:
+  test-name: "`ggg --version' prints the version, license and homepage"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 154
+  source-form: (test-assert "`ggg --version' prints the version, license and homepage" (let ((printed (call-with-output-string print-version))) (and (string-contains printed (ggg-version-string)) (string-contains printed (string-append "License: " ggg-license)) (string-contains printed (string-append "Homepage: " ggg-homepage)))))
+Test end:
+  result-kind: pass
+  actual-value: 38
+Test begin:
+  test-name: "the version source is what `maak release' rewrites"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 159
+  source-form: (test-assert "the version source is what `maak release' rewrites" (file-exists? (string-append project-root "/src/ggg/version.scm")))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Group end: version
+Group begin: logos
+Test begin:
+  test-name: "unknown logos return #f"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 165
+  source-form: (test-assert "unknown logos return #f" (not (get-logo-sxml (quote no-such-logo) #:resources resources)))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Test begin:
+  test-name: "the shipped logos are listed"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 167
+  source-form: (test-assert "the shipped logos are listed" (every (lambda (name) (member (symbol->string name) (logo-names #:resources resources))) (quote (emacs gear ggg ggg-warm guix rust scala))))
+Test end:
+  result-kind: pass
+  actual-value: ("scala" "scales" "scikitlearn" "selenium" "sentry" "sequelize" "shield-check" "signal" "slackware" "snowflake" "sparkle" "spring" "springboot" "sqlite" "stackoverflow" "sublimetext" "supabase" "suse" "svelte" "swagger" "swc" "swift" "symbanta" "tailscale" "tailwindcss" "telegram" "tensorflow" "terminal-prompt" "terraform" "tmux" "travisci" "trello" "turbo" "typescript" "ubuntu" "vagrant" "vercel" "veritas" "vim" "vite" "vitest" "voidlinux" "wayland" "webassembly" "webstorm" "wikimediacommons" "wikipedia" "wireguard" "xcode" "xfce" "xml" "yaml" "zedindustries" "zsh")
+Test begin:
+  test-name: "the ggg glyph logo is white so it works inside a badge"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 172
+  source-form: (test-assert "the ggg glyph logo is white so it works inside a badge" (let ((contents (call-with-input-file (logo-file-path (quote ggg) #:resources resources) get-string-all))) (and (string-contains contents "#ffffff") (not (string-contains contents "linearGradient")) (not (string-contains contents "#3b2a24")))))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Group begin: logo discovery
+Test begin:
+  test-name: "only .svg files count as logos"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 181
+  source-form: (test-equal "only .svg files count as logos" (quote ()) (logo-names #:resources (string-append fixtures "/raw-paths")))
+Test end:
+  result-kind: pass
+  actual-value: ()
+  expected-value: ()
+Test begin:
+  test-name: "every listed logo has an svg file on disk"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 185
+  source-form: (test-assert "every listed logo has an svg file on disk" (every (lambda (name) (string-suffix? ".svg" (or (logo-file-path name #:resources resources) ""))) (logo-names #:resources resources)))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Test begin:
+  test-name: "files that are not svg documents are not logos"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 192
+  source-form: (test-assert "files that are not svg documents are not logos" (not (logo-file-path (quote legacy-path) #:resources (string-append fixtures "/raw-paths"))))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Test begin:
+  test-name: "leftover svg-paths files are detected"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 196
+  source-form: (test-equal "leftover svg-paths files are detected" (quote ("gear" "rust")) (legacy-svg-paths #:resources (string-append fixtures "/legacy-paths")))
+Test end:
+  result-kind: pass
+  actual-value: ("gear" "rust")
+  expected-value: ("gear" "rust")
+Test begin:
+  test-name: "a resources directory without svg-paths has none"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 200
+  source-form: (test-equal "a resources directory without svg-paths has none" (quote ()) (legacy-svg-paths #:resources (string-append fixtures "/raw-paths")))
+Test end:
+  result-kind: pass
+  actual-value: ()
+  expected-value: ()
+Group end: logo discovery
+Group begin: full svg documents
+Test begin:
+  test-name: "the logo viewBox is kept"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 208
+  source-form: (test-equal "the logo viewBox is kept" "0 0 32 32" (svg-attribute logo (quote viewBox)))
+Test end:
+  result-kind: pass
+  actual-value: "0 0 32 32"
+  expected-value: "0 0 32 32"
+Test begin:
+  test-name: "the badge decides the logo size"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 211
+  source-form: (test-equal "the badge decides the logo size" 15.29 (svg-attribute logo (quote width)))
+Test end:
+  result-kind: pass
+  actual-value: 15.29
+  expected-value: 15.29
+Test begin:
+  test-name: "a stray x/y in the logo document is ignored"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 214
+  source-form: (test-equal "a stray x/y in the logo document is ignored" (quote (3.28 3.28)) (list (svg-attribute logo (quote x)) (svg-attribute logo (quote y))))
+Test end:
+  result-kind: pass
+  actual-value: (3.28 3.28)
+  expected-value: (3.28 3.28)
+Test begin:
+  test-name: "the svg namespace is declared"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 217
+  source-form: (test-assert "the svg namespace is declared" (string-contains xml "xmlns=\"http://www.w3.org/2000/svg\""))
+Test end:
+  result-kind: pass
+  actual-value: 72
+Test begin:
+  test-name: "every shape of the logo is kept"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 219
+  source-form: (test-assert "every shape of the logo is kept" (and (string-contains xml "<path") (string-contains xml "<circle") (string-contains xml "<use")))
+Test end:
+  result-kind: pass
+  actual-value: 480
+Test begin:
+  test-name: "gradients and defs survive"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 223
+  source-form: (test-assert "gradients and defs survive" (and (string-contains xml "linearGradient") (string-contains xml "url(#multi-part-gradient)")))
+Test end:
+  result-kind: pass
+  actual-value: 390
+Test begin:
+  test-name: "groups with transforms survive"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 226
+  source-form: (test-assert "groups with transforms survive" (string-contains xml "translate(0 2)"))
+Test end:
+  result-kind: pass
+  actual-value: 362
+Test begin:
+  test-name: "xlink attributes keep their prefix"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 228
+  source-form: (test-assert "xlink attributes keep their prefix" (string-contains xml "xlink:href"))
+Test end:
+  result-kind: pass
+  actual-value: 485
+Test begin:
+  test-name: "the xlink namespace is declared"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 230
+  source-form: (test-assert "the xlink namespace is declared" (string-contains xml "xmlns:xlink"))
+Test end:
+  result-kind: pass
+  actual-value: 107
+Test begin:
+  test-name: "foreign namespace metadata is dropped"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 232
+  source-form: (test-assert "foreign namespace metadata is dropped" (not (string-contains xml "inkscape")))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Group end: full svg documents
+Group end: logos
+Group begin: validation
+Test begin:
+  test-name: "a valid glyph has no problems"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 254
+  source-form: (test-equal "a valid glyph has no problems" (quote ()) (validate-glyph valid-glyph #:resources resources))
+Test end:
+  result-kind: pass
+  actual-value: ()
+  expected-value: ()
+Test begin:
+  test-name: "unknown colors are reported"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 258
+  source-form: (test-assert "unknown colors are reported" (any (lambda (problem) (string-contains problem "not-a-color")) (validate-glyph broken-glyph #:resources resources)))
+Test end:
+  result-kind: pass
+  actual-value: 52
+Test begin:
+  test-name: "unknown logos are reported"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 262
+  source-form: (test-assert "unknown logos are reported" (any (lambda (problem) (string-contains problem "unknown logo 'no-such-logo'")) (validate-glyph broken-glyph #:resources resources)))
+Test end:
+  result-kind: pass
+  actual-value: 36
+Test begin:
+  test-name: "non-numeric settings are reported"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 266
+  source-form: (test-assert "non-numeric settings are reported" (any (lambda (problem) (string-contains problem "must be a number")) (validate-glyph broken-glyph #:resources resources)))
+Test end:
+  result-kind: pass
+  actual-value: 28
+Test begin:
+  test-name: "malformed settings suggest the dotted pair syntax"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 270
+  source-form: (test-assert "malformed settings suggest the dotted pair syntax" (any (lambda (problem) (string-contains problem "(background . value)")) (validate-glyph (quasiquote ((sections ((background "#555") (text . "x") (color . catppuccin-mocha-text))) (id . malformed))) #:resources resources)))
+Test end:
+  result-kind: pass
+  actual-value: 81
+Test begin:
+  test-name: "badges may have more than three sections"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 278
+  source-form: (test-equal "badges may have more than three sections" (quote ()) (validate-glyph (quasiquote ((sections ((background . catppuccin-mocha-surface2) (text . "1") (color . catppuccin-mocha-text)) ((background . catppuccin-mocha-surface2) (text . "2") (color . catppuccin-mocha-text)) ((background . catppuccin-mocha-surface2) (text . "3") (color . catppuccin-mocha-text)) ((background . catppuccin-mocha-surface2) (text . "4") (color . catppuccin-mocha-text)) ((background . catppuccin-mocha-surface2) (text . "5") (color . catppuccin-mocha-text))) (id . five))) #:resources resources))
+Test end:
+  result-kind: pass
+  actual-value: ()
+  expected-value: ()
+Test begin:
+  test-name: "a glyph without sections is reported"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 288
+  source-form: (test-assert "a glyph without sections is reported" (any (lambda (problem) (string-contains problem "has no sections")) (validate-glyph (quote ((id . empty))) #:resources resources)))
+Test end:
+  result-kind: pass
+  actual-value: 14
+Test begin:
+  test-name: "missing text labels are reported"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 292
+  source-form: (test-assert "missing text labels are reported" (any (lambda (problem) (string-contains problem "missing a text label")) (validate-glyph (quasiquote ((sections ((background . catppuccin-mocha-surface2) (color . catppuccin-mocha-text))) (id . no-text))) #:resources resources)))
+Test end:
+  result-kind: pass
+  actual-value: 30
+Test begin:
+  test-name: "ids that cannot be file names are reported"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 298
+  source-form: (test-assert "ids that cannot be file names are reported" (any (lambda (problem) (string-contains problem "cannot be used as a file name")) (validate-glyph (quasiquote ((sections ((background . catppuccin-mocha-surface2) (text . "x") (color . catppuccin-mocha-text))) (id . "../escape"))) #:resources resources)))
+Test end:
+  result-kind: pass
+  actual-value: 38
+Test begin:
+  test-name: "duplicate ids are reported"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 306
+  source-form: (test-assert "duplicate ids are reported" (any (lambda (problem) (string-contains problem "reuses the id")) (validate-glyphs (list valid-glyph valid-glyph) #:resources resources)))
+Test end:
+  result-kind: pass
+  actual-value: 31
+Test begin:
+  test-name: "an empty configuration is reported"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 310
+  source-form: (test-assert "an empty configuration is reported" (pair? (validate-glyphs (quote ()) #:resources resources)))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Group end: validation
+Group begin: rendering
+Test begin:
+  test-name: "theme colors are resolved to hex values"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 319
+  source-form: (test-assert "theme colors are resolved to hex values" (and (string-contains xml "fill=\"#585b70\"") (string-contains xml "fill=\"#fab387\"") (string-contains xml "fill=\"#cdd6f4\"")))
+Test end:
+  result-kind: pass
+  actual-value: 558
+Test begin:
+  test-name: "badge text is rendered"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 323
+  source-form: (test-assert "badge text is rendered" (and (string-contains xml ">Scheme<") (string-contains xml ">Guile<")))
+Test end:
+  result-kind: pass
+  actual-value: 780
+Test begin:
+  test-name: "logos are inlined into the badge"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 328
+  source-form: (test-assert "logos are inlined into the badge" (let* ((path (logo-file-path (quote lambda) #:resources resources)) (svg (call-with-input-file path get-string-all)) (start (string-contains svg "viewBox=\"")) (box (and start (let ((end (string-index svg #\" (+ start 9)))) (and end (substring svg (+ start 9) end)))))) (and box (not (string-null? box)) (string-contains xml (format #f "viewBox=\"~a\"" box)))))
+Test end:
+  result-kind: pass
+  actual-value: 871
+Test begin:
+  test-name: "the badge id becomes the svg id"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 337
+  source-form: (test-assert "the badge id becomes the svg id" (string-contains xml "id=\"scheme-guile-test\""))
+Test end:
+  result-kind: pass
+  actual-value: 5
+Test begin:
+  test-name: "badges are 21.84px high with 3.28px corners"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 341
+  source-form: (test-assert "badges are 21.84px high with 3.28px corners" (and (string-contains xml "height=\"21.84\"") (string-contains xml "rx=\"3.28\"")))
+Test end:
+  result-kind: pass
+  actual-value: 216
+Test begin:
+  test-name: "badge text sits at y=15.29 for a 12.01px font"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 344
+  source-form: (test-assert "badge text sits at y=15.29 for a 12.01px font" (and (string-contains xml "font-size=\"12.01\"") (string-contains xml "y=\"15.29\"")))
+Test end:
+  result-kind: pass
+  actual-value: 650
+Test begin:
+  test-name: "text width is tight like shields.io, scaled up"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 347
+  source-form: (test-assert "text width is tight like shields.io, scaled up" (string-contains xml "width=\"111.57\" height=\"21.84\""))
+Test end:
+  result-kind: pass
+  actual-value: 63
+Test begin:
+  test-name: "the first label is centered after the logo gap"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 351
+  source-form: (test-assert "the first label is centered after the logo gap" (string-contains xml "x=\"46.0\" y=\"15.29\">Scheme<"))
+Test end:
+  result-kind: pass
+  actual-value: 641
+Test begin:
+  test-name: "a badge can use a gradient logo"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 360
+  source-form: (test-assert "a badge can use a gradient logo" (and (string-contains xml "linearGradient") (string-contains xml "url(#sparkle-shine)")))
+Test end:
+  result-kind: pass
+  actual-value: 831
+Test begin:
+  test-name: "every part of a five-part badge is rendered"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 371
+  source-form: (test-assert "every part of a five-part badge is rendered" (every (lambda (text) (string-contains xml (format #f ">~a<" text))) (quote ("one" "two" "three" "four" "five"))))
+Test end:
+  result-kind: pass
+  actual-value: 1824
+Test begin:
+  test-name: "a five-part badge has a background and a seam per part"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 374
+  source-form: (test-assert "a five-part badge has a background and a seam per part" (= 13 (count-substring "<rect " xml)))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Test begin:
+  test-name: "a badge can use a gradient logo"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 383
+  source-form: (test-assert "a badge can use a gradient logo" (and (string-contains xml "linearGradient") (string-contains xml "url(#sparkle-shine)")))
+Test end:
+  result-kind: pass
+  actual-value: 831
+Group end: rendering
+Group begin: styles
+Test begin:
+  test-name: "every style is listed"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 414
+  source-form: (test-equal "every style is listed" (quote (flat square shadow plastic frosted-glass material frutiger neon)) style-names)
+Test end:
+  result-kind: pass
+  actual-value: (flat square shadow plastic frosted-glass material frutiger neon)
+  expected-value: (flat square shadow plastic frosted-glass material frutiger neon)
+Test begin:
+  test-name: "style names accept friendly spellings"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 418
+  source-form: (test-equal "style names accept friendly spellings" (quote (frosted-glass frosted-glass flat flat neon)) (map style-name (quote ("frosted glass" frosted_glass default plain neo))))
+Test end:
+  result-kind: pass
+  actual-value: (frosted-glass frosted-glass flat flat neon)
+  expected-value: (frosted-glass frosted-glass flat flat neon)
+Test begin:
+  test-name: "unknown styles are not accepted"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 422
+  source-form: (test-assert "unknown styles are not accepted" (not (style-name (quote glassy))))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Test begin:
+  test-name: "a flat badge has no decorations at all"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 425
+  source-form: (test-assert "a flat badge has no decorations at all" (let ((xml (render-style (quote flat)))) (and (not (string-contains xml "<defs")) (not (string-contains xml "<filter")) (not (string-contains xml "transform=")))))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Test begin:
+  test-name: "square corners drop the corner radius"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 431
+  source-form: (test-assert "square corners drop the corner radius" (string-contains (render-style (quote square)) "rx=\"0\" ry=\"0\""))
+Test end:
+  result-kind: pass
+  actual-value: 216
+Test begin:
+  test-name: "a shadow keeps the flat canvas so badge rows stay aligned"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 434
+  source-form: (test-assert "a shadow keeps the flat canvas so badge rows stay aligned" (let ((xml (render-style (quote shadow)))) (and (string-contains xml "url(#ggg-scheme-guile-test-shade)") (string-contains xml "url(#ggg-scheme-guile-test-highlight)") (not (string-contains xml "<filter")))))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Test begin:
+  test-name: "plastic adds a clipped gloss and an inner bevel"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 441
+  source-form: (test-assert "plastic adds a clipped gloss and an inner bevel" (let ((xml (render-style (quote plastic)))) (and (string-contains xml "<clipPath") (string-contains xml "url(#ggg-scheme-guile-test-gloss)") (string-contains xml "stroke=\"#ffffff\""))))
+Test end:
+  result-kind: pass
+  actual-value: 1591
+Test begin:
+  test-name: "frosted glass adds a frost sheen and a hairline border"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 447
+  source-form: (test-assert "frosted glass adds a frost sheen and a hairline border" (let ((xml (render-style (quote frosted-glass)))) (and (string-contains xml "url(#ggg-scheme-guile-test-frost)") (string-contains xml "<ellipse") (string-contains xml "stroke-opacity=\"0.45\""))))
+Test end:
+  result-kind: pass
+  actual-value: 1496
+Test begin:
+  test-name: "material adds a sheen and an inner elevation shade"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 453
+  source-form: (test-assert "material adds a sheen and an inner elevation shade" (let ((xml (render-style (quote material)))) (and (string-contains xml "url(#ggg-scheme-guile-test-sheen)") (string-contains xml "stroke-opacity=\"0.14\""))))
+Test end:
+  result-kind: pass
+  actual-value: 1244
+Test begin:
+  test-name: "frutiger rounds the corners much more and tints the glass"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 458
+  source-form: (test-assert "frutiger rounds the corners much more and tints the glass" (let ((xml (render-style (quote frutiger)))) (and (string-contains xml "rx=\"6.0\"") (string-contains xml "url(#ggg-scheme-guile-test-sky)") (string-contains xml "url(#ggg-scheme-guile-test-gloss)"))))
+Test end:
+  result-kind: pass
+  actual-value: 2061
+Test begin:
+  test-name: "neon draws dark plates with crisp glowing outlines and bright text"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 464
+  source-form: (test-assert "neon draws dark plates with crisp glowing outlines and bright text" (let ((xml (render-style (quote neon)))) (and (string-contains xml "url(#ggg-scheme-guile-test-glow)") (string-contains xml "stroke-width=\"1.8\"") (string-contains xml "stroke-width=\"1\"") (not (string-contains xml "text-glow")) (not (string-contains xml "fill=\"#cdd6f4\"")) (not (string-contains xml "fill=\"#585b70\"")))))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Test begin:
+  test-name: "every style keeps the exact flat canvas, so a row stays aligned"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 476
+  source-form: (test-assert "every style keeps the exact flat canvas, so a row stays aligned" (let* ((flat (mk-glyph valid-glyph #:resources resources)) (width (canvas-width flat)) (height (canvas-height flat))) (every (lambda (style) (let ((badge (mk-glyph (glyph-with-style style) #:resources resources))) (and (< (abs (- (canvas-width badge) width)) 0.001) (< (abs (- (canvas-height badge) height)) 0.001)))) style-names)))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Test begin:
+  test-name: "every style renders an svg"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 487
+  source-form: (test-assert "every style renders an svg" (every (lambda (style) (string-contains (render-style style) "<svg")) style-names))
+Test end:
+  result-kind: pass
+  actual-value: 0
+Test begin:
+  test-name: "an unknown style is reported with the valid names"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 492
+  source-form: (test-assert "an unknown style is reported with the valid names" (any (lambda (problem) (and (string-contains problem "unknown style 'glassy'") (string-contains problem "frosted-glass"))) (validate-glyph (glyph-with-style (quote glassy)) #:resources resources)))
+Test end:
+  result-kind: pass
+  actual-value: 96
+Test begin:
+  test-name: "a style written as a string is accepted"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 498
+  source-form: (test-equal "a style written as a string is accepted" (quote ()) (validate-glyph (glyph-with-style "frosted glass") #:resources resources))
+Test end:
+  result-kind: pass
+  actual-value: ()
+  expected-value: ()
+Group end: styles
+Group begin: gallery
+Test begin:
+  test-name: "logo display names come from the logo title"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 505
+  source-form: (test-equal "logo display names come from the logo title" "Sparkle" (logo-display-name (quote sparkle) #:resources resources))
+Test end:
+  result-kind: pass
+  actual-value: "Sparkle"
+  expected-value: "Sparkle"
+Test begin:
+  test-name: "display names fall back to the file name"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 509
+  source-form: (test-equal "display names fall back to the file name" "rust" (logo-display-name (quote rust) #:resources resources))
+Test end:
+  result-kind: pass
+  actual-value: "rust"
+  expected-value: "rust"
+Test begin:
+  test-name: "every logo gets a tile"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 522
+  source-form: (test-assert "every logo gets a tile" (= (length names) (length tiles)))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Test begin:
+  test-name: "every glyph gets a badge tile"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 524
+  source-form: (test-assert "every glyph gets a badge tile" (= 1 (length badges)))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Test begin:
+  test-name: "badge tiles show the glyph id"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 526
+  source-form: (test-assert "badge tiles show the glyph id" (and (string-contains html "(id . scheme-guile-test)") (string-contains html "<span class=\"name\">scheme-guile-test</span>")))
+Test end:
+  result-kind: pass
+  actual-value: 7589
+Test begin:
+  test-name: "badge tiles can be filtered by their text"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 529
+  source-form: (test-assert "badge tiles can be filtered by their text" (string-contains html "data-name=\"scheme-guile-test Scheme Guile\""))
+Test end:
+  result-kind: pass
+  actual-value: 5579
+Test begin:
+  test-name: "badge ids are namespaced by glyph group"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 531
+  source-form: (test-assert "badge ids are namespaced by glyph group" (string-contains html "id=\"badge-testscm-scheme-guile-test\""))
+Test end:
+  result-kind: pass
+  actual-value: 5663
+Test begin:
+  test-name: "the gallery renders real badges, not just logos"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 533
+  source-form: (test-assert "the gallery renders real badges, not just logos" (string-contains html ">Scheme<"))
+Test end:
+  result-kind: pass
+  actual-value: 6331
+Test begin:
+  test-name: "tiles show the glyph snippet"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 535
+  source-form: (test-assert "tiles show the glyph snippet" (string-contains html "(logo . sparkle)"))
+Test end:
+  result-kind: pass
+  actual-value: 571175
+Test begin:
+  test-name: "logo snippets can be copied"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 537
+  source-form: (test-assert "logo snippets can be copied" (string-contains html "data-copy=\"(logo . sparkle)\""))
+Test end:
+  result-kind: pass
+  actual-value: 571164
+Test begin:
+  test-name: "badge tiles copy a complete glyph definition"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 539
+  source-form: (test-assert "badge tiles copy a complete glyph definition" (and (string-contains html "data-copy=\"(define scheme-guile-test '((sections") (string-contains html "class=\"toast\" role=\"status\"")))
+Test end:
+  result-kind: pass
+  actual-value: 644056
+Test begin:
+  test-name: "the gallery script copies to the clipboard and shows a toast"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 542
+  source-form: (test-assert "the gallery script copies to the clipboard and shows a toast" (and (string-contains html "navigator.clipboard.writeText") (string-contains html "classList.add('show')")))
+Test end:
+  result-kind: pass
+  actual-value: 645413
+Test begin:
+  test-name: "logos are inlined instead of linked"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 545
+  source-form: (test-assert "logos are inlined instead of linked" (string-contains html "<svg"))
+Test end:
+  result-kind: pass
+  actual-value: 5658
+Test begin:
+  test-name: "logo ids are namespaced so they cannot clash"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 547
+  source-form: (test-assert "logo ids are namespaced so they cannot clash" (and (string-contains html "id=\"logo-sparkle-sparkle-shine\"") (string-contains html "url(#logo-sparkle-sparkle-shine)") (not (string-contains html "url(#sparkle-shine)"))))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Test begin:
+  test-name: "the gallery shows the color palettes"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 551
+  source-form: (test-assert "the gallery shows the color palettes" (and (string-contains html "Color palettes") (string-contains html "class=\"palette\"")))
+Test end:
+  result-kind: pass
+  actual-value: 8528
+Test begin:
+  test-name: "every theme palette is shown"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 554
+  source-form: (test-assert "every theme palette is shown" (every (lambda (theme) (string-contains html (format #f ">~a <span class=\"meta\">" (symbol->string theme)))) (theme-names)))
+Test end:
+  result-kind: pass
+  actual-value: 94976
+Test begin:
+  test-name: "every named color gets a swatch"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 560
+  source-form: (test-assert "every named color gets a swatch" (every (lambda (entry) (string-contains html (format #f "data-copy=\"~a\"" (car entry)))) named-colors))
+Test end:
+  result-kind: pass
+  actual-value: 100040
+Test begin:
+  test-name: "swatches carry their hex value"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 565
+  source-form: (test-assert "swatches carry their hex value" (and (string-contains html "data-copy=\"catppuccin-mocha-red\"") (string-contains html "background: #f38ba8")))
+Test end:
+  result-kind: pass
+  actual-value: 10280
+Test begin:
+  test-name: "the palette section has one swatch per color"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 568
+  source-form: (test-equal "the palette section has one swatch per color" (length named-colors) (count-substring "class=\"swatch\"" (palette-section)))
+Test end:
+  result-kind: pass
+  actual-value: 236
+  expected-value: 236
+Test begin:
+  test-name: "glyph files are grouped by file name"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 575
+  source-form: (test-equal "glyph files are grouped by file name" (quote ("jjba23.scm" "showcase.scm")) (map car groups))
+Test end:
+  result-kind: pass
+  actual-value: ("jjba23.scm" "showcase.scm")
+  expected-value: ("jjba23.scm" "showcase.scm")
+Test begin:
+  test-name: "every glyph of every file is in the gallery"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 578
+  source-form: (test-equal "every glyph of every file is in the gallery" 245 (apply + (map (lambda (group) (length (cdr group))) groups)))
+Test end:
+  result-kind: fail
+  actual-value: 246
+  expected-value: 245
+Test begin:
+  test-name: "the gallery reports its badge and logo counts"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 591
+  source-form: (test-equal "the gallery reports its badge and logo counts" (list 1 (length (logo-names #:resources resources))) counts)
+Test end:
+  result-kind: pass
+  actual-value: (1 284)
+  expected-value: (1 284)
+Test begin:
+  test-name: "the gallery page is written to disk"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 594
+  source-form: (test-assert "the gallery page is written to disk" (and (> (apply + counts) 0) (file-exists? path)))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Test begin:
+  test-name: "the written page is self contained"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 596
+  source-form: (test-assert "the written page is self contained" (string-contains (call-with-input-file path get-string-all) "<svg"))
+Test end:
+  result-kind: pass
+  actual-value: 5658
+Test begin:
+  test-name: "the gallery test writes inside the temporary directory"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 598
+  source-form: (test-assert "the gallery test writes inside the temporary directory" (string-prefix? (temp-directory) path))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Group end: gallery
+Group begin: showcase
+Test begin:
+  test-name: "the showcase covers plenty of logos"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 615
+  source-form: (test-assert "the showcase covers plenty of logos" (>= (length showcase-glyphs) 100))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Test begin:
+  test-name: "every showcase badge uses a logo"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 618
+  source-form: (test-assert "every showcase badge uses a logo" (every (lambda (glyph) (lookup (car (lookup glyph (quote sections))) (quote logo))) showcase-glyphs))
+Test end:
+  result-kind: pass
+  actual-value: atom-orbit
+Test begin:
+  test-name: "the showcase configuration is valid"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 623
+  source-form: (test-equal "the showcase configuration is valid" (quote ()) (validate-glyphs showcase-glyphs #:resources resources))
+Test end:
+  result-kind: pass
+  actual-value: ()
+  expected-value: ()
+Test begin:
+  test-name: "the jjba23 project badges are in the main glyph file"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 627
+  source-form: (test-assert "the jjba23 project badges are in the main glyph file" (every (lambda (id) (member id (map glyph-id main-glyphs))) (quote ("byggsteg" "lucidplan" "maak" "bewaking" "hygguile" "veritas" "symbanta" "lang-python" "build-cmake" "test-jest" "db-postgresql" "ci-buildkite" "docs-markdown"))))
+Test end:
+  result-kind: pass
+  actual-value: ("docs-markdown")
+Test begin:
+  test-name: "showcase ids do not collide with the main glyph file"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 635
+  source-form: (test-assert "showcase ids do not collide with the main glyph file" (null? (lset-intersection string=? (map glyph-id main-glyphs) showcase-ids)))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Test begin:
+  test-name: "showcase ids are unique"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 639
+  source-form: (test-assert "showcase ids are unique" (= (length showcase-ids) (length (delete-duplicates showcase-ids))))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Test begin:
+  test-name: "the showcase has one badge for every style"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 642
+  source-form: (test-assert "the showcase has one badge for every style" (every (lambda (style) (member (string-append "style-" (symbol->string style)) showcase-ids)) style-names))
+Test end:
+  result-kind: pass
+  actual-value: ("style-neon")
+Test begin:
+  test-name: "showcase badges render"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 648
+  source-form: (test-assert "showcase badges render" (string-contains (sxml->string* (mk-glyph (car showcase-glyphs) #:resources resources)) "<svg"))
+Test end:
+  result-kind: pass
+  actual-value: 0
+Test begin:
+  test-name: "showcase badges color their accent section with catppuccin"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 653
+  source-form: (test-equal "showcase badges color their accent section with catppuccin" (quote catppuccin-mocha-base) (cdr (assq (quote color) (cadr (lookup (car (filter (lambda (glyph) (string=? (glyph-id glyph) "javascript")) showcase-glyphs)) (quote sections))))))
+Test end:
+  result-kind: pass
+  actual-value: catppuccin-mocha-base
+  expected-value: catppuccin-mocha-base
+Test begin:
+  test-name: "every showcase badge labels itself with catppuccin mocha"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 662
+  source-form: (test-assert "every showcase badge labels itself with catppuccin mocha" (every (lambda (glyph) (let ((label (car (lookup glyph (quote sections))))) (every (lambda (key) (let ((name (lookup label key))) (and (symbol? name) (string-prefix? "catppuccin-mocha-" (symbol->string name))))) (quote (background color))))) showcase-glyphs))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Test begin:
+  test-name: "every showcase accent is a real theme color"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 673
+  source-form: (test-assert "every showcase accent is a real theme color" (every (lambda (glyph) (let ((accent (cadr (lookup glyph (quote sections))))) (every (lambda (key) (not (color-error (lookup accent key)))) (quote (background color))))) showcase-glyphs))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Test begin:
+  test-name: "the showcase second sections mix the theme families"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 681
+  source-form: (test-assert "the showcase second sections mix the theme families" (let* ((accent-name (lambda (glyph) (symbol->string (lookup (cadr (lookup glyph (quote sections))) (quote background))))) (families (delete-duplicates (filter identity (map (lambda (name) (find (lambda (family) (string-prefix? family name)) (quote ("catppuccin-" "doom-" "dracula-" "solarized-" "modus-")))) (map accent-name showcase-glyphs)))))) (equal? (sort families string<?) (quote ("catppuccin-" "doom-" "dracula-" "modus-" "solarized-")))))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Test begin:
+  test-name: "every theme has a variant badge"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 696
+  source-form: (test-assert "every theme has a variant badge" (let ((accents (map (lambda (glyph) (lookup (cadr (lookup glyph (quote sections))) (quote background))) showcase-glyphs))) (every (lambda (accent) (member accent accents)) (quote (catppuccin-mocha-mauve catppuccin-macchiato-teal catppuccin-frappe-peach catppuccin-latte-mauve doom-one-blue doom-one-light-magenta dracula-purple dracula-alucard-pink solarized-dark-cyan solarized-light-yellow modus-operandi-red modus-vivendi-green)))))
+Test end:
+  result-kind: pass
+  actual-value: (modus-vivendi-green catppuccin-mocha-blue catppuccin-mocha-green catppuccin-mocha-peach catppuccin-mocha-pink catppuccin-mocha-sapphire catppuccin-mocha-yellow catppuccin-mocha-teal catppuccin-mocha-red)
+Group end: showcase
+Group begin: contrast
+Test begin:
+  test-name: "every glyph section reaches at least 4.5:1 contrast"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 772
+  source-form: (test-equal "every glyph section reaches at least 4.5:1 contrast" (quote ()) (append-map failing-sections (append (load-glyph-file "jjba23.scm") (load-glyph-file "showcase.scm"))))
+Test end:
+  result-kind: pass
+  actual-value: ()
+  expected-value: ()
+Group end: contrast
+Group begin: destination
+Test begin:
+  test-name: "--keep leaves existing files alone"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 789
+  source-form: (test-assert "--keep leaves existing files alone" (file-exists? kept))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Test begin:
+  test-name: "the destination is cleared by default"
+  source-file: "/home/joe/Hacking/ggg/./test/ggg-tests.scm"
+  source-line: 793
+  source-form: (test-assert "the destination is cleared by default" (and (file-exists? dir) (not (file-exists? kept))))
+Test end:
+  result-kind: pass
+  actual-value: #t
+Group end: destination
+Group end: ggg
+# of expected passes      121
+# of unexpected failures  1

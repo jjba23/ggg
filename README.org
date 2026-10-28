@@ -388,29 +388,9 @@ Everything in this repository is free software, and ggg does not restrict what
 you do with the badges it produces. The details matter though, because badges
 often embed logos that belong to somebody else.
 
-** The program: GNU AGPL-3.0-or-later
+This project, and Git repository, and all of its source code are free and open software, licensed under the [[https://opensource.org/license/mit][MIT License]]
 
-ggg and all of its source code, build files and helper scripts are free
-software, licensed under the GNU Affero General Public License v3 or, at your
-option, any later version. The full text is in the ~COPYING~ file shipped with
-the source, and at:
-
-https://www.gnu.org/licenses/agpl-3.0.html
-
-Because the AGPL is a strong copyleft license, note in particular: if you run a
-/modified/ ggg as a network service that users interact with, section 13
-requires you to offer those users the corresponding source of your version.
-Running ggg locally, in CI, or unmodified imposes no such obligation.
-
-** The documentation: GNU FDL-1.3-or-later
-
-The documentation and examples provided with ggg, including this README and
-~resources/help.txt~, are licensed under the GNU Free Documentation License v1.3
-or, at your option, any later version:
-
-https://www.gnu.org/licenses/fdl-1.3.html
-
-** Generated badges and glyph configurations: no ownership claimed
+The documentation and examples, including this document, which are provided, are all licensed under the [[https://creativecommons.org/licenses/by/4.0/][CC BY 4.0 (Creative Commons Attribution)]] license.
 
 ggg's authors claim *no copyright and no ownership* over the SVG or PNG images
 it generates, over the HTML gallery it writes, or over the glyph configuration
@@ -437,7 +417,6 @@ So if you need a badge that is unambiguously free of any third-party terms, use
 no logo at all or one you drew yourself; the output ggg writes is never
 restricted by ggg itself.
 
-** The bundled logo library
 
 The ~resources/logos/~ directory ships 280+ ready-made logos. They are not all
 under the same terms, so [[./CREDITS.org][CREDITS.org]] lists every single one

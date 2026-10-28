@@ -1,19 +1,7 @@
 ;; ggg: guile glyph generator
-
+;;
+;; Spdx-License-Identifier: MIT
 ;; Copyright © Josep Bigorra <jjbigorra@gmail.com>
-
-;; ggg is free software: you can redistribute it and/or modify
-;; it under the terms of the GNU Affero General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
-
-;; ggg is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU Affero General Public License for more details.
-
-;; You should have received a copy of the GNU Affero General Public License
-;; along with ggg.  If not, see <https://www.gnu.org/licenses/>.
 
 (use-modules (guix gexp)
              (guix packages)
@@ -97,6 +85,6 @@ GGG is highly configurable, reads Scheme files where you define your tasks,
 and supports badges between one and three parts.  It leverages SVG generation
 from Lisp and S-expressions, building pixel perfect badges.")
     (home-page "https://codeberg.org/jjba23/ggg")
-    (license license:agpl3+)))
+    (license license:mit)))
 
 ggg

@@ -24,7 +24,7 @@ Name:           ggg
 Version:        0.16.4
 Release:        0
 Summary:        SVG badge and glyph generator written in Guile Scheme
-License:        AGPL-3.0-or-later
+License:        MIT
 URL:            https://codeberg.org/jjba23/ggg
 Source0:        %{name}-%{version}.tar.gz
 BuildRequires:  pkgconfig(guile-3.0)
@@ -85,7 +85,7 @@ cp resources/logos/*.svg "%{buildroot}%{_datadir}/ggg/resources/logos/"
 guile -L ./src ./test/ggg-tests.scm
 
 %files
-%license COPYING
+%license LICENSE
 %doc README.org CREDITS.org
 %doc glyphs/*.scm
 %{_bindir}/ggg
