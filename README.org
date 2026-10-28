@@ -4,7 +4,7 @@
 #+language: en
 #+options: toc:nil
 
-[[./dist/scheme-guile.svg]]  [[./dist/gnu-guix.svg]]   [[./dist/license-agpl3+.svg]]  [[./dist/license-fdl13+.svg]]
+[[./dist/scheme-guile.svg]]  [[./dist/gnu-guix.svg]]   [[./dist/license-mit.svg]]
 [[./dist/jointhefreeworld-org.svg]] [[./dist/maak.svg]]
 
 /Generate SVG images for handy useful glyphs, Org/Markdown badges and more, leveraging the power of Lisp (Guile Scheme)/
@@ -289,7 +289,7 @@ ggg is officially distributed via:
 - Guix package manager
 - Podman/Docker images.
 
-/That being said, feel free to use it as you wish, within the terms of the GNU Affero General Public License v3 or newer./
+/That being said, feel free to use it as you wish, within the terms of the MIT License./
 
 ** On Guix
 
@@ -388,9 +388,28 @@ Everything in this repository is free software, and ggg does not restrict what
 you do with the badges it produces. The details matter though, because badges
 often embed logos that belong to somebody else.
 
-This project, and Git repository, and all of its source code are free and open software, licensed under the [[https://opensource.org/license/mit][MIT License]]
+** The program: MIT
 
-The documentation and examples, including this document, which are provided, are all licensed under the [[https://creativecommons.org/licenses/by/4.0/][CC BY 4.0 (Creative Commons Attribution)]] license.
+This project, its Git repository and all of its source code, build files and
+helper scripts are free and open software, licensed under the
+[[https://opensource.org/license/mit][MIT License]]. The full text is in the ~LICENSE~ file shipped with the source,
+and at:
+
+https://opensource.org/license/mit
+
+The MIT License is permissive rather than copyleft: you can use ggg, modify it,
+embed it in your own tooling or ship a modified ggg as a network service,
+provided the copyright notice and the permission notice travel with the
+copies or substantial portions of the software.
+
+** The documentation: CC BY 4.0
+
+The documentation and examples provided with ggg, including this README and
+~resources/help.txt~, are licensed under
+[[https://creativecommons.org/licenses/by/4.0/][CC BY 4.0 (Creative Commons Attribution)]], which asks for attribution when you
+reuse or adapt them.
+
+** Generated badges and glyph configurations: no ownership claimed
 
 ggg's authors claim *no copyright and no ownership* over the SVG or PNG images
 it generates, over the HTML gallery it writes, or over the glyph configuration
