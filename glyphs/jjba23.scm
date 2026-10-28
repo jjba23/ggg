@@ -184,6 +184,15 @@
     (style . shadow)
     (id . emacs-lisp)))
 
+(define glyph-license-mit
+  `((sections ((background . catppuccin-latte-subtext1) (text . "license")
+               (color . catppuccin-latte-base)
+               (logo . scales))
+              ((background . catppuccin-mocha-blue) (text . "MIT")
+               (color . catppuccin-mocha-base)))
+    (style . shadow)
+    (id . license-mit)))
+
 (define glyph-license-gpl3+
   `((sections ((background . catppuccin-latte-subtext1) (text . "license")
                (color . catppuccin-latte-base)
@@ -666,6 +675,7 @@
         glyph-license-lgpl3+
         glyph-license-agpl3+
         glyph-license-fdl13+
+        glyph-license-mit
         glyph-shell-fish
         glyph-shell-bash
         glyph-shell-eshell
