@@ -7,6 +7,9 @@
 [[./dist/scheme-guile.svg]]  [[./dist/gnu-guix.svg]]   [[./dist/license-mit.svg]]
 [[./dist/jointhefreeworld-org.svg]] [[./dist/maak.svg]]
 
+#+attr_html: :width 160 :alt GGG logo
+[[file:logo.svg]]
+
 /Generate SVG images for handy useful glyphs, Org/Markdown badges and more, leveraging the power of Lisp (Guile Scheme)/
 
 Be proud and appreciate technologies and techniques you use, distinguish clearly supported versions of things, etc.
@@ -30,7 +33,6 @@ Based on the provided Lisp configuration, GGG will produce something like the fo
 [[./dist/style-flat.svg]] [[./dist/style-square.svg]] [[./dist/style-shadow.svg]] [[./dist/style-plastic.svg]]
 [[./dist/style-frosted-glass.svg]] [[./dist/style-material.svg]] [[./dist/style-frutiger.svg]] [[./dist/style-neon.svg]]
 [[./dist/theme-catppuccin-latte.svg]] [[./dist/theme-dracula.svg]] [[./dist/theme-solarized-light.svg]] [[./dist/theme-modus-vivendi.svg]]
-
 
 ----------
 * What is this black magic? 🪄
@@ -508,7 +510,6 @@ While tools like Large Language Models (LLMs) and interactive chatbots can be be
 
 We require a human in the loop for all contributions.
 
-
 ---------
 
 * REPL: Interactive workflow, developer power
@@ -525,9 +526,7 @@ It fundamentally changes the development workflow by eliminating the slow /edit,
 
 When integrated into your code editor, you can execute any piece of code (a line, a selection, or a file) with a keyboard shortcut and see the result instantly, creating a seamless and powerful development experience.
 
-
 -----------
-
 
 * Code of conduct
 
@@ -550,7 +549,6 @@ Contributing to free software is a uniquely beautiful act because it embodies pr
 We welcome everyone to feel invited to the ggg Project, and encourage active contribution in all forms, to improve it and/or suggest improvements, brainstorm with me, make it more modular/flexible, etc, feel free to contact me <jjbigorra@gmail.com> to chat, discuss or report feedback.
 
 Find here the Backlog and Kanban boards for ggg: https://lucidplan.jointhefreeworld.org/tickets/ggg
-
 
 -------
 
