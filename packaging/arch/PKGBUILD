@@ -5,7 +5,7 @@
 
 # Maintainer: Josep Bigorra <jjbigorra@gmail.com>
 pkgname=ggg
-pkgver=0.17.0
+pkgver=0.17.1
 pkgrel=1
 pkgdesc="SVG badge and glyph generator written in Guile Scheme"
 arch=('any')
@@ -30,7 +30,7 @@ makedepends=(
 )
 
 source=("$pkgname-$pkgver.tar.gz::$url/archive/v$pkgver.tar.gz")
-sha256sums=('ff897344e483fe3a3a252aebd9e81353cdd7d9473b6a3a75c280f8f61ca16438')
+sha256sums=('7e1825684807d6c2c5d52084004da205c359f5f90c673ba5d2ab9ddf6275ff13')
 
 # Guile looks for byte-compiled modules under the site-ccache directory, which
 # differ between distributions (and between a Guile installed system-wide and
