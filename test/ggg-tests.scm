@@ -18,12 +18,16 @@
              (srfi srfi-1)
              (srfi srfi-13)
              (srfi srfi-64)
+             (web request)
+             (web response)
+             (web uri)
              (ggg colors)
              (ggg gallery)
              (ggg glyph)
              (ggg logo)
              (ggg main)
              (ggg prelude)
+             (ggg server)
              (ggg sxml)
              (ggg style)
              (ggg svg)
@@ -795,6 +799,136 @@ string."
            (not (file-exists? kept))))
 
     (delete-directory-tree dir)))
+
+;; ====== Web server ======
+
+(test-group "server"
+  (define* (badge-request target #:optional (method 'GET))
+    (let ((question (string-index target #\?)))
+      (build-request (build-uri 'http #:host "localhost"
+                                #:port 80
+                                #:path (if question
+                                           (substring target 0 question)
+                                           target)
+                                #:query (and question
+                                             (substring target (1+ question))))
+                     #:method method
+                     #:port 80)))
+
+  (define* (fetch path #:optional (method 'GET))
+    "The response and body for PATH, as a (response body) list."
+    (call-with-values
+        (lambda ()
+          (badge-handler (badge-request path method) ""
+                         #:resources resources))
+      list))
+
+  (test-equal "query strings are percent-decoded into name/value pairs"
+    '(("label" . "ci build") ("text" . "passing"))
+    (query-params "label=ci%20build&text=passing"))
+
+  (test-assert "a request describes a two-section badge"
+    (let ((glyph (badge-glyph (query-params "label=ci&text=passing"))))
+      (equal? '("ci" "passing")
+              (map (lambda (section) (lookup section 'text))
+                   (lookup glyph 'sections)))))
+
+  (test-equal "the logo decorates the first section"
+    "guix"
+    (lookup (car (lookup (badge-glyph (query-params "label=ci&text=passing&logo=guix"))
+                         'sections))
+            'logo))
+
+  (test-equal "a badge without a label has a single section"
+    1
+    (length (lookup (badge-glyph (query-params "text=passing")) 'sections)))
+
+  (test-equal "theme color names and hex colors both work"
+    '(catppuccin-mocha-green "#111111")
+    (let ((section (car (lookup (badge-glyph (query-params "text=x&bg=catppuccin-mocha-green&fg=%23111111"))
+                                'sections))))
+      (list (lookup section 'background) (lookup section 'color))))
+
+  (test-equal "the label and every text parameter become sections"
+    '("start" "one" "two" "three")
+    (map (lambda (section) (lookup section 'text))
+         (lookup (badge-glyph (query-params "label=start&text=one&text=two&text=three"))
+                 'sections)))
+
+  (test-equal "the Nth bg and fg belong to the Nth text section"
+    '((catppuccin-mocha-green catppuccin-mocha-base)
+      (catppuccin-mocha-red catppuccin-mocha-text))
+    (map (lambda (section)
+           (list (lookup section 'background) (lookup section 'color)))
+         (lookup (badge-glyph (query-params "text=one&text=two&bg=catppuccin-mocha-green&bg=catppuccin-mocha-red&fg=catppuccin-mocha-base"))
+                 'sections)))
+
+  (test-assert "a valid request answers with an SVG badge"
+    (let* ((result (fetch "/badge.svg?text=passing&bg=catppuccin-mocha-green"))
+           (response (car result))
+           (body (cadr result)))
+      (and (= 200 (response-code response))
+           (equal? '(image/svg+xml)
+                   (assoc-ref (response-headers response) 'content-type))
+           (string-contains body "<svg")
+           (string-contains body ">passing<"))))
+
+  (test-assert "the root path serves the badge builder"
+    (let* ((result (fetch "/"))
+           (response (car result))
+           (body (cadr result)))
+      (and (= 200 (response-code response))
+           (equal? '(text/html)
+                   (assoc-ref (response-headers response) 'content-type))
+           (string-contains body "id=\"preview\"")
+           (string-contains body "id=\"sections\"")
+           (string-contains body "catppuccin-mocha-green")
+           (string-contains body "value=\"neon\""))))
+
+  (test-assert "an unknown path is a 404"
+    (= 404 (response-code (car (fetch "/nope")))))
+
+  (test-assert "only GET is served"
+    (= 405 (response-code (car (fetch "/badge.svg?text=x" 'POST)))))
+
+  (test-assert "a missing text parameter is a 400 that names it"
+    (let* ((result (fetch "/badge.svg"))
+           (response (car result))
+           (body (cadr result)))
+      (and (= 400 (response-code response))
+           (string-contains body "text"))))
+
+  (test-assert "an unknown color is a 400 that names it"
+    (let* ((result (fetch "/badge.svg?text=x&bg=catppuccin-mocha-nope"))
+           (response (car result))
+           (body (cadr result)))
+      (and (= 400 (response-code response))
+           (string-contains body "catppuccin-mocha-nope"))))
+
+  (test-assert "an unknown logo is a 400"
+    (= 400 (response-code (car (fetch "/badge.svg?text=x&logo=no-such-logo")))))
+
+  (test-assert "text that looks like markup is escaped, not injected"
+    (let ((body (cadr (fetch "/badge.svg?text=%3Cscript%3E"))))
+      (and (string-contains body "&lt;script&gt;")
+           (not (string-contains body "<script>")))))
+
+  (test-assert "an overlong text is refused"
+    (= 400
+       (response-code
+        (car (fetch (format #f "/badge.svg?text=~a"
+                            (make-string 101 #\a)))))))
+
+  (test-assert "an empty text section is refused"
+    (= 400 (response-code (car (fetch "/badge.svg?text=one&text=")))))
+
+  (test-assert "more than ten sections is refused"
+    (= 400
+       (response-code
+        (car (fetch (format #f "/badge.svg?~a"
+                            (string-join (map (lambda (index) "text=x")
+                                              (iota 11))
+                                         "&"))))))))
 
 (test-end "ggg")
 

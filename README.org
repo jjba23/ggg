@@ -252,6 +252,61 @@ Older projects may still have the removed ~resources/svg-paths/~ directory, whic
 
 Before generating anything, ggg validates your whole glyph file and reports *every* problem it finds, with a hint on how to fix it: unknown color, logo or style names (with a suggestion when a name is close), missing ~text~, sections without colors, malformed ~(key value)~ pairs that should be ~(key . value)~, duplicate or unusable glyph ~id~s, and so on. Nothing is written to the destination directory when the configuration is invalid.
 
+* Serving badges over HTTP
+
+A badge can also be rendered on the fly, so a README or a dashboard can point
+at a URL instead of at a file that has to be regenerated:
+
+#+begin_src shell
+ggg --serve --port 8080 --resources ./resources
+#+end_src
+
+Every GET to =/badge.svg= (or =/badge=) then answers with an SVG badge described
+by its query string:
+
+#+begin_src shell
+curl 'http://127.0.0.1:8080/badge.svg?label=ci&text=passing&logo=guix&bg=catppuccin-mocha-green'
+#+end_src
+
+** URL parameters
+
+| Parameter              | Meaning                                                | Default                                             |
+|------------------------+--------------------------------------------------------+-----------------------------------------------------|
+| =text=                 | a section's text (required); repeat for more sections   |                                                     |
+| =label=                | optional left-hand text                                | none, a one-section badge                           |
+| =logo=                 | a logo name, as listed by =--list-logos=               | none                                                |
+| =style=                | a badge style, as listed by =--list-styles=            | =flat=                                              |
+| =bg=, =fg=             | background and text color of the Nth text section      | =catppuccin-mocha-surface2=, =catppuccin-mocha-text= |
+| =label-bg=, =label-fg= | background and text color of the label section         | =catppuccin-mocha-surface2=, =catppuccin-mocha-text= |
+
+Colors take the same named values and hex strings as a glyph file, so
+=catppuccin-mocha-green=, =dracula-purple= and =%23ff8800= all work. Repeat
+=text= for a badge with more parts: every occurrence adds a section, and the
+Nth =bg= and =fg= pair with the Nth =text=, while missing ones use the
+defaults. A URL describes at most 10 sections and 100 characters each, and the
+logo sits in the first section, exactly as it does in a glyph file.
+
+The server binds to =127.0.0.1= and answers only the machine it runs on; pass
+=--host 0.0.0.0= to answer other machines. It reads the logo library from the
+usual =resources/= directory (or =--resources PATH=), so every logo works in a
+URL. A request that does not describe a valid badge is answered with HTTP 400
+and the reasons -- an unknown color, logo or style, a missing =text= -- instead
+of a broken image, and successful badges carry a five-minute cache header so a
+README stays cheap to serve.
+
+** The badge builder
+
+The root path serves a small self-contained page with a live preview and a
+copyable URL, which is the quickest way to write a badge:
+
+#+begin_src shell
+ggg --serve --port 8080 --resources ./resources
+#+end_src
+
+Open [[http://127.0.0.1:8080/][http://127.0.0.1:8080/]] and fill in the label, the sections, the logo and
+the style. Every change updates the preview and the URL, so the link can be
+pasted into a README as is.
+
 * Help
 
 The project's automation is done using [[https://codeberg.org/jjba23/maak][Maak]] , check the ~maak.scm~ file.
@@ -268,6 +323,7 @@ Useful helpers while working on glyphs:
 - ~ggg --list-logos~ :: list the logos found in the resources directory.
 - ~ggg --list-styles~ :: list the badge styles (flat, square, shadow, plastic, frosted-glass, material, frutiger, neon) and what each one looks like.
 - ~ggg --gallery FILE [--glyphs PATH]~ :: write an HTML gallery of every badge, color palette and logo (see [[./test/gallery.html][test/gallery.html]]).
+- ~ggg --serve [--port PORT] [--host ADDRESS]~ :: serve badges described by URL parameters (see [[*Serving badges over HTTP][Serving badges over HTTP]]).
 - ~ggg -k~ / ~--keep~ :: render a second glyph file into a destination directory without clearing it first.
 - ~ggg -V~ / ~--version~ :: print the version, license and homepage.
 - ~maak showcase~ :: regenerate the popular-logo badges of [[./glyphs/showcase.scm][glyphs/showcase.scm]] in ~dist/~.

@@ -59,6 +59,19 @@ OPTIONS:
         badges in the --gallery page. Pass a directory such as ./glyphs
         to include every glyph file; the gallery groups them by name.
 
+        --serve
+        Start a web server that answers GET /badge.svg (and /badge)
+        with a badge described by the URL's query string, so a README
+        can link to a live badge instead of a generated file. See
+        SERVING BADGES below.
+
+        --port PORT
+        The port the --serve server listens on (default: 8080).
+
+        --host ADDRESS
+        The address the --serve server binds to (default: 127.0.0.1).
+        Use 0.0.0.0 to answer other machines.
+
     -V, --version
         Print the version, license and homepage of ggg, then exit.
 
@@ -93,6 +106,32 @@ CONFIGURING YOUR GLYPHS:
     of producing broken images.
 
 +----------------------------------------------------------------------------+
+SERVING BADGES:
+    ggg --serve --port 8080 --resources ./resources
+
+    answers GET /badge.svg with a badge described by the query string:
+
+      http://127.0.0.1:8080/badge.svg?label=ci&text=passing&logo=guix
+
+    Parameters:
+      text        a section's text (required); repeat for more sections
+      label       optional left-hand text
+      logo        a logo name, as listed by --list-logos
+      style       a badge style, as listed by --list-styles
+      bg, fg      background and text color of the Nth text section
+      label-bg,   background and text color of the label section
+      label-fg
+
+    Repeat text= (up to 10 times) for a badge with more sections; the
+    Nth bg= and fg= belong to the Nth text=. GET / serves a page with a
+    live preview and a copyable URL.
+
+    Colors take the same theme names and hex strings as glyph files.
+    Invalid parameters are answered with HTTP 400 and the reasons, and
+    the server binds to 127.0.0.1 unless --host says otherwise. Logos
+    come from the resources directory, as they do for a normal render.
+
++----------------------------------------------------------------------------+
 EXAMPLES:
     ggg -f ~/documents/my-glyphs.scm -d ~/documents/dist
 
@@ -106,5 +145,9 @@ EXAMPLES:
     ggg --gallery ./test/gallery.html --glyphs ./glyphs
 
     ggg -f ./glyphs/showcase.scm -d ./dist -k -c
+
+    ggg --serve --port 8080 --resources ./resources
+
+    curl 'http://127.0.0.1:8080/badge.svg?text=passing'
 
 +----------------------------------------------------------------------------+

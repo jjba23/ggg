@@ -18,6 +18,7 @@
   #:use-module (ggg colors)
   #:use-module (ggg gallery)
   #:use-module (ggg logo)
+  #:use-module (ggg server)
   #:use-module (ggg style)
   #:export (main render-glyphs))
 
@@ -286,6 +287,9 @@ USAGE: ggg [OPTIONS]
         --list-styles        show the badge styles and what they look like
         --gallery FILE       write an HTML gallery of badges, palettes and logos
         --glyphs PATH        glyph file or directory to show in --gallery
+        --serve              serve badges at /badge.svg?text=... (GET)
+        --port PORT          port for --serve (default: 8080)
+        --host ADDRESS       address to bind for --serve (default: 127.0.0.1)
     -V, --version            show the version and exit
     -h, --help               show this help
 
@@ -374,7 +378,13 @@ See resources/help.txt or the README for details.\n")
                         (gallery (value #t)
                                  (required? #f))
                         (glyphs (value #t)
-                                (required? #f))))
+                                (required? #f))
+                        (serve (value #f)
+                               (required? #f))
+                        (port (value #t)
+                              (required? #f))
+                        (host (value #t)
+                              (required? #f))))
          (options (catch 'getopt-long
                     (lambda () (getopt-long args option-spec))
                     (lambda (key . args)
@@ -395,6 +405,9 @@ See resources/help.txt or the README for details.\n")
          (list-styles? (option-ref options 'list-styles #f))
          (gallery-file (option-ref options 'gallery #f))
          (glyphs-path (option-ref options 'glyphs #f))
+         (with-serve? (option-ref options 'serve #f))
+         (port-option (option-ref options 'port #f))
+         (host-option (option-ref options 'host #f))
          (resources (find-resources resources-option)))
 
     (when with-help?
@@ -437,6 +450,16 @@ See resources/help.txt or the README for details.\n")
                              badges (if (= badges 1) "" "s")
                              logos (if (= logos 1) "" "s")
                              (canonicalize-path gallery-file))))))
+      (exit 0))
+
+    (when with-serve?
+      (let ((port-number (string->number (or port-option "8080"))))
+        (unless (and (integer? port-number) (<= 1 port-number 65535))
+          (fail (format #f "invalid --port '~a'" (or port-option ""))
+                #:hint "Pass a port number between 1 and 65535, e.g. --port 8080."))
+        (serve #:resources (require-resources resources-option)
+               #:host (or host-option "127.0.0.1")
+               #:port port-number))
       (exit 0))
 
     (when (and file with-stdin?)
