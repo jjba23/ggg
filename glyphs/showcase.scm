@@ -623,7 +623,10 @@ flat, square, shadow, plastic, frosted-glass, material, frutiger and neon."
 ;;
 ;; One badge per visual style that a glyph can ask for with (style . name).
 ;; Every style decorates the same geometry, so the label, the logo and the two
-;; sections stay put and only the finish changes.  The default is flat.
+;; sections stay put and only the finish changes.  The default is flat.  A
+;; second pass then takes the finishes for another walk -- four more Frutiger
+;; Aero badges, and one more badge in each other style -- so the group shows
+;; that a finish belongs to the badge rather than to one pairing of colors.
 
 (define glyph-style-flat
   (styled-badge 'style-flat "Flat" 'sparkle "minimal" 'blue 'flat))
@@ -649,6 +652,37 @@ flat, square, shadow, plastic, frosted-glass, material, frutiger and neon."
 
 (define glyph-style-neon
   (styled-badge 'style-neon "Neon" 'atom-orbit "glow" 'red 'neon))
+
+;; The second pass: Frutiger Aero in four more moods, then one more badge for
+;; every other finish.
+
+(define glyph-style-frutiger-sky
+  (styled-badge 'style-frutiger-sky "Skyglass" 'cloudflare "sky" 'sky 'frutiger))
+
+(define glyph-style-frutiger-aqua
+  (styled-badge 'style-frutiger-aqua "Aqua" 'snowflake "water" 'sapphire
+                'frutiger))
+
+(define glyph-style-frutiger-mint
+  (styled-badge 'style-frutiger-mint "Mint" 'leaf "fresh" 'green 'frutiger))
+
+(define glyph-style-frutiger-sunrise
+  (styled-badge 'style-frutiger-sunrise "Sunrise" 'sparkle "dawn" 'peach
+                'frutiger))
+
+(define glyph-style-plastic-ggg
+  (styled-badge 'style-plastic-ggg "GGG" 'ggg "plastic" 'teal 'plastic))
+
+(define glyph-style-frosted-cube
+  (styled-badge 'style-frosted-cube "Frost" 'cube "glass" 'lavender
+                'frosted-glass))
+
+(define glyph-style-material-slate
+  (styled-badge 'style-material-slate "Slate" 'database-stack "material" 'blue
+                'material))
+
+(define glyph-style-neon-synth
+  (styled-badge 'style-neon-synth "Synth" 'ggg-warm "neon" 'pink 'neon))
 
 (define ggg-glyphs
   ;; Languages
@@ -843,4 +877,12 @@ flat, square, shadow, plastic, frosted-glass, material, frutiger and neon."
         glyph-style-frosted-glass
         glyph-style-material
         glyph-style-frutiger
-        glyph-style-neon))
+        glyph-style-neon
+        glyph-style-frutiger-sky
+        glyph-style-frutiger-aqua
+        glyph-style-frutiger-mint
+        glyph-style-frutiger-sunrise
+        glyph-style-plastic-ggg
+        glyph-style-frosted-cube
+        glyph-style-material-slate
+        glyph-style-neon-synth))

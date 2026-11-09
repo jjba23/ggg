@@ -26,12 +26,14 @@ If you like my work, please support me by [[https://bmc.link/jjbigorra][buying m
 
 Say hello to the *Guile Glyph Generator (GGG)*, a small but mighty tool crafted in the elegant λ Lisp (Guile Scheme) programming language.
 
-Based on the provided Lisp configuration, GGG will produce something like the following badges (one, two, three or more parts) (as both SVG and PNG files). The last three rows are the same kind of badge in each visual style, from ~flat~ and ~square~ to ~frutiger~ and ~neon~ (see [[*Styles][Styles]]), plus one badge per theme family.
+Based on the provided Lisp configuration, GGG will produce something like the following badges (one, two, three or more parts) (as both SVG and PNG files). The style badges come in three rows: one badge per finish from ~flat~ and ~square~ to ~frutiger~ and ~neon~, then four more Frutiger Aero badges, then one more badge in each other finish (see [[*Styles][Styles]]); the last row is one badge per theme family.
 
 [[./dist/lang-python.svg]] [[./dist/lang-go.svg]] [[./dist/test-jest.svg]] [[./dist/ci-buildkite.svg]] [[./dist/db-postgresql.svg]] [[./dist/deploy-kubernetes.svg]]
 [[./dist/gnu-artanis-122.svg]] [[./dist/pipeline-succeeded.svg]] [[./dist/gnu-emacs-single.svg]] [[./dist/css-tailwind4.svg]] [[./dist/docs-markdown.svg]] [[./dist/fmt-prettier.svg]]
 [[./dist/style-flat.svg]] [[./dist/style-square.svg]] [[./dist/style-shadow.svg]] [[./dist/style-plastic.svg]]
 [[./dist/style-frosted-glass.svg]] [[./dist/style-material.svg]] [[./dist/style-frutiger.svg]] [[./dist/style-neon.svg]]
+[[./dist/style-frutiger-sky.svg]] [[./dist/style-frutiger-aqua.svg]] [[./dist/style-frutiger-mint.svg]] [[./dist/style-frutiger-sunrise.svg]]
+[[./dist/style-plastic-ggg.svg]] [[./dist/style-frosted-cube.svg]] [[./dist/style-material-slate.svg]] [[./dist/style-neon-synth.svg]]
 [[./dist/theme-catppuccin-latte.svg]] [[./dist/theme-dracula.svg]] [[./dist/theme-solarized-light.svg]] [[./dist/theme-modus-vivendi.svg]]
 
 ----------
@@ -155,7 +157,7 @@ A glyph can pick a visual finish with an optional ~style~ setting. Styles decora
 
 The setting is optional and defaults to ~flat~, so existing glyph files keep their look. Style names are forgiving: ~(style . "frosted glass")~, ~(style . frosted_glass)~ and ~(style . glass)~ all mean ~frosted-glass~. Run ~ggg --list-styles~ to print the table above, and see every finish side by side in the [[./test/gallery.html][gallery]].
 
-Every style keeps exactly the same canvas, width and height as ~flat~, so a row of badges that mix styles always lines up. Shadows, glosses and glows are painted inside the badge, never around it. The style badges at the top of this README are the ~Styles~ group of ~glyphs/showcase.scm~, one badge per finish.
+Every style keeps exactly the same canvas, width and height as ~flat~, so a row of badges that mix styles always lines up. Shadows, glosses and glows are painted inside the badge, never around it. The style badges at the top of this README are the ~Styles~ group of ~glyphs/showcase.scm~: one badge per finish, then a second pass with four more Frutiger Aero badges (Skyglass, Aqua, Mint and Sunrise) and one more badge in each other finish.
 
 ** Logos
 
@@ -211,7 +213,7 @@ ggg --gallery ./test/gallery.html --glyphs ./glyphs
 
 ** The badge showcase
 
-~glyphs/showcase.scm~ ships one ready-made badge per popular logo in the library, grouped by what the project is (languages, web frameworks and APIs, databases and queues, infrastructure, security and networking, cloud, git, observability, distributions, editors, shells, AI, testing, media, chat). It closes with a ~Theme variants~ group that paints one badge per palette and a ~Styles~ group that shows every badge style: 179 badges in all. Every badge reads ~<logo> Name | category~. Its label stays Catppuccin mocha so the library reads alike, while the second section takes the accent closest to the project's own hue (blue stays ~blue~, orange becomes ~peach~, black brands use the neutral ~overlay2~) and draws its text in ~base~.
+~glyphs/showcase.scm~ ships one ready-made badge per popular logo in the library, grouped by what the project is (languages, web frameworks and APIs, databases and queues, infrastructure, security and networking, cloud, git, observability, distributions, editors, shells, AI, testing, media, chat). It closes with a ~Theme variants~ group that paints one badge per palette and a ~Styles~ group that shows every badge style twice over -- four more Frutiger Aero badges and one more badge in each other finish: 187 badges in all. Every badge reads ~<logo> Name | category~. Its label stays Catppuccin mocha so the library reads alike, while the second section takes the accent closest to the project's own hue (blue stays ~blue~, orange becomes ~peach~, black brands use the neutral ~overlay2~) and draws its text in ~base~.
 
 #+begin_src scheme
 (define glyph-postgresql
@@ -268,6 +270,30 @@ by its query string:
 curl 'http://127.0.0.1:8080/badge.svg?label=ci&text=passing&logo=guix&bg=catppuccin-mocha-green'
 #+end_src
 
+** The server URL and its paths
+
+The server listens on =http://HOST:PORT/=, where =HOST= and =PORT= are the
+values of =--host= and =--port= (=127.0.0.1= and =8080= unless told otherwise),
+and answers four paths:
+
+| Path                    | Answer                                                       |
+|-------------------------+--------------------------------------------------------------|
+| =/=, =/index.html=      | the badge builder page, as =text/html=                       |
+| =/badge.svg=, =/badge=  | the badge its query string describes, as =image/svg+xml=     |
+| any other path          | =404=, and a line naming the two paths above                 |
+| any path, without =GET= | =405=, because a badge is an enquiry rather than an upload   |
+
+A successful badge carries =Cache-Control: public, max-age=300=, so the image
+in a README is fetched at most once every five minutes. The URL goes wherever
+an image belongs, for example a Markdown badge:
+
+#+begin_src markdown
+![build](http://127.0.0.1:8080/badge.svg?label=build&text=passing&logo=guix&style=frutiger)
+#+end_src
+
+Every value is percent-decoded, so =%23ff8800= is the hex color =#ff8800= and
+=to%20trunk= is the text =to trunk=.
+
 ** URL parameters
 
 | Parameter              | Meaning                                                | Default                                             |
@@ -286,13 +312,28 @@ Nth =bg= and =fg= pair with the Nth =text=, while missing ones use the
 defaults. A URL describes at most 10 sections and 100 characters each, and the
 logo sits in the first section, exactly as it does in a glyph file.
 
+These URLs are complete requests the server answers, one per feature:
+
+#+begin_src shell
+# a label, one text section and a logo
+curl 'http://127.0.0.1:8080/badge.svg?label=ci&text=passing&logo=guix'
+
+# three text sections; the Nth bg= and fg= belong to the Nth text=
+curl 'http://127.0.0.1:8080/badge?text=release&bg=catppuccin-mocha-green&text=v0.18.0&bg=catppuccin-mocha-mauve&text=stable'
+
+# a finish, and colors from another theme family
+curl 'http://127.0.0.1:8080/badge.svg?text=glass&style=frutiger&bg=dracula-purple&fg=dracula-background'
+
+# an invalid request: HTTP 400 and the reason, never a broken image
+curl -i 'http://127.0.0.1:8080/badge.svg?text=passing&bg=catppuccin-mocha-nope'
+#+end_src
+
 The server binds to =127.0.0.1= and answers only the machine it runs on; pass
 =--host 0.0.0.0= to answer other machines. It reads the logo library from the
 usual =resources/= directory (or =--resources PATH=), so every logo works in a
 URL. A request that does not describe a valid badge is answered with HTTP 400
-and the reasons -- an unknown color, logo or style, a missing =text= -- instead
-of a broken image, and successful badges carry a five-minute cache header so a
-README stays cheap to serve.
+and the reasons -- an unknown color, logo or style, a missing =text=, an empty
+or overlong section -- instead of a broken image.
 
 ** The badge builder
 
@@ -428,7 +469,7 @@ relative to its own prefix at runtime.
 cp -r packaging/debian debian
 dpkg-buildpackage -us -uc -b
 
-# openSUSE, from a tarball unpacked as ggg-0.17.1
+# openSUSE, from a tarball unpacked as ggg-0.18.0
 rpmbuild -ba packaging/opensuse/ggg.spec
 
 # Arch
@@ -595,10 +636,6 @@ In summary, we foster an inclusive, respectful, and cooperative environment for 
 ---------
 
 * GGG Project
-
-[[./resources/logos/ggg-warm.svg]]
-
-/The ggg mark: a warm lowercase g; the white ~ggg~ logo is the one to use in a badge./
 
 Contributing to free software is a uniquely beautiful act because it embodies principles of generosity, collaboration, and empowerment.
 

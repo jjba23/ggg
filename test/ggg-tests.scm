@@ -586,7 +586,12 @@ MK-GLYPH returns a list holding the svg element."
       '("jjba23.scm" "showcase.scm")
       (map car groups))
     (test-equal "every glyph of every file is in the gallery"
-      251
+      (apply + (map (lambda (group)
+                      (length ((@@ (ggg main) load-glyphs)
+                               #:file (string-append project-root "/glyphs/"
+                                                     (car group))
+                               #:with-stdin? #f)))
+                    groups))
       (apply + (map (lambda (group) (length (cdr group))) groups))))
 
   (let* ((path (format #f "~a/ggg-gallery-test-~a.html"
