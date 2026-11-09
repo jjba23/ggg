@@ -1,3 +1,12 @@
+ggg (0.18.0-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Showcase every badge finish twice, with four more Frutiger Aero badges
+    and one more badge in each other style.
+  * Document the badge server's URL, paths and query parameters in the README.
+
+ -- Josep Bigorra <jjbigorra@gmail.com>  Mon, 09 Nov 2026 15:45:00 +0100
+
 ggg (0.17.1-1) unstable; urgency=medium
 
   * New upstream release.
