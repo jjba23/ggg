@@ -21,11 +21,11 @@
 %global debug_package %{nil}
 
 Name:           ggg
-Version:        0.16.4
+Version:        0.17.0
 Release:        0
 Summary:        SVG badge and glyph generator written in Guile Scheme
 License:        MIT
-URL:            https://codeberg.org/jjba23/ggg
+URL:            https://github.com/jjba23/ggg
 Source0:        %{name}-%{version}.tar.gz
 BuildRequires:  pkgconfig(guile-3.0)
 Requires:       bash

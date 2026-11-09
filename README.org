@@ -428,7 +428,7 @@ relative to its own prefix at runtime.
 cp -r packaging/debian debian
 dpkg-buildpackage -us -uc -b
 
-# openSUSE, from a tarball unpacked as ggg-0.16.0
+# openSUSE, from a tarball unpacked as ggg-0.17.0
 rpmbuild -ba packaging/opensuse/ggg.spec
 
 # Arch

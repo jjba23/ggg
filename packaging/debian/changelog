@@ -1,3 +1,12 @@
+ggg (0.17.0-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Serve badges from URL parameters with ggg --serve, including a badge
+    builder at the server's root path.
+  * Allow any number of badge sections from a URL.
+
+ -- Josep Bigorra <jjbigorra@gmail.com>  Mon, 09 Nov 2026 12:50:43 +0100
+
 ggg (0.16.1-1) unstable; urgency=medium
 
   * New upstream release.
