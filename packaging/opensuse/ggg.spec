@@ -21,7 +21,7 @@
 %global debug_package %{nil}
 
 Name:           ggg
-Version:        0.21.0
+Version:        0.22.0
 Release:        0
 Summary:        SVG badge and glyph generator written in Guile Scheme
 License:        MIT
@@ -104,6 +104,10 @@ guile -L ./src ./test/ggg-tests.scm
 %{_datadir}/ggg/resources/logos
 
 %changelog
+* Mon Nov 09 2026 Josep Bigorra <jjbigorra@gmail.com> - 0.22.0-1
+- New upstream release: `maak production-server` starts the badge server the
+  way a deployment does, so a pulled checkout and a restarted service run the
+  pulled code.
 * Mon Nov 09 2026 Josep Bigorra <jjbigorra@gmail.com> - 0.21.0-1
 - New upstream release: the gallery gains the builder's light/dark theme
   toggle.
