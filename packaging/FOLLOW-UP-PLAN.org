@@ -88,10 +88,10 @@ next release has to repeat, and the order they are worth doing in.
    (~pkgver~), ~packaging/opensuse/ggg.spec~ (~Version:~), the top entry of
    ~packaging/debian/changelog~, and the nixpkgs ~package.nix~. Do the two
    tag-pinned ones *after* the push, since their checksums come from the archive
-   that only exists once the tag is on Codeberg. This is where a ~maak~ task
+   that only exists once the tag is on GitHub. This is where a ~maak~ task
    belongs (see section 6).
 3. Check the tagged tarball, not just the checkout: unpack
-   ~https://codeberg.org/jjba23/ggg/archive/vX.Y.Z.tar.gz~ somewhere else and run
+   ~https://github.com/jjba23/ggg/archive/vX.Y.Z.tar.gz~ somewhere else and run
    the four recipes against it. The recipes point at released artefacts, so a
    mistake here is invisible until a reviewer hits it.
 
@@ -142,7 +142,7 @@ packaging is only the beginning.
    tarball. ~packaging/debian~ is the canonical copy; a ~debian~ directory at the
    root of the repository is what a sponsor will expect to see in the end, so
    consider symlinking or copying it there at release time.
-2. Add ~debian/watch~ pointing at the Codeberg tags, so ~uscan~ can find future
+2. Add ~debian/watch~ pointing at the GitHub tags, so ~uscan~ can find future
    releases.
 3. File the ITP (~wnpp~), then put the package in a Salsa repository under your
    namespace and run ~lintian~ (including ~--pedantic~) until it is clean.

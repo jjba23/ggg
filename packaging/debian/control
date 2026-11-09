@@ -8,9 +8,9 @@ Build-Depends:
  guile-3.0-dev,
  pkg-config
 Standards-Version: 4.6.2
-Homepage: https://codeberg.org/jjba23/ggg
-Vcs-Git: https://codeberg.org/jjba23/ggg.git
-Vcs-Browser: https://codeberg.org/jjba23/ggg
+Homepage: https://github.com/jjba23/ggg
+Vcs-Git: https://github.com/jjba23/ggg.git
+Vcs-Browser: https://github.com/jjba23/ggg
 Rules-Requires-Root: no
 
 Package: ggg

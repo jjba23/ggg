@@ -3,7 +3,7 @@ GGG: Guile Glyph Generator
     Generate SVG images for useful glyphs, Org/Markdown badges and more,
     leveraging the power of Lisp (Guile Scheme).
 
-    See more at: https://codeberg.org/jjba23/ggg
+    See more at: https://github.com/jjba23/ggg
     Software licensed under the MIT license.
 
     With flexible support for badges with any number of parts.

@@ -139,7 +139,7 @@ stdenv.mkDerivation {
 
   meta = with lib; {
     description = "Guile Glyph Generator (GGG) - SVG badge generator written in Guile Scheme";
-    homepage = "https://codeberg.org/jjbigorra/ggg";
+    homepage = "https://github.com/jjba23/ggg";
     license = licenses.mit;
     platforms = platforms.linux ++ platforms.darwin;
     mainProgram = "ggg";

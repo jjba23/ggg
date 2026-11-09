@@ -84,7 +84,7 @@ other projects, distinguishing versions of things supported, etc.
 GGG is highly configurable, reads Scheme files where you define your tasks,
 and supports badges between one and three parts.  It leverages SVG generation
 from Lisp and S-expressions, building pixel perfect badges.")
-    (home-page "https://codeberg.org/jjba23/ggg")
+    (home-page "https://github.com/jjba23/ggg")
     (license license:expat)))
 
 ggg

@@ -160,6 +160,9 @@ creating a literal #f/ directory in the project root when TMPDIR is unset."
       (and (string-contains printed (ggg-version-string))
            (string-contains printed (string-append "License: " ggg-license))
            (string-contains printed (string-append "Homepage: " ggg-homepage)))))
+  (test-equal "the homepage is the GitHub repository"
+    "https://github.com/jjba23/ggg"
+    ggg-homepage)
   (test-assert "the version source is what `maak release' rewrites"
     (file-exists? (string-append project-root "/src/ggg/version.scm"))))
 

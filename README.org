@@ -414,7 +414,7 @@ the container image do not cover:
 
 - ~packaging/debian~ :: debhelper packaging, built with ~dpkg-buildpackage~.
 - ~packaging/opensuse~ :: a spec file for ~rpmbuild~, plus the OBS ~_service~
-  that fetches the sources from Codeberg.
+  that fetches the sources from GitHub.
 - ~packaging/arch~ :: a ~PKGBUILD~, built with ~makepkg~.
 
 The three install the same layout -- ~/usr/bin/ggg~, the Scheme modules under

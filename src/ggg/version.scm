@@ -24,7 +24,7 @@
   "0.17.0")
 
 (define ggg-homepage
-  "https://codeberg.org/jjba23/ggg")
+  "https://github.com/jjba23/ggg")
 
 (define ggg-license
   "MIT")
