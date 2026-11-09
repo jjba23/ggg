@@ -79,6 +79,7 @@ package() {
 
   install -d "$pkgdir/usr/share/ggg/resources/logos"
   install -m644 resources/help.txt "$pkgdir/usr/share/ggg/resources/help.txt"
+  install -m644 logo.svg "$pkgdir/usr/share/ggg/resources/logo.svg"
   cp -r resources/logos/. "$pkgdir/usr/share/ggg/resources/logos/"
 
   install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"

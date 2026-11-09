@@ -51,6 +51,7 @@ override_dh_auto_install:
 	# Resources: the help text and the logo library.
 	mkdir -p debian/ggg/usr/share/ggg/resources
 	install -m 0644 resources/help.txt debian/ggg/usr/share/ggg/resources/help.txt
+	install -m 0644 logo.svg debian/ggg/usr/share/ggg/resources/logo.svg
 	cp -r resources/logos debian/ggg/usr/share/ggg/resources/
 
 	# Example glyph files, so the package shows what a badge description

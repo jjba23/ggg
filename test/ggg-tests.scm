@@ -344,10 +344,10 @@ creating a literal #f/ directory in the project root when TMPDIR is unset."
     (test-assert "the badge id becomes the svg id"
       (string-contains xml "id=\"scheme-guile-test\""))
     ;; Badges follow the compact shields.io geometry -- 20px high, 11px text,
-    ;; 5px of padding per side and 3px rounded corners -- drawn 9.18% larger.
-    (test-assert "badges are 21.84px high with 3.28px corners"
+    ;; 5px of padding per side and 3.5px rounded corners -- drawn 9.18% larger.
+    (test-assert "badges are 21.84px high with 3.82px corners"
       (and (string-contains xml "height=\"21.84\"")
-           (string-contains xml "rx=\"3.28\"")))
+           (string-contains xml "rx=\"3.82\"")))
     (test-assert "badge text sits at y=15.29 for a 12.01px font"
       (and (string-contains xml "font-size=\"12.01\"")
            (string-contains xml "y=\"15.29\"")))
@@ -894,7 +894,54 @@ string."
            (string-contains body "id=\"preview\"")
            (string-contains body "id=\"sections\"")
            (string-contains body "catppuccin-mocha-green")
-           (string-contains body "value=\"neon\""))))
+           (string-contains body "data-style=\"neon\""))))
+
+  (test-assert "the builder offers every badge style as a card"
+    (let ((body (cadr (fetch "/"))))
+      (every (lambda (style)
+               (string-contains body (format #f "data-style=\"~a\"" style)))
+             style-names)))
+
+  (test-assert "the builder autocompletes every named color"
+    (let ((body (cadr (fetch "/"))))
+      (every (lambda (entry)
+               (string-contains body (format #f "\"~a\"" (car entry))))
+             named-colors)))
+
+  (test-assert "the builder footer names the license, source, docs and build"
+    (let ((body (cadr (fetch "/"))))
+      (and (string-contains body "MIT License")
+           (string-contains body "github.com/jjba23/ggg")
+           (string-contains body "api-docs/ggg")
+           (string-contains body "ggg/dist/gallery.html")
+           (string-contains body "id=\"build-sha\"")
+           (string-contains body "src=\"/logo.svg\"")
+           (string-contains body "Browse the gallery"))))
+
+  (test-assert "the logo endpoint serves a logo document"
+    (let* ((result (fetch "/logo.svg?name=guix"))
+           (response (car result))
+           (body (cadr result)))
+      (and (= 200 (response-code response))
+           (equal? '(image/svg+xml)
+                   (assoc-ref (response-headers response) 'content-type))
+           (string-contains body "<svg"))))
+
+  (test-assert "an unknown logo is a 404 from the logo endpoint"
+    (= 404 (response-code (car (fetch "/logo.svg?name=no-such-logo")))))
+
+  (test-assert "a logo name that is a path is refused"
+    (= 400 (response-code
+            (car (fetch "/logo.svg?name=..%2F..%2Fetc%2Fpasswd")))))
+
+  (test-assert "the project logo is served without a name"
+    (let* ((result (fetch "/logo.svg"))
+           (response (car result))
+           (body (cadr result)))
+      (and (= 200 (response-code response))
+           (equal? '(image/svg+xml)
+                   (assoc-ref (response-headers response) 'content-type))
+           (string-contains body "ggg-main"))))
 
   (test-assert "an unknown path is a 404"
     (= 404 (response-code (car (fetch "/nope")))))

@@ -3,6 +3,33 @@
 #+email: jjbigorra@gmail.com
 #+options: toc:nil
 
+* 0.19.0 (2026-11-09)
+
+** Added
+
+- The badge builder autocompletes the logo library and every theme color, moves
+  through the suggestions with the keyboard, shows one preview per finish,
+  offers starting points (CI build, license, coverage, docs, Frutiger Aero,
+  neon) and copies the URL, the Markdown or the HTML snippet.
+- =GET /logo.svg?name=NAME= serves one logo from the library, so the builder can
+  show a thumbnail beside each suggestion.
+- =GET /logo.svg= serves the project's new mark, which the builder wears in its
+  header and footer and links to the gallery from its header.
+- The builder page ends with a footer naming the version, the build revision,
+  the MIT License, the source code, the README, the API docs, the gallery and
+  the logo credits.
+
+** Changed
+
+- The default corner radius grows from 3px to 3.5px (drawn 3.82px), so badges
+  with the default corners sit slightly softer; ~square~ keeps its square
+  corners and the finishes that round further keep their own radius.
+
+** Documentation
+
+- ~README.org~ and ~resources/help.txt~ document the logo routes, the builder's
+  autocompletion, finish cards, starting points, gallery link and footer.
+
 * 0.18.0 (2026-11-09)
 
 ** Added

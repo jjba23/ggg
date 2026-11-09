@@ -79,6 +79,7 @@ install -D -m 0755 scripts/ggg %{buildroot}%{_bindir}/ggg
 
 install -d "%{buildroot}%{_datadir}/ggg/resources/logos"
 install -D -m 0644 resources/help.txt "%{buildroot}%{_datadir}/ggg/resources/help.txt"
+install -D -m 0644 logo.svg "%{buildroot}%{_datadir}/ggg/resources/logo.svg"
 cp resources/logos/*.svg "%{buildroot}%{_datadir}/ggg/resources/logos/"
 
 %check
@@ -99,6 +100,7 @@ guile -L ./src ./test/ggg-tests.scm
 %{_libdir}/guile/3.0/site-ccache/ggg
 %dir %{_datadir}/ggg
 %{_datadir}/ggg/resources/help.txt
+%{_datadir}/ggg/resources/logo.svg
 %{_datadir}/ggg/resources/logos
 
 %changelog

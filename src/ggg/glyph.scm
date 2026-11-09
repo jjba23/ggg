@@ -160,7 +160,7 @@
       (fail (format #f "glyph '~a' has no sections" badge-id)
             #:hint "Add at least one section with a text label and colors."))
     (let* ((height (glyph-number x 'height (scaled 20)))
-           (border-radius (glyph-number x 'border-radius (scaled 3)))
+           (border-radius (glyph-number x 'border-radius (scaled 3.5)))
            (resolved (map (lambda (section index)
                             (resolve-section section index badge-id
                                              #:resources resources))

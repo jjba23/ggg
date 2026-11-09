@@ -18,6 +18,8 @@ With flexible support for badges with any number of parts.
 
 *Browse every badge, logo and color palette in the gallery →* [[https://jointhefreeworld.org/ggg/dist/gallery.html][https://jointhefreeworld.org/ggg/dist/gallery.html]]
 
+*Use the interactive badge builder →* [[https://ggg.jointhefreeworld.org][https://ggg.jointhefreeworld.org]]
+
 If you like my work, please support me by [[https://bmc.link/jjbigorra][buying me a cup of coffee ☕]] so I can continue with a lot of motivation.
 
 ---------------
@@ -54,7 +56,7 @@ The SVG (Scalable Vector Graphics) can then be easily converted without quality 
 -  Helpful Errors :: Invalid glyph files are reported with actionable messages before anything is generated.
 -  Simple Definition :: Badge configurations are defined in an easy-to-understand data structure within the Scheme code.
 
-Badges follow the compact geometry of the badges GitHub shows: 20px tall, 11px text, a 14px logo, 5px of padding on each side of a text run and 3px rounded corners -- all drawn 9.18% larger (6%, then a further 3%), so a default badge is 21.84px tall with 12.01px text and a 15.29px logo, which reads a little better next to body text. ggg estimates text width by summing a per-character width for the font size (capitals, digits and wide letters take more room than narrow ones) and adding that padding, so a badge stays as tight as the ones you see in README files.
+Badges follow the compact geometry of the badges GitHub shows: 20px tall, 11px text, a 14px logo, 5px of padding on each side of a text run and 3.8px rounded corners -- all drawn 9.18% larger (6%, then a further 3%), so a default badge is 21.84px tall with 12.01px text and a 15.29px logo, which reads a little better next to body text. ggg estimates text width by summing a per-character width for the font size (capitals, digits and wide letters take more room than narrow ones) and adding that padding, so a badge stays as tight as the ones you see in README files.
 
 ggg tries to provide sensible defaults to every option, but allow customization. We construct the SVG structure using SXML (S-expressions representing XML). This makes it easy to define the SVG elements and their attributes programmatically.
 
@@ -280,7 +282,9 @@ and answers four paths:
 |-------------------------+--------------------------------------------------------------|
 | =/=, =/index.html=      | the badge builder page, as =text/html=                       |
 | =/badge.svg=, =/badge=  | the badge its query string describes, as =image/svg+xml=     |
-| any other path          | =404=, and a line naming the two paths above                 |
+| =/logo.svg=             | the ggg mark the builder wears, as =image/svg+xml=          |
+| =/logo.svg?name=NAME=   | one logo from the library, as =image/svg+xml=                |
+| any other path          | =404=, and a line naming the pages above                     |
 | any path, without =GET= | =405=, because a badge is an enquiry rather than an upload   |
 
 A successful badge carries =Cache-Control: public, max-age=300=, so the image
@@ -337,16 +341,30 @@ or overlong section -- instead of a broken image.
 
 ** The badge builder
 
-The root path serves a small self-contained page with a live preview and a
-copyable URL, which is the quickest way to write a badge:
+The root path serves a self-contained page with a live preview, autocompletion
+over the logo library and every theme color, a preview per finish and copyable
+URL, Markdown and HTML snippets, which is the quickest way to write a badge:
 
 #+begin_src shell
 ggg --serve --port 8080 --resources ./resources
 #+end_src
 
 Open [[http://127.0.0.1:8080/][http://127.0.0.1:8080/]] and fill in the label, the sections, the logo and
-the style. Every change updates the preview and the URL, so the link can be
-pasted into a README as is.
+the finish. The logo field and every color field complete as you type: the
+arrow keys move through the suggestions, Enter picks one, and the logo list
+shows a thumbnail of each mark served by =/logo.svg?name=NAME=. The finish
+cards render a badge in each style, the palette panel fills the color field you
+focused last, and the starting points (CI build, license, coverage, docs,
+Frutiger Aero, neon) load a whole badge to edit. Every change updates the
+preview and the URL, and the page copies the URL, the Markdown or the HTML
+snippet, or downloads the SVG, so the link can be pasted into a README as is.
+
+The page wears the new ggg mark, served at =/logo.svg=, links to the gallery
+from its header, and ends with a footer naming the version and the build
+revision, the MIT License, the source code, the README, the API documentation,
+the gallery and the logo credits. The revision is =GGG_COMMIT=
+when a build sets it, otherwise the checkout's =git rev-parse --short HEAD=,
+and a page from an installed copy says "development build".
 
 * Help
 

@@ -95,6 +95,9 @@ stdenv.mkDerivation {
     if [ -f "resources/help.txt" ]; then
       cp resources/help.txt "$out/share/ggg/resources/"
     fi
+    if [ -f "logo.svg" ]; then
+      cp logo.svg "$out/share/ggg/resources/logo.svg"
+    fi
     if [ -d "resources/logos" ]; then
       cp -r resources/logos/* "$out/share/ggg/resources/logos/" 2>/dev/null || true
     fi
