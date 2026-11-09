@@ -3,6 +3,14 @@
 #+email: jjbigorra@gmail.com
 #+options: toc:nil
 
+* 0.22.0 (2026-11-09)
+
+** Added
+
+- =maak production-server= starts the badge server the way a deployment
+  does (loopback, port 50055), so a checkout that is pulled and its service
+  restarted runs the pulled code without a separate package pin.
+
 * 0.21.0 (2026-11-09)
 
 ** Added

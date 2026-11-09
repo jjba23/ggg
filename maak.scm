@@ -28,6 +28,12 @@
 (define project-name
   'ggg)
 
+;; The port the deployment's nginx proxies to: ggg.jointhefreeworld.org
+;; reaches this server through the ggg-proxy upstream in the wolk-jjba
+;; repository's src/wolk-jjba/nginx.scm, so the two numbers move together.
+(define server-port
+  "50055")
+
 (define hot-reload-file-types
   '(scm))
 
@@ -337,6 +343,18 @@ so that the release commit carries the images it describes."
   "Generate only the badges of the popular-logo showcase into ./dist."
   (time-machine-program-shell (list "ggg" "--file" "./glyphs/showcase.scm"
                                     "--destination" "./dist" "--keep")))
+
+(define (production-server)
+  "Run the badge server the way the deployment starts it: on loopback, on
+the port nginx proxies.
+
+The wolk-jjba server starts this task from the checkout, so pulling there
+and restarting its Shepherd service runs the pulled code.  The logos come
+from the package this task builds out of the checkout, so they are the
+checkout's logos without naming a directory."
+  (time-machine-program-shell (list "ggg" "--serve"
+                                    "--host" "127.0.0.1"
+                                    "--port" server-port)))
 
 (define (run-stdin)
   ;; A pipe, without a shell: the file is fed to ggg in the project's Guix

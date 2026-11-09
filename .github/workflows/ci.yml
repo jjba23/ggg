@@ -18,6 +18,6 @@ jobs:
     uses: jjba23/byggsteg-github/.github/workflows/byggsteg.yml@trunk
     with:
       tasks: maak-test maak-deploy pull-and-restart
-      daemon-name: ggg-server
+      daemon-name: ggg-daemon
       timeout-minutes: 60
     secrets: inherit

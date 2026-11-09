@@ -270,6 +270,12 @@ at a URL instead of at a file that has to be regenerated:
 ggg --serve --port 8080 --resources ./resources
 #+end_src
 
+The deployment in the wolk-jjba repository starts the server from its
+checkout with ~maak production-server~ instead: ~ggg --serve --host
+127.0.0.1 --port 50055~, which is where its nginx proxies
+=ggg.jointhefreeworld.org= to.  Because it runs from the checkout, pulling
+and restarting the service runs the pulled code.
+
 Every GET to =/badge.svg= (or =/badge=) then answers with an SVG badge described
 by its query string:
 
