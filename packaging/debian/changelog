@@ -1,3 +1,13 @@
+ggg (0.20.0-1) unstable; urgency=medium
+
+  * New upstream release.
+  * The badge builder gains a light theme: a header toggle between the dark and
+    a Catppuccin Latte palette, following the system preference and remembered.
+  * The gallery wears the project mark and ends with the builder's footer:
+    version, build revision, source, README, API docs, credits and license.
+
+ -- Josep Bigorra <jjbigorra@gmail.com>  Mon, 09 Nov 2026 16:35:00 +0100
+
 ggg (0.19.0-1) unstable; urgency=medium
 
   * New upstream release.

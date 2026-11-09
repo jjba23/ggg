@@ -21,7 +21,7 @@
 %global debug_package %{nil}
 
 Name:           ggg
-Version:        0.19.0
+Version:        0.20.0
 Release:        0
 Summary:        SVG badge and glyph generator written in Guile Scheme
 License:        MIT
@@ -104,6 +104,9 @@ guile -L ./src ./test/ggg-tests.scm
 %{_datadir}/ggg/resources/logos
 
 %changelog
+* Mon Nov 09 2026 Josep Bigorra <jjbigorra@gmail.com> - 0.20.0-1
+- New upstream release: a light theme for the badge builder and the project
+  mark plus the builder-style footer on the gallery.
 * Mon Nov 09 2026 Josep Bigorra <jjbigorra@gmail.com> - 0.19.0-1
 - New upstream release: builder autocompletion and preview cards, a footer with
   version, build revision, license and docs, the project logo at /logo.svg and
