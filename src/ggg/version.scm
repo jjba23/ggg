@@ -21,7 +21,7 @@
 ;; release' copies it into guix.scm.  A release therefore starts by editing the
 ;; line below, and `maak release' does the rest.
 (define ggg-version
-  "0.16.4")
+  "0.17.0")
 
 (define ggg-homepage
   "https://codeberg.org/jjba23/ggg")

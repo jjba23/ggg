@@ -1,0 +1,24 @@
+#+title: ggg release notes
+#+author: Josep Bigorra
+#+email: jjbigorra@gmail.com
+#+options: toc:nil
+
+* 0.17.0 (2026-11-09)
+
+** Added
+
+- The badge server: =ggg --serve= answers =GET /badge.svg= with an SVG badge
+  described by URL parameters (=text=, =label=, =logo=, =style=, =bg=, =fg= and
+  their label counterparts). It binds to =127.0.0.1= by default, caches a
+  successful badge for five minutes, and answers an invalid request with HTTP
+  400 and every problem it found instead of a broken image.
+- Badges with any number of sections from a URL: repeat =text=, and the Nth
+  =bg= and =fg= pair with the Nth section. A URL describes up to 10 sections of
+  100 characters each.
+- A self-contained badge builder at the server's root path, with a live
+  preview, add and remove section buttons and a copyable URL.
+
+** Documentation
+
+- ~README.org~ and ~resources/help.txt~ document the server, its parameters, the
+  builder and the =--serve=, =--port= and =--host= flags.
