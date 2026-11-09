@@ -577,7 +577,14 @@ MK-GLYPH returns a list holding the svg element."
       (count-substring "class=\"swatch\"" (palette-section)))
     (test-assert "the gallery links to the badge server documentation"
       (and (string-contains html "badge server documentation")
-           (string-contains html "github.com/jjba23/ggg"))))
+           (string-contains html "github.com/jjba23/ggg")))
+    (test-assert "the gallery footer names the license, source and build"
+      (and (string-contains html "MIT License")
+           (string-contains html "api-docs/ggg")
+           (string-contains html "id=\"build-sha\"")
+           (string-contains html "class=\"site-footer\"")))
+    (test-assert "the gallery shows the project mark"
+      (string-contains html "ggg-main")))
 
   (let ((groups ((@@ (ggg main) load-glyph-groups)
                  (string-append project-root "/glyphs")
@@ -917,6 +924,12 @@ string."
            (string-contains body "id=\"build-sha\"")
            (string-contains body "src=\"/logo.svg\"")
            (string-contains body "Browse the gallery"))))
+
+  (test-assert "the builder offers a light theme"
+    (let ((body (cadr (fetch "/"))))
+      (and (string-contains body "id=\"theme-toggle\"")
+           (string-contains body "[data-theme=\"light\"]")
+           (string-contains body "localStorage"))))
 
   (test-assert "the logo endpoint serves a logo document"
     (let* ((result (fetch "/logo.svg?name=guix"))

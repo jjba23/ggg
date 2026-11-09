@@ -3,6 +3,17 @@
 #+email: jjbigorra@gmail.com
 #+options: toc:nil
 
+* 0.20.0 (2026-11-09)
+
+** Added
+
+- The badge builder has a light theme: the header toggles between the dark and
+  a light Catppuccin Latte palette, starts from the system preference and
+  remembers the choice.
+- The gallery wears the project mark in its header and ends with the same
+  footer as the builder: version, build revision, source, README, API docs, the
+  badge builder, logo credits and the MIT License.
+
 * 0.19.0 (2026-11-09)
 
 ** Added

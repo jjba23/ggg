@@ -13,21 +13,48 @@
   ;; a warm cache should not decide what a release is called.
   #:declarative? #f
   #:use-module (ice-9 format)
+  #:use-module (ice-9 popen)
+  #:use-module (ice-9 rdelim)
+  #:use-module (ice-9 regex)
   #:export (ggg-version ggg-homepage ggg-license ggg-version-string
-                        print-version))
+                        ggg-revision print-version))
 
 ;; The version is written by hand here and nowhere else: `ggg --version' prints
 ;; it, default.nix reads it while it evaluates the derivation, and `maak
 ;; release' copies it into guix.scm.  A release therefore starts by editing the
 ;; line below, and `maak release' does the rest.
 (define ggg-version
-  "0.19.0")
+  "0.20.0")
 
 (define ggg-homepage
   "https://github.com/jjba23/ggg")
 
 (define ggg-license
   "MIT")
+
+(define revision-pattern "^[0-9a-f]{7,40}$")
+
+(define (git-revision)
+  "The short revision of the checkout ggg runs in, or #f when there is no git,
+no checkout or no subprocess to ask."
+  (catch #t
+    (lambda ()
+      (let* ((port (open-pipe* OPEN_READ "git" "rev-parse" "--short" "HEAD"))
+             (revision (read-line port))
+             (status (close-pipe port)))
+        (and (zero? status)
+             (string? revision)
+             (string-match revision-pattern revision)
+             revision)))
+    (lambda arguments #f)))
+
+(define (ggg-revision)
+  "The revision a page names: GGG_COMMIT when a build set it, the checkout's
+revision, or 'unknown' when ggg runs from an installed copy."
+  (let ((recorded (getenv "GGG_COMMIT")))
+    (or (and recorded (string-match revision-pattern recorded) recorded)
+        (git-revision)
+        "unknown")))
 
 (define (ggg-version-string)
   "Return the one-line version banner printed by `ggg --version'."

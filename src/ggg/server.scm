@@ -210,30 +210,6 @@ glyph file."
   "NAMES as a JavaScript array of strings, for autocompletion."
   (format #f "[~a]" (string-join (map js-string names) ",")))
 
-(define revision-pattern "^[0-9a-f]{7,40}$")
-
-(define (git-revision)
-  "The short revision of the checkout the server runs in, or #f when there is
-no git, no checkout, or no subprocess to ask."
-  (catch #t
-    (lambda ()
-      (let* ((port (open-pipe* OPEN_READ "git" "rev-parse" "--short" "HEAD"))
-             (revision (read-line port))
-             (status (close-pipe port)))
-        (and (zero? status)
-             (string? revision)
-             (string-match revision-pattern revision)
-             revision)))
-    (lambda arguments #f)))
-
-(define (build-revision)
-  "The revision the page names: GGG_COMMIT when a build set it, the checkout's
-revision, or 'unknown' when ggg runs from an installed copy."
-  (let ((recorded (getenv "GGG_COMMIT")))
-    (or (and recorded (string-match revision-pattern recorded) recorded)
-        (git-revision)
-        "unknown")))
-
 (define builder-style "
   :root { color-scheme: dark;
     --crust:#11111b; --surface0:#313244; --surface1:#45475a;
@@ -361,9 +337,50 @@ revision, or 'unknown' when ggg runs from an installed copy."
     .layout { grid-template-columns: minmax(0, 1fr); }
     .preview-card { position: static; }
   }
+  .theme-toggle { margin-left: auto; align-self: flex-start; }
+  [data-theme=\"light\"] { color-scheme: light;
+    --crust:#eff1f5; --surface0:#ccd0da; --surface1:#bcc0cc;
+    --text:#4c4f69; --subtext0:#5c5f77; --overlay0:#8c8fa1;
+    --mauve:#8839ef; --sapphire:#1e66f5; --green:#40a02b; --red:#d20f39; }
+  [data-theme=\"light\"] body {
+    background:
+      radial-gradient(1100px 520px at 12% -12%, rgba(136,57,239,.14), transparent 62%),
+      radial-gradient(900px 480px at 104% 2%, rgba(4,165,229,.13), transparent 58%),
+      var(--crust); }
+  [data-theme=\"light\"] .aurora { opacity: .2; }
+  [data-theme=\"light\"] .card { background: rgba(255,255,255,.82);
+    border-color: rgba(108,111,133,.3); box-shadow: 0 24px 50px -42px rgba(76,79,105,.55); }
+  [data-theme=\"light\"] .chips span,
+  [data-theme=\"light\"] .chips a { background: rgba(204,208,218,.7); }
+  [data-theme=\"light\"] .style-card { background: rgba(204,208,218,.55); }
+  [data-theme=\"light\"] .combo-list { background: #ffffff; }
+  [data-theme=\"light\"] code { color: #8839ef; }
+  [data-theme=\"light\"] .preview-stage { background-color: #e6e9ef;
+    background-image:
+      linear-gradient(45deg, rgba(0,0,0,.05) 25%, transparent 25%, transparent 75%, rgba(0,0,0,.05) 75%),
+      linear-gradient(45deg, rgba(0,0,0,.05) 25%, transparent 25%, transparent 75%, rgba(0,0,0,.05) 75%); }
+  [data-theme=\"light\"] .hero img { filter: drop-shadow(0 14px 26px rgba(136,57,239,.28)); }
 ")
 
 (define builder-script "
+      const root = document.documentElement;
+      const themeToggle = document.getElementById('theme-toggle');
+      function readTheme() {
+        try { return localStorage.getItem('ggg-theme'); } catch (error) { return null; }
+      }
+      function applyTheme(light) {
+        root.dataset.theme = light ? 'light' : 'dark';
+        themeToggle.textContent = light ? 'Dark' : 'Light';
+        themeToggle.setAttribute('aria-pressed', String(light));
+      }
+      applyTheme(readTheme() === 'light' ||
+        (readTheme() === null && matchMedia('(prefers-color-scheme: light)').matches));
+      themeToggle.addEventListener('click', () => {
+        const light = root.dataset.theme !== 'light';
+        applyTheme(light);
+        try { localStorage.setItem('ggg-theme', light ? 'light' : 'dark'); } catch (error) {}
+      });
+
       const DEFAULT_BG = 'catppuccin-mocha-surface2';
       const DEFAULT_FG = 'catppuccin-mocha-text';
       const colorItems = COLORS.map(([value, hex]) => ({ value, hex }));
@@ -614,6 +631,7 @@ revision, or 'unknown' when ggg runs from an installed copy."
             <a href=\"https://jointhefreeworld.org/ggg/dist/gallery.html\">Browse the gallery &rarr;</a>
           </div>
         </div>
+        <button type=\"button\" class=\"theme-toggle\" id=\"theme-toggle\" aria-pressed=\"false\">Light</button>
       </header>")
 
 (define builder-presets "\
@@ -792,7 +810,7 @@ revision, or 'unknown' when ggg runs from an installed copy."
      "        </div>\n"
      builder-preview-card
      "      </div>\n"
-     (builder-footer (build-revision))
+     (builder-footer (ggg-revision))
      "    </main>\n    <script>"
      (format #f "const COLORS = ~a;~%      const LOGOS = ~a;~%"
              (js-color-pairs)
