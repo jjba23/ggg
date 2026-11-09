@@ -356,9 +356,9 @@
   "The qualified names of every color in THEME, in the palette's order."
   (let ((palette (assoc-ref theme-palettes theme)))
     (if palette
-        (map (lambda (color) (theme-qualified-name theme (car color)))
-             palette)
-        '())))
+      (map (lambda (color) (theme-qualified-name theme (car color)))
+           palette)
+      '())))
 
 (define (colors-by-theme)
   "Every palette grouped by theme, ready to display: a list of
@@ -380,47 +380,47 @@
 
 (define (hex-color-string? value)
   (and (string-prefix? "#" value)
-       (let ((digits (substring value 1)))
-         (and (member (string-length digits) '(3 4 6 8))
-              (string-every (lambda (c)
-                              (or (char-numeric? c)
-                                  (char<=? #\a c #\f)
-                                  (char<=? #\A c #\F)))
-                            digits)))))
+    (let ((digits (substring value 1)))
+      (and (member (string-length digits) '(3 4 6 8))
+        (string-every (lambda (c)
+                        (or (char-numeric? c)
+                          (char<=? #\a c #\f)
+                          (char<=? #\A c #\F)))
+                      digits)))))
 
 (define* (color-error value #:key context)
   "Return a human-readable problem with VALUE, or #f when it is a valid color.
 CONTEXT (for example \"glyph 'foo', section 1\") is prepended to the message."
   (define (with-context message)
     (if context
-        (format #f "~a: ~a" context message)
-        message))
+      (format #f "~a: ~a" context message)
+      message))
   (cond
-    ((symbol? value)
+    [(symbol? value)
      (if (assoc-ref named-colors value)
-         #f
-         (with-context
-          (let ((suggestion (suggest-similar value (map car named-colors))))
-            (format #f "unknown color name '~a'~a"
-                    value
-                    (if suggestion
-                        (format #f "; did you mean '~a'?" suggestion)
-                        ""))))))
-    ((string? value)
+       #f
+       (with-context
+        (let ((suggestion (suggest-similar value (map car named-colors))))
+          (format #f "unknown color name '~a'~a"
+                  value
+                  (if suggestion
+                    (format #f "; did you mean '~a'?" suggestion)
+                    "")))))]
+    [(string? value)
      (let ((trimmed (string-trim-both value)))
        (cond
-         ((string-null? trimmed)
-          (with-context "empty color value"))
-         ((and (string-prefix? "#" trimmed)
-               (not (hex-color-string? trimmed)))
+         [(string-null? trimmed)
+          (with-context "empty color value")]
+         [(and (string-prefix? "#" trimmed)
+            (not (hex-color-string? trimmed)))
           (with-context
            (format #f "invalid hex color ~s (expected #rgb, #rgba, #rrggbb or #rrggbbaa)"
-                   value)))
-         (else #f))))
-    (else
-     (with-context
-      (format #f "expected a color name (symbol) or a hex string, got ~s"
-              value)))))
+                   value))]
+         [else #f]))]
+    [else
+      (with-context
+       (format #f "expected a color name (symbol) or a hex string, got ~s"
+               value))]))
 
 (define* (resolve-color value #:key context)
   "Resolve VALUE (a theme color name or a hex/CSS color string) to a string.
@@ -431,6 +431,6 @@ Exits with a helpful error message when VALUE is not a valid color."
             #:hint (format #f "Use a theme color name such as catppuccin-mocha-red (run `ggg --list-colors` for all ~a of them), or a hex string."
                            (length named-colors)))))
   (cond
-    ((symbol? value) (assoc-ref named-colors value))
-    ((string? value) (string-trim-both value))
-    (else value)))
+    [(symbol? value) (assoc-ref named-colors value)]
+    [(string? value) (string-trim-both value)]
+    [else value]))
