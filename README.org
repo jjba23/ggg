@@ -212,7 +212,9 @@ ggg --gallery ./test/gallery.html --glyphs ./glyphs
 ~--glyphs~ takes a glyph file or a directory of ~.scm~ files; the gallery groups the badges by file. Click the snippet under any badge or logo to copy its definition to the clipboard, or click a color swatch to copy its qualified name (such as ~catppuccin-mocha-red~) to paste into a glyph. Without ~--glyphs~ you still get the color palettes and the logo library. [[./test/gallery.html][test/gallery.html]] is that page, and ~maak gallery~ regenerates it, so it always matches the glyphs in ~glyphs/~, the colors in ~src/ggg/colors.scm~ and the logos in ~resources/logos/~. The page
 wears the ggg mark in its header and ends with the builder's footer: the version
 and build revision, the MIT License, the source, the README, the API
-documentation, the badge builder and the logo credits.
+documentation, the badge builder and the logo credits. It carries the same
+light/dark toggle as the builder: it starts from the system preference and
+remembers the choice.
 
 ~maak deploy~ (the task the Woodpecker/Byggsteg job runs on every push) writes the same page to ~dist/gallery.html~. The deployed gallery is at [[https://jointhefreeworld.org/ggg/dist/gallery.html][jointhefreeworld.org/ggg/dist/gallery.html]].
 

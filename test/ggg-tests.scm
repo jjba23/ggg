@@ -584,7 +584,11 @@ MK-GLYPH returns a list holding the svg element."
            (string-contains html "id=\"build-sha\"")
            (string-contains html "class=\"site-footer\"")))
     (test-assert "the gallery shows the project mark"
-      (string-contains html "ggg-main")))
+      (string-contains html "ggg-main"))
+    (test-assert "the gallery offers the same light theme toggle"
+      (and (string-contains html "id=\"theme-toggle\"")
+           (string-contains html "[data-theme=\"light\"]")
+           (string-contains html "localStorage"))))
 
   (let ((groups ((@@ (ggg main) load-glyph-groups)
                  (string-append project-root "/glyphs")

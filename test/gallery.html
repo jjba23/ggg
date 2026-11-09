@@ -118,6 +118,28 @@
   .site-footer a:hover { text-decoration: underline; }
   .site-footer .colophon { flex-basis: 100%; margin: 0; }
   a { color: #74c7ec; }
+  .theme-toggle { margin-left: auto; }
+
+  [data-theme="light"] { color-scheme: light; }
+  [data-theme="light"] body { background: #eff1f5; color: #4c4f69; }
+  [data-theme="light"] p.lede,
+  [data-theme="light"] .count,
+  [data-theme="light"] .title { color: #6c6f85; }
+  [data-theme="light"] .meta,
+  [data-theme="light"] .site-footer { color: #8c8fa1; }
+  [data-theme="light"] input[type=search],
+  [data-theme="light"] button.swatch,
+  [data-theme="light"] figure.badge-tile,
+  [data-theme="light"] figure.tile { background: #e6e9ef; border-color: #ccd0da; }
+  [data-theme="light"] .preview { background: #acb0be; }
+  [data-theme="light"] button.swatch:hover { background: #ccd0da; border-color: #acb0be; }
+  [data-theme="light"] button.snippet:hover { background: #ccd0da; border-color: #bcc0cc;
+    color: #7287fd; }
+  [data-theme="light"] .toast { background: #ccd0da; color: #4c4f69; border-color: #bcc0cc;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, .18); }
+  [data-theme="light"] .site-footer { border-top-color: #ccd0da; }
+  [data-theme="light"] a,
+  [data-theme="light"] .site-footer a { color: #209fb5; }
   </style>
   </head>
   <body>
@@ -143,6 +165,7 @@
       <div class="toolbar">
         <input type="search" placeholder="Filter badges and logos…" aria-label="Filter badges and logos">
         <span class="count">259 badges · 236 colors · 286 logos</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-pressed="false">Light</button>
       </div>
     </header>
     <section class="badge-group">
@@ -5993,7 +6016,7 @@
  <g><circle cx="26" cy="24.5" r="5.4" fill="none" stroke="#fbfbfb" stroke-width="3"/><path d="M31.4 19.4v12c0 3.4-2.4 5-5.2 5" fill="none" stroke="#fbfbfb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M49 24l1.8 4.4 4.4 1.8-4.4 1.8L49 36.4l-1.8-4.4-4.4-1.8 4.4-1.8z" fill="#fbfbfb" opacity="0.9"/><path d="M20 38l1.3 3.1 3.1 1.3-3.1 1.3L20 47l-1.3-3.1-3.1-1.3 3.1-1.3z" fill="#fbfbfb" opacity="0.7"/></g>
 </svg>
 
-        <span><strong>ggg</strong> 0.20.0 &middot; <a id="build-sha" href="https://github.com/jjba23/ggg/commit/420633c">commit 420633c</a></span>
+        <span><strong>ggg</strong> 0.21.0 &middot; <a id="build-sha" href="https://github.com/jjba23/ggg/commit/228226c">commit 228226c</a></span>
       </div>
       <nav aria-label="Project links">
         <a href="https://github.com/jjba23/ggg">Source code</a>
@@ -6010,6 +6033,24 @@
     </footer>
     <div class="toast" role="status" aria-live="polite"></div>
     <script>
+  const root = document.documentElement;
+  const themeToggle = document.getElementById('theme-toggle');
+  function readTheme() {
+    try { return localStorage.getItem('ggg-theme'); } catch (error) { return null; }
+  }
+  function applyTheme(light) {
+    root.dataset.theme = light ? 'light' : 'dark';
+    themeToggle.textContent = light ? 'Dark' : 'Light';
+    themeToggle.setAttribute('aria-pressed', String(light));
+  }
+  applyTheme(readTheme() === 'light' ||
+    (readTheme() === null && matchMedia('(prefers-color-scheme: light)').matches));
+  themeToggle.addEventListener('click', () => {
+    const light = root.dataset.theme !== 'light';
+    applyTheme(light);
+    try { localStorage.setItem('ggg-theme', light ? 'light' : 'dark'); } catch (error) {}
+  });
+
   const input = document.querySelector('input[type=search]');
   const tiles = Array.from(document.querySelectorAll('figure.tile, figure.badge-tile'));
   const count = document.querySelector('.count');

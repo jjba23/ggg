@@ -328,7 +328,7 @@ quotes readable in a double-quoted attribute."
             (html-escape ggg-version)
             build)))
 
-(define (palette-css template)
+(define* (palette-css template #:optional (flavour "mocha"))
   "TEMPLATE with each @name@ replaced by that Catppuccin mocha color, so the
 gallery is painted with the same palette as the badges."
   (regexp-substitute/global
@@ -338,12 +338,13 @@ gallery is painted with the same palette as the badges."
    (lambda (match)
      (resolve-color
       (string->symbol
-       (format #f "catppuccin-mocha-~a" (match:substring match 1)))))
+       (format #f "catppuccin-~a-~a" flavour (match:substring match 1)))))
    'post))
 
 (define (gallery-style)
-  "The gallery stylesheet, colored from the Catppuccin mocha palette."
-  (palette-css "
+  "The gallery stylesheet: the Catppuccin mocha palette, plus its Latte override."
+  (string-append
+   (palette-css "
   :root { color-scheme: dark; }
   * { box-sizing: border-box; }
   body {
@@ -457,9 +458,50 @@ gallery is painted with the same palette as the badges."
   .site-footer a:hover { text-decoration: underline; }
   .site-footer .colophon { flex-basis: 100%; margin: 0; }
   a { color: @sapphire@; }
-"))
+  .theme-toggle { margin-left: auto; }
+")
+   (palette-css "
+  [data-theme=\"light\"] { color-scheme: light; }
+  [data-theme=\"light\"] body { background: @base@; color: @text@; }
+  [data-theme=\"light\"] p.lede,
+  [data-theme=\"light\"] .count,
+  [data-theme=\"light\"] .title { color: @subtext0@; }
+  [data-theme=\"light\"] .meta,
+  [data-theme=\"light\"] .site-footer { color: @overlay1@; }
+  [data-theme=\"light\"] input[type=search],
+  [data-theme=\"light\"] button.swatch,
+  [data-theme=\"light\"] figure.badge-tile,
+  [data-theme=\"light\"] figure.tile { background: @mantle@; border-color: @surface0@; }
+  [data-theme=\"light\"] .preview { background: @surface2@; }
+  [data-theme=\"light\"] button.swatch:hover { background: @surface0@; border-color: @surface2@; }
+  [data-theme=\"light\"] button.snippet:hover { background: @surface0@; border-color: @surface1@;
+    color: @lavender@; }
+  [data-theme=\"light\"] .toast { background: @surface0@; color: @text@; border-color: @surface1@;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, .18); }
+  [data-theme=\"light\"] .site-footer { border-top-color: @surface0@; }
+  [data-theme=\"light\"] a,
+  [data-theme=\"light\"] .site-footer a { color: @sapphire@; }
+" "latte")))
 
 (define gallery-script "
+  const root = document.documentElement;
+  const themeToggle = document.getElementById('theme-toggle');
+  function readTheme() {
+    try { return localStorage.getItem('ggg-theme'); } catch (error) { return null; }
+  }
+  function applyTheme(light) {
+    root.dataset.theme = light ? 'light' : 'dark';
+    themeToggle.textContent = light ? 'Dark' : 'Light';
+    themeToggle.setAttribute('aria-pressed', String(light));
+  }
+  applyTheme(readTheme() === 'light' ||
+    (readTheme() === null && matchMedia('(prefers-color-scheme: light)').matches));
+  themeToggle.addEventListener('click', () => {
+    const light = root.dataset.theme !== 'light';
+    applyTheme(light);
+    try { localStorage.setItem('ggg-theme', light ? 'light' : 'dark'); } catch (error) {}
+  });
+
   const input = document.querySelector('input[type=search]');
   const tiles = Array.from(document.querySelectorAll('figure.tile, figure.badge-tile'));
   const count = document.querySelector('.count');
@@ -604,6 +646,7 @@ of every theme, and every logo in RESOURCES with its name."
       <div class=\"toolbar\">
         <input type=\"search\" placeholder=\"Filter badges and logos…\" aria-label=\"Filter badges and logos\">
         <span class=\"count\">~a</span>
+        <button type=\"button\" class=\"theme-toggle\" id=\"theme-toggle\" aria-pressed=\"false\">Light</button>
       </div>
     </header>
 ~a

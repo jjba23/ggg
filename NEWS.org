@@ -3,6 +3,14 @@
 #+email: jjbigorra@gmail.com
 #+options: toc:nil
 
+* 0.21.0 (2026-11-09)
+
+** Added
+
+- The gallery carries the builder's light/dark toggle: it starts from the
+  system preference, remembers the choice, and repaints the page in the
+  Catppuccin Latte palette.
+
 * 0.20.0 (2026-11-09)
 
 ** Added
