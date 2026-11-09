@@ -45,6 +45,8 @@
                     (share (string-append #$output "/share")))
                 (install-file "resources/help.txt"
                               (string-append share "/ggg/resources"))
+                (install-file "logo.svg"
+                              (string-append share "/ggg/resources"))
                 (copy-recursively "resources/logos"
                                   (string-append share "/ggg/resources/logos"))
                 (install-file "scripts/ggg" bin)
