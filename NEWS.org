@@ -3,6 +3,15 @@
 #+email: jjbigorra@gmail.com
 #+options: toc:nil
 
+* 0.17.1 (2026-11-09)
+
+** Fixed
+
+- The homepage printed by =ggg --version=, and the homepages recorded by the
+  Guix, Nix and Debian packaging, point at the GitHub repository. Codeberg
+  archived the project, so those links led to a read-only copy.
+- ~resources/help.txt~ and the packaging notes name GitHub as the source.
+
 * 0.17.0 (2026-11-09)
 
 ** Added
