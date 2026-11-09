@@ -571,7 +571,10 @@ MK-GLYPH returns a list holding the svg element."
            (string-contains html "background: #f38ba8")))
     (test-equal "the palette section has one swatch per color"
       (length named-colors)
-      (count-substring "class=\"swatch\"" (palette-section))))
+      (count-substring "class=\"swatch\"" (palette-section)))
+    (test-assert "the gallery links to the badge server documentation"
+      (and (string-contains html "badge server documentation")
+           (string-contains html "github.com/jjba23/ggg"))))
 
   (let ((groups ((@@ (ggg main) load-glyph-groups)
                  (string-append project-root "/glyphs")
