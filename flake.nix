@@ -23,7 +23,7 @@
           inputsFrom = [ self.packages.${system}.default ];
           buildInputs = [
             pkgs.watchexec
-            pkgs.guile-ares-rs
+            pkgs.ares-rs
           ];
         };
       });

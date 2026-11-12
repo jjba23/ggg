@@ -3,6 +3,10 @@
 #+email: jjbigorra@gmail.com
 #+options: toc:nil
 
+* 0.22.3 (2026-11-12)
+
+- Builds against the channels this project builds against: the jointhefreeworld collection at v1.0.4, and Guix master `3b4e873`.
+
 * 0.22.0 (2026-11-09)
 
 ** Added
