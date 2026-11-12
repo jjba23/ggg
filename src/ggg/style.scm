@@ -538,9 +538,9 @@ changes, so a row of the two variants still lines up."
          (text-shadow (ctx-id ctx "text-shadow"))
          (width (ctx-value ctx 'width))
          (height (ctx-value ctx 'height))
-         ;; A capsule rounds a plate by a good part of its height, without
-         ;; taking the full half-height a pill asks for.
-         (radius (rounded (* height 0.45))))
+         ;; A rounded plate: clearly softer than the default corners, and no
+         ;; longer a capsule that reads as a pill at badge size.
+         (radius (rounded (* height 0.32))))
     `((radius . ,radius)
       (font-family . ,font)
       (font-scale . ,font-scale)

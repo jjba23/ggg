@@ -3,6 +3,16 @@
 #+email: jjbigorra@gmail.com
 #+options: toc:nil
 
+* 2.0.1 (2026-11-12)
+
+** Changed
+
+- =crystal= and =crystal-mono= round their plate a little less: the corner is
+  32% of the badge height rather than 45%, so the glass reads as a rounded plate
+  instead of a capsule. The finish, its colors and its canvas are unchanged, and
+  so is everything else a glyph file sees: the badges of =dist/= change shape,
+  not name.
+
 * 2.0.0 (2026-11-12)
 
 ** Breaking
