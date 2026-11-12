@@ -3,6 +3,21 @@
 #+email: jjbigorra@gmail.com
 #+options: toc:nil
 
+* 2.0.2 (2026-11-12)
+
+** Fixed
+
+- =ggg --list-styles= works from an installed copy again.  The launcher
+  ~scripts/ggg~ parses the flags with =getopt= before handing them to the
+  Scheme program, and its list never learned the flag, so an installed
+  =ggg= answered "unrecognized option" to a flag that =--help= and
+  ~resources/help.txt~ both document.  Calling the program directly was
+  unaffected.
+- The test suite now compares the two lists -- the launcher's =getopt= options
+  and the option-spec in =src/ggg/main.scm= -- so a flag that one of them
+  learns without the other is a failing check instead of a surprise on an
+  installed copy.
+
 * 2.0.1 (2026-11-12)
 
 ** Changed

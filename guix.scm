@@ -25,7 +25,7 @@
 (define-public ggg
   (package
     (name "ggg")
-    (version "2.0.1")
+    (version "2.0.2")
     (source
      (local-file %source-dir
                  #:recursive? #t

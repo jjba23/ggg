@@ -893,6 +893,52 @@ string."
 
     (delete-directory-tree dir)))
 
+;; ====== The command line ======
+;;
+;; `scripts/ggg' is the launcher an installed copy runs: it parses the flags
+;; with `getopt' before handing them to the Scheme program, so a flag the
+;; program accepts and the launcher does not is a flag an installed copy cannot
+;; use -- which is what happened to `--list-styles'.  Read both and compare.
+
+(define (file-text path)
+  "The whole of PATH as a string."
+  (call-with-input-file path get-string-all))
+
+(define (launcher-options)
+  "The long options the launcher's getopt accepts."
+  (let* ((text (file-text (string-append project-root "/scripts/ggg")))
+         (match (string-match "--long ([^ ]+) --" text)))
+    (map (lambda (option)
+           (string->symbol (string-trim-right option #\:)))
+         (string-split (match:substring match 1) #\,))))
+
+(define (program-options)
+  "The long options main.scm's option-spec declares."
+  (let* ((text (file-text (string-append project-root "/src/ggg/main.scm")))
+         (start (string-contains text "(option-spec"))
+         (end (string-contains text "(options (catch")))
+    (if (and start end (< start end))
+        (map (lambda (match)
+               (string->symbol (match:substring match 1)))
+             (list-matches "\\(([a-z][a-z-]+) \\("
+                           (substring text start end)))
+        '())))
+
+(test-group "command line"
+  (test-assert "the launcher and the program both declare options"
+    (and (>= (length (launcher-options)) 10)
+         (>= (length (program-options)) 10)))
+
+  (test-equal "the launcher passes every option the program accepts"
+    ;; --resources is the launcher's own: it passes the resources directory the
+    ;; installation carries, so it is not a flag a user types.
+    '(resources)
+    (lset-difference eq? (program-options) (launcher-options)))
+
+  (test-equal "the launcher offers no option the program would refuse"
+    '()
+    (lset-difference eq? (launcher-options) (program-options))))
+
 ;; ====== Web server ======
 
 (test-group "server"
