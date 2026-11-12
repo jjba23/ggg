@@ -3,6 +3,38 @@
 #+email: jjbigorra@gmail.com
 #+options: toc:nil
 
+* 2.0.0 (2026-11-12)
+
+** Breaking
+
+- The project badges of =glyphs/jjba23.scm= changed ids. A badge is now declared
+  once and rendered twice: the =crystal= badge takes the plain id, so
+  =lang-python=, =pipeline-succeeded= and the rest of the set are now frosted
+  glass, and the =shadow= finish the set shipped with before is kept beside it
+  under a =showcase-= id (=showcase-lang-python=, =showcase-pipeline-succeeded=).
+  A =dist/= file that a page links to keeps its name and changes its look; the
+  previous look moved to a new file name.
+
+** Added
+
+- The badge builder opens with two more starting points, =Crystal glass= and
+  =Crystal mono=, so the frosted glass can be tried without typing a query
+  string.
+
+** Changed
+
+- =glyphs/jjba23.scm= declares the set once, in Scheme, through =crystal-badge=
+  and =showcase-badge=: 152 badges from 72 declarations, plus the eight in the
+  Doom, Dracula, Solarized and Modus palettes.
+
+** Documentation
+
+- ~README.org~ documents the two badge sets and the new ids, lists every finish
+  the server's =style= parameter takes, and shows a crystal and a crystal-mono
+  request next to the other examples.
+- ~resources/help.txt~ lists the finishes the =style= parameter takes and the new
+  starting points of the builder.
+
 * 1.2.0 (2026-11-12)
 
 ** Added

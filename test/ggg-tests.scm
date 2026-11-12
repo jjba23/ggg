@@ -700,6 +700,35 @@ MK-GLYPH returns a list holding the svg element."
                "lang-python" "build-cmake" "test-jest"
                "db-postgresql" "ci-buildkite" "docs-markdown")))
 
+    (test-assert "every project badge is a crystal badge with a shadow twin to keep"
+      (let* ((ids (map glyph-id main-glyphs))
+             (twins (filter (lambda (id)
+                              (string-prefix? "showcase-" id))
+                            ids))
+             (bases (map (lambda (id)
+                           (substring id (string-length "showcase-")))
+                         twins))
+             (badge (lambda (id)
+                      (find (lambda (glyph)
+                              (equal? (glyph-id glyph) id))
+                            main-glyphs))))
+        (and (>= (length twins) 50)
+             ;; Every shadow twin is a badge of its own, in the old finish.
+             (every (lambda (id)
+                      (eq? 'shadow (glyph-style (badge id))))
+                    twins)
+             ;; ... and the plain id of that badge is the crystal one.
+             (every (lambda (id)
+                      (eq? 'crystal (glyph-style (badge id))))
+                    bases)
+             ;; The other way round too, so the two sets have no gap.
+             (every (lambda (id)
+                      (member (string-append "showcase-" id) ids))
+                    (filter (lambda (id)
+                              (and (eq? 'crystal (glyph-style (badge id)))
+                                   (not (string-prefix? "crystal-" id))))
+                            ids)))))
+
     (test-assert "showcase ids do not collide with the main glyph file"
       (null? (lset-intersection string=? (map glyph-id main-glyphs)
                                 showcase-ids)))
@@ -949,11 +978,32 @@ string."
            (string-contains body "catppuccin-mocha-green")
            (string-contains body "data-style=\"neon\""))))
 
+  (test-assert "a URL in crystal glass answers with the glass"
+    (let* ((result (fetch "/badge.svg?label=glass&text=crystal&style=crystal"))
+           (response (car result))
+           (body (cadr result)))
+      (and (= 200 (response-code response))
+           (string-contains body "url(#ggg-badge-frost)")
+           (string-contains body "url(#ggg-badge-warm)")
+           (string-contains body "-apple-system"))))
+
+  (test-assert "a URL in crystal glass can ask for the monospace labels"
+    (let ((body (cadr (fetch "/badge.svg?text=crystal&style=crystal-mono"))))
+      (and (string-contains body "ui-monospace")
+           (string-contains body "url(#ggg-badge-frost)"))))
+
   (test-assert "the builder offers every badge style as a card"
     (let ((body (cadr (fetch "/"))))
       (every (lambda (style)
                (string-contains body (format #f "data-style=\"~a\"" style)))
              style-names)))
+
+  (test-assert "the builder offers a crystal starting point"
+    (let ((body (cadr (fetch "/"))))
+      (and (string-contains body "data-preset=\"6\"")
+           (string-contains body "Crystal glass")
+           (string-contains body "style: 'crystal'")
+           (string-contains body "style: 'crystal-mono'"))))
 
   (test-assert "the builder autocompletes every named color"
     (let ((body (cadr (fetch "/"))))

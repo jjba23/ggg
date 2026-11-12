@@ -249,7 +249,9 @@ remembers the choice.
 
 So the second sections of the showcase mix all five theme families: ~mocha~, ~macchiato~, ~frappe~, ~latte~, ~doom-one~, ~doom-one-light~, ~dracula~, ~alucard~, ~solarized~ dark and light, and ~modus~ operandi and vivendi can be compared side by side. The ~badge~ helper qualifies each accent with its theme, so nothing depends on which palette happens to be the default, and ~styled-badge~ adds a ~style~ to it.
 
-~glyphs/jjba23.scm~ is the other half of the pair: 80 badges for the things a project ticks off one by one -- language and tool versions (~lang-python~, ~lang-go~, ~haskell-ghc910~, ~rust-185+~), build and package tooling (~build-cmake~, ~build-meson~, ~pkg-homebrew~), CI (~ci-buildkite~, ~ci-drone~, ~pipeline-succeeded~), tests, linting and formatting (~test-jest~, ~test-pytest~, ~lint-eslint~, ~fmt-prettier~), data and deployment (~db-postgresql~, ~db-redis~, ~deploy-kubernetes~, ~infra-terraform~), shells, editors, licenses, and the project badges of the tools ggg is built with (~byggsteg~, its ~byggsteg-github~ integration, ~maak~, ~github~). They pair a darker Catppuccin latte label with Catppuccin mocha's pastel accents: the logo side is a ~subtext1~ gray with near-white ~base~ text (5.5:1 contrast), and every accent is a soft mocha pastel with the dark ~mocha-base~ ink (7:1 or better). Hues follow the projects: Java, Scala and Redis stay red, Scheme and Guile are orange, Guix and Homebrew are yellow, licenses and most databases are blue, Go is sky, Rust is orange, Emacs is pink -- so the set reads warmer and friendlier without losing contrast. Every badge in the set also wears the subtle ~shadow~ style, except the ~Crystal glass~ group at the end: eight of the same badges again, four in ~crystal~ and four in ~crystal-mono~, with their accent sides drawn from Doom, Dracula, Solarized, Modus and the macchiato and frappe Catppuccin flavors (~crystal-gnu-guix~, ~crystal-mono-test-pytest~).
+~glyphs/jjba23.scm~ is the other half of the pair: 72 badges for the things a project ticks off one by one -- language and tool versions (~lang-python~, ~lang-go~, ~haskell-ghc910~, ~rust-185+~), build and package tooling (~build-cmake~, ~build-meson~, ~pkg-homebrew~), CI (~ci-buildkite~, ~ci-drone~, ~pipeline-succeeded~), tests, linting and formatting (~test-jest~, ~test-pytest~, ~lint-eslint~, ~fmt-prettier~), data and deployment (~db-postgresql~, ~db-redis~, ~deploy-kubernetes~, ~infra-terraform~), shells, editors, licenses, and the project badges of the tools ggg is built with (~byggsteg~, its ~byggsteg-github~ integration, ~maak~, ~github~). They pair a latte label with Catppuccin mocha's pastel accents: the logo side is a ~subtext1~ gray with near-white ~base~ text (5.5:1 contrast), and every accent is a soft mocha pastel with the dark ~mocha-base~ ink (7:1 or better). Hues follow the projects: Java, Scala and Redis stay red, Scheme and Guile are orange, Guix and Homebrew are yellow, licenses and most databases are blue, Go is sky, Rust is orange, Emacs is pink -- so the set reads warmer and friendlier without losing contrast.
+
+Every one of those badges is declared once and rendered twice, 152 in all: the ~crystal~ badge takes the plain id, which is the one a project links to, and the finish the set shipped with before the glass -- the subtle ~shadow~ -- is kept beside it under a ~showcase-~ id (~showcase-lang-python~, ~showcase-pipeline-succeeded~), so the old look stays browsable in the gallery. A ~Crystal glass, in the other palettes~ group adds eight more: four ~crystal~ and four ~crystal-mono~ badges whose accent sides come from Doom, Dracula, Dracula Alucard, Solarized, Modus and the macchiato and frappe flavors (~crystal-gnu-guix~, ~crystal-mono-test-pytest~). Both sets come from the same declarations -- ~crystal-badge~ and ~showcase-badge~ in the glyph file's own Scheme -- so a badge's text, logo and colors are written once.
 
 Both files are part of ~dist/~, and the gallery shows them next to each other. Because ggg clears its destination directory, the second file has to be rendered with ~-k~ / ~--keep~:
 
@@ -326,7 +328,7 @@ Every value is percent-decoded, so =%23ff8800= is the hex color =#ff8800= and
 | =text=                 | a section's text (required); repeat for more sections   |                                                     |
 | =label=                | optional left-hand text                                | none, a one-section badge                           |
 | =logo=                 | a logo name, as listed by =--list-logos=               | none                                                |
-| =style=                | a badge style, as listed by =--list-styles=            | =flat=                                              |
+| =style=                | a badge style, as listed by =--list-styles=: =flat=, =square=, =shadow=, =plastic=, =frosted-glass=, =material=, =frutiger=, =neon=, =crystal=, =crystal-mono= | =flat=                    |
 | =bg=, =fg=             | background and text color of the Nth text section      | =catppuccin-mocha-surface2=, =catppuccin-mocha-text= |
 | =label-bg=, =label-fg= | background and text color of the label section         | =catppuccin-mocha-surface2=, =catppuccin-mocha-text= |
 
@@ -348,6 +350,10 @@ curl 'http://127.0.0.1:8080/badge?text=release&bg=catppuccin-mocha-green&text=v0
 
 # a finish, and colors from another theme family
 curl 'http://127.0.0.1:8080/badge.svg?text=glass&style=frutiger&bg=dracula-purple&fg=dracula-background'
+
+# the crystal glass, and the same glass with monospace labels
+curl 'http://127.0.0.1:8080/badge.svg?label=glass&text=crystal&style=crystal&bg=catppuccin-mocha-peach&fg=catppuccin-mocha-base'
+curl 'http://127.0.0.1:8080/badge.svg?label=code&text=crystal&style=crystal-mono&bg=catppuccin-mocha-mauve&fg=catppuccin-mocha-base'
 
 # an invalid request: HTTP 400 and the reason, never a broken image
 curl -i 'http://127.0.0.1:8080/badge.svg?text=passing&bg=catppuccin-mocha-nope'
@@ -376,9 +382,10 @@ arrow keys move through the suggestions, Enter picks one, and the logo list
 shows a thumbnail of each mark served by =/logo.svg?name=NAME=. The finish
 cards render a badge in each style, the palette panel fills the color field you
 focused last, and the starting points (CI build, license, coverage, docs,
-Frutiger Aero, neon) load a whole badge to edit. Every change updates the
-preview and the URL, and the page copies the URL, the Markdown or the HTML
-snippet, or downloads the SVG, so the link can be pasted into a README as is.
+Frutiger Aero, neon, crystal glass, crystal mono) load a whole badge to edit.
+Every change updates the preview and the URL, and the page copies the URL, the
+Markdown or the HTML snippet, or downloads the SVG, so the link can be pasted
+into a README as is.
 
 The header toggles between the dark theme and a light Catppuccin Latte theme,
 starting from the system preference and remembering the choice.

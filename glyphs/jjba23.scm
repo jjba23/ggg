@@ -20,10 +20,12 @@
 ;; docs, a peach for planning, a yellow for testing, while badges that stand for
 ;; a brand keep that brand's hue.
 ;;
-;; Every glyph also asks for `(style . shadow)`, the subtle inner shadow that
-;; gives the set a little depth without changing a badge's size, so a row of
-;; them always stays aligned. The `Crystal glass' group at the end is the
-;; exception: those badges wear `crystal' and `crystal-mono' instead.
+;; Every badge is declared once, at the end of this file, and rendered twice:
+;; in crystal glass under its plain id -- the set a project links to -- and in
+;; the subtle `shadow' finish under a `showcase-' id, which keeps the look the
+;; set shipped with before the glass. The `Crystal glass, in the other palettes'
+;; group adds eight badges in the Doom, Dracula, Solarized and Modus palettes,
+;; four of them in the monospace variant.
 ;;
 ;; `ggg --list-colors` prints every theme and color; see the README for the
 ;; other palettes.
@@ -677,20 +679,17 @@
     (style . shadow)
     (id . docs-markdown)))
 
-;; ====== Crystal glass ======
+;; ====== Crystal glass, in the other palettes ======
 ;;
-;; The same project badges again, this time behind the frosted glass that
-;; (style . crystal) draws: a translucent plate lit from behind, rounded into a
-;; capsule, with a bright rim. The first four are set in the system sans font
-;; and the last four in a monospace one, so the two type variants sit next to
-;; each other.
+;; The frosted glass that (style . crystal) draws again, this time with accent
+;; sides from the palettes outside Catppuccin -- Doom, Dracula, Dracula Alucard,
+;; Solarized, Modus Vivendi and Modus Operandi -- plus the macchiato and frappe
+;; flavors, and the last four set in a monospace font (style . crystal-mono), so
+;; the two type variants can be compared.
 ;;
 ;; The label side stays the latte `subtext1' gray with `base' text (5.5:1) it
-;; wears everywhere else; the accent side comes from the palettes outside
-;; Catppuccin, one per badge -- Doom, Dracula, Dracula Alucard, Solarized,
-;; Modus Vivendi and Modus Operandi -- plus the macchiato and frappe flavors.
-;; Each accent keeps its theme's own ink, so every second section stays at
-;; 4.5:1 or better while the glass warms it.
+;; wears everywhere else, and each accent keeps its theme's own ink, so every
+;; second section stays at 4.5:1 or better while the glass warms it.
 
 (define glyph-crystal-gnu-guix
   `((sections ((background . catppuccin-latte-subtext1) (text . "GNU")
@@ -764,7 +763,27 @@
     (style . crystal-mono)
     (id . crystal-mono-license-mit)))
 
-(define ggg-glyphs
+;; ====== The two sets ======
+;;
+;; Every badge above is declared once and rendered twice.  The crystal copy --
+;; the frosted glass in the system sans font, with the colors the badge asks
+;; for -- takes the plain id, so `lang-python' is the badge a project links to.
+;; The finish the set shipped with before the glass, the subtle shadow, is kept
+;; beside it under a `showcase-' id, so the old look is still browsable in the
+;; gallery and a row of both sets shows what changed.
+
+(define (crystal-badge glyph)
+  "GLYPH behind the frosted glass, in the system sans font."
+  (cons (cons 'style 'crystal)
+        (filter (lambda (entry) (not (eq? (car entry) 'style))) glyph)))
+
+(define (showcase-badge glyph)
+  "GLYPH under a `showcase-' id, in the shadow finish it shipped with."
+  (cons (cons 'id (string->symbol
+                   (string-append "showcase-" (symbol->string (assq-ref glyph 'id)))))
+        (filter (lambda (entry) (not (eq? (car entry) 'id))) glyph)))
+
+(define the-badges
   (list glyph-pipeline-succeeded
         glyph-gnu-guix
         glyph-scheme-guile
@@ -839,13 +858,21 @@
         glyph-infra-terraform
         glyph-web-nginx
         glyph-shell-zsh
-        glyph-docs-markdown
-        ;; Crystal glass, in the system font and in a monospace one
-        glyph-crystal-gnu-guix
-        glyph-crystal-scheme-guile
-        glyph-crystal-lang-python
-        glyph-crystal-db-postgresql
-        glyph-crystal-mono-maak
-        glyph-crystal-mono-lang-go
-        glyph-crystal-mono-test-pytest
-        glyph-crystal-mono-license-mit))
+        glyph-docs-markdown))
+
+(define ggg-glyphs
+  (append
+   ;; The set a project links to, in crystal glass.
+   (map crystal-badge the-badges)
+   ;; The same badges as the showcase keeps them, in the shadow finish.
+   (map showcase-badge the-badges)
+   ;; The glass in the other palettes, and in a monospace font.
+   (list glyph-crystal-gnu-guix
+         glyph-crystal-scheme-guile
+         glyph-crystal-lang-python
+         glyph-crystal-db-postgresql
+         glyph-crystal-mono-maak
+         glyph-crystal-mono-lang-go
+         glyph-crystal-mono-test-pytest
+         glyph-crystal-mono-license-mit)))
+

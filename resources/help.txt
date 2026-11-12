@@ -119,7 +119,9 @@ SERVING BADGES:
       text        a section's text (required); repeat for more sections
       label       optional left-hand text
       logo        a logo name, as listed by --list-logos
-      style       a badge style, as listed by --list-styles
+      style       a badge style, as listed by --list-styles; crystal and
+                  crystal-mono are the frosted glass, in the system sans
+                  font and in a monospace one
       bg, fg      background and text color of the Nth text section
       label-bg,   background and text color of the label section
       label-fg
@@ -127,9 +129,10 @@ SERVING BADGES:
     Repeat text= (up to 10 times) for a badge with more sections; the
     Nth bg= and fg= belong to the Nth text=. GET / serves the badge
     builder: a live preview, autocompletion over the logos and theme
-    colors, a preview per finish, and copyable URL, Markdown and HTML
-    snippets. GET /logo.svg serves the ggg mark, and
-    GET /logo.svg?name=guix serves one logo from the library.
+    colors, a preview per finish, a starting point per finish, and
+    copyable URL, Markdown and HTML snippets. GET /logo.svg serves the
+    ggg mark, and GET /logo.svg?name=guix serves one logo from the
+    library.
 
     Colors take the same theme names and hex strings as glyph files.
     Invalid parameters are answered with HTTP 400 and the reasons, and
@@ -154,5 +157,7 @@ EXAMPLES:
     ggg --serve --port 8080 --resources ./resources
 
     curl 'http://127.0.0.1:8080/badge.svg?text=passing'
+
+    curl 'http://127.0.0.1:8080/badge.svg?label=glass&text=crystal&style=crystal-mono'
 
 +----------------------------------------------------------------------------+

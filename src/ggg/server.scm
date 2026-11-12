@@ -397,7 +397,13 @@ glyph file."
         { name: 'Frutiger Aero', label: 'aero', text: 'frutiger', bg: 'catppuccin-mocha-sky',
           fg: 'catppuccin-mocha-base', logo: 'leaf', style: 'frutiger' },
         { name: 'Neon', label: 'glow', text: 'neon', bg: 'catppuccin-mocha-mauve',
-          fg: 'catppuccin-mocha-base', logo: 'atom-orbit', style: 'neon' }
+          fg: 'catppuccin-mocha-base', logo: 'atom-orbit', style: 'neon' },
+        { name: 'Crystal glass', label: 'glass', text: 'crystal',
+          bg: 'catppuccin-mocha-peach', fg: 'catppuccin-mocha-base',
+          logo: 'sparkle', style: 'crystal' },
+        { name: 'Crystal mono', label: 'code', text: 'crystal',
+          bg: 'catppuccin-mocha-mauve', fg: 'catppuccin-mocha-base',
+          logo: 'terminal-prompt', style: 'crystal-mono' }
       ];
 
       const preview = document.getElementById('preview');
@@ -642,6 +648,8 @@ glyph file."
         <button type=\"button\" class=\"preset\" data-preset=\"3\">Docs</button>
         <button type=\"button\" class=\"preset\" data-preset=\"4\">Frutiger Aero</button>
         <button type=\"button\" class=\"preset\" data-preset=\"5\">Neon</button>
+        <button type=\"button\" class=\"preset\" data-preset=\"6\">Crystal glass</button>
+        <button type=\"button\" class=\"preset\" data-preset=\"7\">Crystal mono</button>
       </div>")
 
 (define builder-sections-card "\
