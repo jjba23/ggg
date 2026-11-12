@@ -127,7 +127,7 @@ two crystal finishes."
   (badge 'java "Java" 'java "language" 'red))
 
 (define glyph-kotlin
-  (badge 'kotlin "Kotlin" 'kotlin "language" 'mauve))
+  (styled-badge 'kotlin "Kotlin" 'kotlin "language" 'mauve 'crystal))
 
 (define glyph-scala
   (badge 'scala "Scala" 'scala "language" 'red))
