@@ -28,12 +28,13 @@ If you like my work, please support me by [[https://bmc.link/jjbigorra][buying m
 
 Say hello to the *Guile Glyph Generator (GGG)*, a small but mighty tool crafted in the elegant λ Lisp (Guile Scheme) programming language.
 
-Based on the provided Lisp configuration, GGG will produce something like the following badges (one, two, three or more parts) (as both SVG and PNG files). The style badges come in three rows: one badge per finish from ~flat~ and ~square~ to ~frutiger~ and ~neon~, then four more Frutiger Aero badges, then one more badge in each other finish (see [[*Styles][Styles]]); the last row is one badge per theme family.
+Based on the provided Lisp configuration, GGG will produce something like the following badges (one, two, three or more parts) (as both SVG and PNG files). The style badges come in three rows: one badge per finish from ~flat~ and ~square~ to ~crystal~ and ~crystal-mono~, then four more Frutiger Aero badges, then one more badge in each other finish (see [[*Styles][Styles]]); the last row is one badge per theme family.
 
 [[./dist/lang-python.svg]] [[./dist/lang-go.svg]] [[./dist/test-jest.svg]] [[./dist/ci-buildkite.svg]] [[./dist/db-postgresql.svg]] [[./dist/deploy-kubernetes.svg]]
 [[./dist/gnu-artanis-122.svg]] [[./dist/pipeline-succeeded.svg]] [[./dist/gnu-emacs-single.svg]] [[./dist/css-tailwind4.svg]] [[./dist/docs-markdown.svg]] [[./dist/fmt-prettier.svg]]
 [[./dist/style-flat.svg]] [[./dist/style-square.svg]] [[./dist/style-shadow.svg]] [[./dist/style-plastic.svg]]
 [[./dist/style-frosted-glass.svg]] [[./dist/style-material.svg]] [[./dist/style-frutiger.svg]] [[./dist/style-neon.svg]]
+[[./dist/style-crystal.svg]] [[./dist/style-crystal-mono.svg]]
 [[./dist/style-frutiger-sky.svg]] [[./dist/style-frutiger-aqua.svg]] [[./dist/style-frutiger-mint.svg]] [[./dist/style-frutiger-sunrise.svg]]
 [[./dist/style-plastic-ggg.svg]] [[./dist/style-frosted-cube.svg]] [[./dist/style-material-slate.svg]] [[./dist/style-neon-synth.svg]]
 [[./dist/theme-catppuccin-latte.svg]] [[./dist/theme-dracula.svg]] [[./dist/theme-solarized-light.svg]] [[./dist/theme-modus-vivendi.svg]]
@@ -49,7 +50,7 @@ The SVG (Scalable Vector Graphics) can then be easily converted without quality 
 -  Vector Graphics (SVG) :: Generates crisp and scalable SVG images, perfect for any screen resolution.
 -  Raster Images (PNG) :: Also produces PNG versions for broader compatibility.
 -  Highly Customizable :: Customize the text, background colors, text colors, logos, etc.
--  Per-Glyph Styles :: Pick a finish per badge: flat, square, shadow, plastic, frosted glass, material, Frutiger Aero or neon. Styles change the look, never the layout.
+-  Per-Glyph Styles :: Pick a finish per badge: flat, square, shadow, plastic, frosted glass, material, Frutiger Aero, neon, crystal or crystal with a monospace label. Styles change the look, never the layout.
 -  Theme Colors :: Every color of Catppuccin (mocha, macchiato, frappé, latte), Doom (~doom-one~, ~doom-one-light~), Dracula (~dracula~, ~dracula-alucard~), Solarized (dark, light) and Modus (~modus-operandi~, ~modus-vivendi~) is available as a named color such as ~catppuccin-mocha-red~, instead of raw hex codes.
 -  Full SVG Logos :: Save logos as complete ~<svg>~ elements, allowing multiple paths, groups and gradients.
 -  Logo Library :: Ships hundreds of ready-to-use logos, browsable in a generated gallery page.
@@ -156,10 +157,14 @@ A glyph can pick a visual finish with an optional ~style~ setting. Styles decora
 | ~material~      | a Material-style sheen with a soft elevation shade                  |
 | ~frutiger~      | glossy Frutiger Aero glass, with a sky tint and a bright reflection |
 | ~neon~          | a dark plate with crisp glowing outlines and bright text            |
+| ~crystal~       | translucent frosted glass lit from behind, rounded into a capsule with a bright rim |
+| ~crystal-mono~  | the same crystal glass, with the labels set in a monospace font     |
 
-The setting is optional and defaults to ~flat~, so existing glyph files keep their look. Style names are forgiving: ~(style . "frosted glass")~, ~(style . frosted_glass)~ and ~(style . glass)~ all mean ~frosted-glass~. Run ~ggg --list-styles~ to print the table above, and see every finish side by side in the [[./test/gallery.html][gallery]].
+The setting is optional and defaults to ~flat~, so existing glyph files keep their look. Style names are forgiving: ~(style . "frosted glass")~, ~(style . frosted_glass)~ and ~(style . glass)~ all mean ~frosted-glass~, and ~(style . "crystal mono")~ means ~crystal-mono~. Run ~ggg --list-styles~ to print the table above, and see every finish side by side in the [[./test/gallery.html][gallery]].
 
 Every style keeps exactly the same canvas, width and height as ~flat~, so a row of badges that mix styles always lines up. Shadows, glosses and glows are painted inside the badge, never around it. The style badges at the top of this README are the ~Styles~ group of ~glyphs/showcase.scm~: one badge per finish, then a second pass with four more Frutiger Aero badges (Skyglass, Aqua, Mint and Sunrise) and one more badge in each other finish.
+
+~crystal~ and ~crystal-mono~ are the two type variants of the same finish: a warm light is blurred behind a translucent plate, which is rounded into a capsule and rimmed with a bright hairline, so the sections glow through the glass instead of being painted over. The plate keeps the colors the glyph asked for, the frost is faintest where the label sits so the text keeps its contrast, and the monospace variant is set a tenth smaller so a wider font still fits the box the sans widths measured -- the canvas of the two variants is identical.
 
 ** Logos
 
@@ -220,7 +225,7 @@ remembers the choice.
 
 ** The badge showcase
 
-~glyphs/showcase.scm~ ships one ready-made badge per popular logo in the library, grouped by what the project is (languages, web frameworks and APIs, databases and queues, infrastructure, security and networking, cloud, git, observability, distributions, editors, shells, AI, testing, media, chat). It closes with a ~Theme variants~ group that paints one badge per palette and a ~Styles~ group that shows every badge style twice over -- four more Frutiger Aero badges and one more badge in each other finish: 187 badges in all. Every badge reads ~<logo> Name | category~. Its label stays Catppuccin mocha so the library reads alike, while the second section takes the accent closest to the project's own hue (blue stays ~blue~, orange becomes ~peach~, black brands use the neutral ~overlay2~) and draws its text in ~base~.
+~glyphs/showcase.scm~ ships one ready-made badge per popular logo in the library, grouped by what the project is (languages, web frameworks and APIs, databases and queues, infrastructure, security and networking, cloud, git, observability, distributions, editors, shells, AI, testing, media, chat). It closes with a ~Theme variants~ group that paints one badge per palette and a ~Styles~ group that shows every badge style twice over -- four more Frutiger Aero badges, one more badge in each other finish and the two crystal variants: 189 badges in all. Every badge reads ~<logo> Name | category~. Its label stays Catppuccin mocha so the library reads alike, while the second section takes the accent closest to the project's own hue (blue stays ~blue~, orange becomes ~peach~, black brands use the neutral ~overlay2~) and draws its text in ~base~.
 
 #+begin_src scheme
 (define glyph-postgresql
@@ -235,11 +240,16 @@ remembers the choice.
 ;; ... and a styled badge, from the Styles group:
 (define glyph-style-neon
   (styled-badge 'style-neon "Neon" 'atom-orbit "glow" 'red 'neon))
+
+;; ... and the monospace crystal variant, which is the same glass:
+(define glyph-style-crystal-mono
+  (styled-badge 'style-crystal-mono "Mono" 'terminal-prompt "glass" 'mauve
+                'crystal-mono))
 #+end_src
 
 So the second sections of the showcase mix all five theme families: ~mocha~, ~macchiato~, ~frappe~, ~latte~, ~doom-one~, ~doom-one-light~, ~dracula~, ~alucard~, ~solarized~ dark and light, and ~modus~ operandi and vivendi can be compared side by side. The ~badge~ helper qualifies each accent with its theme, so nothing depends on which palette happens to be the default, and ~styled-badge~ adds a ~style~ to it.
 
-~glyphs/jjba23.scm~ is the other half of the pair: 72 badges for the things a project ticks off one by one -- language and tool versions (~lang-python~, ~lang-go~, ~haskell-ghc910~, ~rust-185+~), build and package tooling (~build-cmake~, ~build-meson~, ~pkg-homebrew~), CI (~ci-buildkite~, ~ci-drone~, ~pipeline-succeeded~), tests, linting and formatting (~test-jest~, ~test-pytest~, ~lint-eslint~, ~fmt-prettier~), data and deployment (~db-postgresql~, ~db-redis~, ~deploy-kubernetes~, ~infra-terraform~), shells, editors, licenses, and the project badges of the tools ggg is built with (~byggsteg~, its ~byggsteg-github~ integration, ~maak~, ~github~). They pair a darker Catppuccin latte label with Catppuccin mocha's pastel accents: the logo side is a ~subtext1~ gray with near-white ~base~ text (5.5:1 contrast), and every accent is a soft mocha pastel with the dark ~mocha-base~ ink (7:1 or better). Hues follow the projects: Java, Scala and Redis stay red, Scheme and Guile are orange, Guix and Homebrew are yellow, licenses and most databases are blue, Go is sky, Rust is orange, Emacs is pink -- so the set reads warmer and friendlier without losing contrast. Every badge in the set also wears the subtle ~shadow~ style.
+~glyphs/jjba23.scm~ is the other half of the pair: 80 badges for the things a project ticks off one by one -- language and tool versions (~lang-python~, ~lang-go~, ~haskell-ghc910~, ~rust-185+~), build and package tooling (~build-cmake~, ~build-meson~, ~pkg-homebrew~), CI (~ci-buildkite~, ~ci-drone~, ~pipeline-succeeded~), tests, linting and formatting (~test-jest~, ~test-pytest~, ~lint-eslint~, ~fmt-prettier~), data and deployment (~db-postgresql~, ~db-redis~, ~deploy-kubernetes~, ~infra-terraform~), shells, editors, licenses, and the project badges of the tools ggg is built with (~byggsteg~, its ~byggsteg-github~ integration, ~maak~, ~github~). They pair a darker Catppuccin latte label with Catppuccin mocha's pastel accents: the logo side is a ~subtext1~ gray with near-white ~base~ text (5.5:1 contrast), and every accent is a soft mocha pastel with the dark ~mocha-base~ ink (7:1 or better). Hues follow the projects: Java, Scala and Redis stay red, Scheme and Guile are orange, Guix and Homebrew are yellow, licenses and most databases are blue, Go is sky, Rust is orange, Emacs is pink -- so the set reads warmer and friendlier without losing contrast. Every badge in the set also wears the subtle ~shadow~ style, except the ~Crystal glass~ group at the end: eight of the same badges again, four in ~crystal~ and four in ~crystal-mono~, with their accent sides drawn from Doom, Dracula, Solarized, Modus and the macchiato and frappe Catppuccin flavors (~crystal-gnu-guix~, ~crystal-mono-test-pytest~).
 
 Both files are part of ~dist/~, and the gallery shows them next to each other. Because ggg clears its destination directory, the second file has to be rendered with ~-k~ / ~--keep~:
 
@@ -394,7 +404,7 @@ Useful helpers while working on glyphs:
 
 - ~ggg --list-colors~ :: list every theme color available to glyph files, grouped by theme.
 - ~ggg --list-logos~ :: list the logos found in the resources directory.
-- ~ggg --list-styles~ :: list the badge styles (flat, square, shadow, plastic, frosted-glass, material, frutiger, neon) and what each one looks like.
+- ~ggg --list-styles~ :: list the badge styles (flat, square, shadow, plastic, frosted-glass, material, frutiger, neon, crystal, crystal-mono) and what each one looks like.
 - ~ggg --gallery FILE [--glyphs PATH]~ :: write an HTML gallery of every badge, color palette and logo (see [[./test/gallery.html][test/gallery.html]]).
 - ~ggg --serve [--port PORT] [--host ADDRESS]~ :: serve badges described by URL parameters (see [[*Serving badges over HTTP][Serving badges over HTTP]]).
 - ~ggg -k~ / ~--keep~ :: render a second glyph file into a destination directory without clearing it first.

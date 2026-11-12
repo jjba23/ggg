@@ -59,7 +59,8 @@ in -- the theme's own background shade in every case below."
 (define* (styled-badge id label logo category accent style
                        #:key (theme 'catppuccin-mocha) (ink 'base))
   "A BADGE that also asks for a visual STYLE, so the showcase can show off
-flat, square, shadow, plastic, frosted-glass, material, frutiger and neon."
+flat, square, shadow, plastic, frosted-glass, material, frutiger, neon and the
+two crystal finishes."
   (append (badge id label logo category accent #:theme theme #:ink ink)
           `((style . ,style))))
 
@@ -684,6 +685,15 @@ flat, square, shadow, plastic, frosted-glass, material, frutiger and neon."
 (define glyph-style-neon-synth
   (styled-badge 'style-neon-synth "Synth" 'ggg-warm "neon" 'pink 'neon))
 
+;; The crystal finishes close the group: one capsule of frosted glass in the
+;; system font, and the same glass with the labels in a monospace font.
+(define glyph-style-crystal
+  (styled-badge 'style-crystal "Crystal" 'sparkle "glass" 'peach 'crystal))
+
+(define glyph-style-crystal-mono
+  (styled-badge 'style-crystal-mono "Mono" 'terminal-prompt "glass" 'mauve
+                'crystal-mono))
+
 (define ggg-glyphs
   ;; Languages
   (list glyph-python
@@ -885,4 +895,6 @@ flat, square, shadow, plastic, frosted-glass, material, frutiger and neon."
         glyph-style-plastic-ggg
         glyph-style-frosted-cube
         glyph-style-material-slate
-        glyph-style-neon-synth))
+        glyph-style-neon-synth
+        glyph-style-crystal
+        glyph-style-crystal-mono))

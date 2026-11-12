@@ -3,6 +3,37 @@
 #+email: jjbigorra@gmail.com
 #+options: toc:nil
 
+* 1.2.0 (2026-11-12)
+
+** Added
+
+- Two new finishes: =crystal= and =crystal-mono=. A warm light is blurred
+  behind a translucent plate, which is rounded into a capsule and rimmed with a
+  bright hairline, so the sections of a badge glow through frosted glass instead
+  of being painted over. The frost is faintest where the label sits, so a badge
+  keeps the contrast its colors were chosen for, and the backlight only warms
+  the corners.
+- =crystal-mono= is the same glass with the labels set in a monospace font. A
+  monospace advance is about a tenth wider than the sans widths a badge is
+  measured with, so the style sets its type a tenth smaller: the label keeps its
+  padding and the canvas stays the one every other style uses, so a row of the
+  two variants still lines up.
+- A style can now be a type variant: the skin contract grew =font-family=, which
+  wins over the font a section asked for, and =font-scale=, which sets the
+  labels smaller without touching the measured geometry.
+- =glyphs/jjba23.scm= gains a =Crystal glass= group: eight of its badges again,
+  four in =crystal= and four in =crystal-mono=, with accent sides drawn from
+  Doom, Dracula, Dracula Alucard, Solarized, Modus Operandi, Modus Vivendi and
+  the macchiato and frappe Catppuccin flavors.
+- =glyphs/showcase.scm= shows both new finishes in its =Styles= group, and the
+  gallery carries the new badges like any other.
+
+** Documentation
+
+- ~README.org~ documents =crystal= and =crystal-mono= in the style table, what
+  the two variants are for, and the =Crystal glass= group of the project badges.
+- ~resources/help.txt~ lists the two new finishes.
+
 * 0.22.3 (2026-11-12)
 
 - Builds against the channels this project builds against: the jointhefreeworld collection at v1.0.4, and Guix master `3b4e873`.

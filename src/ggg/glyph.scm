@@ -196,6 +196,12 @@
            (background-fill (lookup skin 'background-fill))
            (text-filter (lookup skin 'text-filter))
            (text-fill (lookup skin 'text-fill))
+           ;; A style can be a type variant too, and then its font stack wins
+           ;; over the one a section asked for.
+           (text-font (lookup skin 'font-family))
+           ;; A wider font is set smaller instead of widening the badge: the
+           ;; canvas stays the same for every style.
+           (text-size (lookup skin 'font-scale))
            (section-background (lambda (section)
                                  (if background-fill
                                      (background-fill section)
@@ -243,8 +249,12 @@
                          `(text (@ (fill ,(if text-fill
                                               (text-fill section)
                                               (lookup section 'color)))
-                                   (font-size ,(lookup section 'font-size))
-                                   (font-family ,(lookup section 'font-family))
+                                   (font-size ,(if text-size
+                                                   (rounded (* (lookup section 'font-size)
+                                                               text-size))
+                                                   (lookup section 'font-size)))
+                                   (font-family ,(or text-font
+                                                     (lookup section 'font-family)))
                                    (style ,(serialize-style
                                             (list (cons 'font-weight
                                                         (lookup section 'font-weight)))))

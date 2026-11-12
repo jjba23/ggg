@@ -22,7 +22,8 @@
 ;;
 ;; Every glyph also asks for `(style . shadow)`, the subtle inner shadow that
 ;; gives the set a little depth without changing a badge's size, so a row of
-;; them always stays aligned.
+;; them always stays aligned. The `Crystal glass' group at the end is the
+;; exception: those badges wear `crystal' and `crystal-mono' instead.
 ;;
 ;; `ggg --list-colors` prints every theme and color; see the README for the
 ;; other palettes.
@@ -676,6 +677,93 @@
     (style . shadow)
     (id . docs-markdown)))
 
+;; ====== Crystal glass ======
+;;
+;; The same project badges again, this time behind the frosted glass that
+;; (style . crystal) draws: a translucent plate lit from behind, rounded into a
+;; capsule, with a bright rim. The first four are set in the system sans font
+;; and the last four in a monospace one, so the two type variants sit next to
+;; each other.
+;;
+;; The label side stays the latte `subtext1' gray with `base' text (5.5:1) it
+;; wears everywhere else; the accent side comes from the palettes outside
+;; Catppuccin, one per badge -- Doom, Dracula, Dracula Alucard, Solarized,
+;; Modus Vivendi and Modus Operandi -- plus the macchiato and frappe flavors.
+;; Each accent keeps its theme's own ink, so every second section stays at
+;; 4.5:1 or better while the glass warms it.
+
+(define glyph-crystal-gnu-guix
+  `((sections ((background . catppuccin-latte-subtext1) (text . "GNU")
+               (color . catppuccin-latte-base)
+               (logo . gnu))
+              ((background . doom-one-yellow) (text . "Guix")
+               (color . doom-one-base0)))
+    (style . crystal)
+    (id . crystal-gnu-guix)))
+
+(define glyph-crystal-scheme-guile
+  `((sections ((background . catppuccin-latte-subtext1) (text . "Scheme")
+               (color . catppuccin-latte-base)
+               (logo . lambda))
+              ((background . dracula-orange) (text . "Guile")
+               (color . dracula-background)))
+    (style . crystal)
+    (id . crystal-scheme-guile)))
+
+(define glyph-crystal-lang-python
+  `((sections ((background . catppuccin-latte-subtext1) (text . "Python")
+               (color . catppuccin-latte-base)
+               (logo . python))
+              ((background . catppuccin-macchiato-green) (text . "3.13")
+               (color . catppuccin-macchiato-base)))
+    (style . crystal)
+    (id . crystal-lang-python)))
+
+(define glyph-crystal-db-postgresql
+  `((sections ((background . catppuccin-latte-subtext1) (text . "db")
+               (color . catppuccin-latte-base)
+               (logo . postgresql))
+              ((background . catppuccin-frappe-blue) (text . "PostgreSQL")
+               (color . catppuccin-frappe-base)))
+    (style . crystal)
+    (id . crystal-db-postgresql)))
+
+(define glyph-crystal-mono-maak
+  `((sections ((background . catppuccin-latte-subtext1) (text . "maak")
+               (color . catppuccin-latte-base)
+               (logo . maak))
+              ((background . modus-vivendi-magenta) (text . "tasks")
+               (color . modus-vivendi-bg-main)))
+    (style . crystal-mono)
+    (id . crystal-mono-maak)))
+
+(define glyph-crystal-mono-lang-go
+  `((sections ((background . catppuccin-latte-subtext1) (text . "Go")
+               (color . catppuccin-latte-base)
+               (logo . go))
+              ((background . modus-operandi-red) (text . "1.24")
+               (color . modus-operandi-bg-main)))
+    (style . crystal-mono)
+    (id . crystal-mono-lang-go)))
+
+(define glyph-crystal-mono-test-pytest
+  `((sections ((background . catppuccin-latte-subtext1) (text . "test")
+               (color . catppuccin-latte-base)
+               (logo . pytest))
+              ((background . solarized-dark-base03) (text . "pytest")
+               (color . solarized-dark-cyan)))
+    (style . crystal-mono)
+    (id . crystal-mono-test-pytest)))
+
+(define glyph-crystal-mono-license-mit
+  `((sections ((background . catppuccin-latte-subtext1) (text . "license")
+               (color . catppuccin-latte-base)
+               (logo . scales))
+              ((background . dracula-alucard-purple) (text . "MIT")
+               (color . dracula-alucard-background)))
+    (style . crystal-mono)
+    (id . crystal-mono-license-mit)))
+
 (define ggg-glyphs
   (list glyph-pipeline-succeeded
         glyph-gnu-guix
@@ -751,4 +839,13 @@
         glyph-infra-terraform
         glyph-web-nginx
         glyph-shell-zsh
-        glyph-docs-markdown))
+        glyph-docs-markdown
+        ;; Crystal glass, in the system font and in a monospace one
+        glyph-crystal-gnu-guix
+        glyph-crystal-scheme-guile
+        glyph-crystal-lang-python
+        glyph-crystal-db-postgresql
+        glyph-crystal-mono-maak
+        glyph-crystal-mono-lang-go
+        glyph-crystal-mono-test-pytest
+        glyph-crystal-mono-license-mit))

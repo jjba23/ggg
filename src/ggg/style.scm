@@ -18,6 +18,11 @@
 ;;   border             shapes drawn above the overlays, below the text
 ;;   text-fill          a procedure (section -> color) replacing the text color
 ;;   text-filter        a filter applied to the group of text labels
+;;   font-family        a font stack replacing the one the section asked for,
+;;                      for a style that is also a type variant
+;;   font-scale         a number multiplying the font size, for a type variant
+;;                      whose font is wider than the widths a badge is measured
+;;                      with (the canvas stays the same for every style)
 ;;
 ;; Every style keeps the compact shields.io geometry of the flat default -- same
 ;; width, same height, same canvas -- so a row of badges of mixed styles always
@@ -36,7 +41,8 @@
 ;; ====== Style names ======
 
 (define style-names
-  '(flat square shadow plastic frosted-glass material frutiger neon))
+  '(flat square shadow plastic frosted-glass material frutiger neon
+    crystal crystal-mono))
 
 ;; Friendly spellings that resolve to the canonical names above, so a glyph
 ;; file can say (style . "frosted glass") or (style . glass) and still work.
@@ -58,7 +64,9 @@
     (frosted-glass . "a translucent frost sheen behind a light hairline border")
     (material . "a Material-style sheen with a soft elevation shade")
     (frutiger . "glossy Frutiger Aero glass with a sky tint and a bright reflection")
-    (neon . "a dark plate with crisp glowing outlines and bright text")))
+    (neon . "a dark plate with crisp glowing outlines and bright text")
+    (crystal . "translucent frosted glass lit from behind, in a rounded capsule with a bright rim")
+    (crystal-mono . "the same crystal glass, with the labels set in a monospace font")))
 
 (define (style-name value)
   "The canonical style symbol for VALUE, or #f when it names no style.
@@ -232,6 +240,14 @@ drawn under a crisp copy of itself."
                            (iota strength))
                     (feMergeNode (@ (in "SourceGraphic"))))))
 
+(define* (blur-filter id #:key (blur 2))
+  "A blur-only filter called ID, for a light that should diffuse instead of
+keeping the edge of the shape that drew it."
+  `(filter (@ (id ,id)
+              (x "-40%") (y "-40%")
+              (width "180%") (height "180%"))
+           (feGaussianBlur (@ (in "SourceGraphic") (stdDeviation ,blur)))))
+
 (define (section-rects ctx attributes)
   "One rectangle per section, at its position and size, with ATTRIBUTES."
   (map (lambda (section x width)
@@ -261,6 +277,34 @@ drawn under a crisp copy of itself."
        (ctx-value ctx 'sections)
        (ctx-value ctx 'positions)
        (ctx-value ctx 'widths)))
+
+(define (squared-seams ctx radius)
+  "Square strips RADIUS wide on both sides of every section boundary, in the
+color of the section they belong to.
+
+A section is drawn as a rectangle rounded by the badge radius; where two of
+them meet, each keeps its round corner and leaves a wedge of nothing behind it.
+Badges with the default corners hide that under the seam strips (ggg glyph)
+draws, but a plate rounded by a good part of its height -- a capsule --
+needs the join squared all the way out to RADIUS to stay one plate."
+  (let ((height (ctx-value ctx 'height))
+        (sections (ctx-value ctx 'sections)))
+    (append-map (lambda (previous next boundary)
+                  (list `(rect (@ (x ,(rounded (- boundary radius)))
+                                   (y 0)
+                                   (width ,radius)
+                                   (height ,height)
+                                   (fill ,(lookup previous 'background)))
+                                "")
+                        `(rect (@ (x ,boundary)
+                                   (y 0)
+                                   (width ,radius)
+                                   (height ,height)
+                                   (fill ,(lookup next 'background)))
+                                "")))
+                sections
+                (cdr sections)
+                (cdr (ctx-value ctx 'positions)))))
 
 (define (full-badge-rect ctx fill)
   "One rectangle covering the whole badge, filled with FILL."
@@ -461,6 +505,106 @@ blur that would soften it."
                     ,@(section-outlines ctx '((stroke-width 1)
                                               (stroke-opacity 1)))))))))
 
+;; The type the two crystal variants are set in.  Each stack names the system
+;; face first and then falls back to a generic family, so a renderer without it
+;; still draws the label instead of nothing.
+(define crystal-sans-font
+  "-apple-system, 'SF Pro Text', 'Helvetica Neue', system-ui, sans-serif")
+
+(define crystal-mono-font
+  "'SF Mono', ui-monospace, SFMono-Regular, Menlo, monospace")
+
+(define* (crystal-skin ctx #:key (font crystal-sans-font) (font-scale 1))
+  "A crystal badge: translucent frosted glass with a warm light glowing through
+it from behind, rounded into a soft capsule and rimmed with a bright hairline --
+a polished, calm plate that reads as glass rather than as paint.
+
+The sections keep the colors the glyph asked for -- the frost is a sheet over
+them, not a replacement -- so the glass reads as something with the badge
+behind it.  The backlight is blurred where the light leaks in, at the top left
+and the bottom right, which warms the corners and leaves the band the text sits
+in alone.
+
+FONT and FONT-SCALE carry a type variant: a monospace label is about a tenth
+wider than the sans widths a badge is measured with, so it is set a tenth
+smaller and the label keeps the padding it would have had.  The canvas never
+changes, so a row of the two variants still lines up."
+  (let* ((clip (ctx-id ctx "clip"))
+         (warm (ctx-id ctx "warm"))
+         (cool (ctx-id ctx "cool"))
+         (frost (ctx-id ctx "frost"))
+         (sheen (ctx-id ctx "sheen"))
+         (soften (ctx-id ctx "soften"))
+         (text-shadow (ctx-id ctx "text-shadow"))
+         (width (ctx-value ctx 'width))
+         (height (ctx-value ctx 'height))
+         ;; A capsule rounds a plate by a good part of its height, without
+         ;; taking the full half-height a pill asks for.
+         (radius (rounded (* height 0.45))))
+    `((radius . ,radius)
+      (font-family . ,font)
+      (font-scale . ,font-scale)
+      (defs . (,(clip-rect clip width height radius)
+               ,(radial-gradient warm
+                                 '(("0%" "#ffcf9e" 0.45)
+                                   ("100%" "#ffcf9e" 0))
+                                 #:cx "50%" #:cy "50%" #:r "50%")
+               ,(radial-gradient cool
+                                 '(("0%" "#ffb3cf" 0.4)
+                                   ("100%" "#ffb3cf" 0))
+                                 #:cx "50%" #:cy "50%" #:r "50%")
+               ;; The frost stays faint where the label sits, so the text keeps
+               ;; the contrast its colors were chosen for.
+               ,(linear-gradient frost
+                                 '(("0%" "#ffffff" 0.24)
+                                   ("32%" "#ffffff" 0.04)
+                                   ("100%" "#ffffff" 0.09)))
+               ,(linear-gradient sheen
+                                 '(("0%" "#ffffff" 0.42)
+                                   ("60%" "#ffffff" 0)))
+               ,(blur-filter soften #:blur 2.2)
+               ,(drop-shadow-filter text-shadow
+                                    #:dy 0.5 #:blur 0.55 #:opacity 0.4)))
+      (text-filter . ,(format #f "url(#~a)" text-shadow))
+      (overlays . ((g (@ (clip-path ,(format #f "url(#~a)" clip)))
+                      ;; The plate's seams first, so a capsule stays one plate.
+                      ,@(squared-seams ctx radius)
+                      (g (@ (filter ,(format #f "url(#~a)" soften)))
+                         (ellipse (@ (cx ,(rounded (* width 0.16)))
+                                     (cy 0)
+                                     (rx ,(rounded (* width 0.6)))
+                                     (ry ,(rounded height))
+                                     (fill ,(format #f "url(#~a)" warm))) "")
+                         (ellipse (@ (cx ,(rounded (* width 0.92)))
+                                     (cy ,height)
+                                     (rx ,(rounded (* width 0.55)))
+                                     (ry ,(rounded height))
+                                     (fill ,(format #f "url(#~a)" cool))) ""))
+                      ,(full-badge-rect ctx (format #f "url(#~a)" frost))
+                      (ellipse (@ (cx ,(rounded (* width 0.3)))
+                                  (cy 0)
+                                  (rx ,(rounded (* width 0.42)))
+                                  (ry ,(rounded height))
+                                  (fill ,(format #f "url(#~a)" sheen))) ""))))
+      (border . ((rect (@ (x 0.4) (y 0.4)
+                          (width ,(rounded (- width 0.8)))
+                          (height ,(rounded (- height 0.8)))
+                          (rx ,(rounded (max 0 (- radius 0.4))))
+                          (ry ,(rounded (max 0 (- radius 0.4))))
+                          (fill "none")
+                          (stroke "#000000")
+                          (stroke-opacity 0.07)
+                          (stroke-width 1.4)) "")
+                 (rect (@ (x 0.5) (y 0.5)
+                          (width ,(rounded (- width 1)))
+                          (height ,(rounded (- height 1)))
+                          (rx ,(rounded (max 0 (- radius 0.5))))
+                          (ry ,(rounded (max 0 (- radius 0.5))))
+                          (fill "none")
+                          (stroke "#ffffff")
+                          (stroke-opacity 0.55)
+                          (stroke-width 0.9)) ""))))))
+
 (define (style-skin style ctx)
   "The skin of STYLE (a symbol from STYLE-NAMES) for the geometry in CTX."
   (case style
@@ -472,4 +616,8 @@ blur that would soften it."
     ((material) (material-skin ctx))
     ((frutiger) (frutiger-skin ctx))
     ((neon) (neon-skin ctx))
+    ((crystal) (crystal-skin ctx))
+    ((crystal-mono) (crystal-skin ctx
+                                  #:font crystal-mono-font
+                                  #:font-scale 0.9))
     (else (flat-skin ctx))))

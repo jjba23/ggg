@@ -419,12 +419,14 @@ MK-GLYPH returns a list holding the svg element."
     (canvas-attribute badge 'height))
 
   (test-equal "every style is listed"
-    '(flat square shadow plastic frosted-glass material frutiger neon)
+    '(flat square shadow plastic frosted-glass material frutiger neon
+      crystal crystal-mono)
     style-names)
 
   (test-equal "style names accept friendly spellings"
-    '(frosted-glass frosted-glass flat flat neon)
-    (map style-name '("frosted glass" frosted_glass default plain neo)))
+    '(frosted-glass frosted-glass flat flat neon crystal crystal crystal-mono)
+    (map style-name '("frosted glass" frosted_glass default plain neo
+                      "Crystal" crystal "crystal mono")))
 
   (test-assert "unknown styles are not accepted"
     (not (style-name 'glassy)))
@@ -479,6 +481,46 @@ MK-GLYPH returns a list holding the svg element."
            ;; The section backgrounds are darkened into plates, so the
            ;; original background color survives only as an outline.
            (not (string-contains xml "fill=\"#585b70\"")))))
+
+  (define (first-attribute-value xml attribute)
+    "The value of the first ATTRIBUTE=\"...\" in XML, as a string."
+    (let ((match (string-match (format #f "~a=\"([^\"]*)\"" attribute) xml)))
+      (and match (match:substring match 1))))
+
+  (test-assert "crystal rounds the plate further than the default corners"
+    (let ((crystal (string->number (first-attribute-value (render-style 'crystal) "rx")))
+          (flat (string->number (first-attribute-value (render-style 'flat) "rx"))))
+      (and crystal flat (> crystal flat))))
+
+  (test-assert "crystal blurs a warm light behind the frosted plate"
+    (let ((xml (render-style 'crystal)))
+      (and (string-contains xml "url(#ggg-scheme-guile-test-warm)")
+           (string-contains xml "url(#ggg-scheme-guile-test-cool)")
+           ;; The light is what blurs, so a soft glow reads through the frost.
+           (string-contains xml "filter=\"url(#ggg-scheme-guile-test-soften)\"")
+           (string-contains xml "url(#ggg-scheme-guile-test-frost)"))))
+
+  (test-assert "crystal rims the glass with a bright hairline and softens the text"
+    (let ((xml (render-style 'crystal)))
+      (and (string-contains xml "stroke=\"#ffffff\"")
+           (string-contains xml "filter=\"url(#ggg-scheme-guile-test-text-shadow)\""))))
+
+  (test-assert "crystal sets its labels in the system sans stack"
+    (string-contains (render-style 'crystal)
+                     "font-family=\"-apple-system, 'SF Pro Text'"))
+
+  (test-assert "crystal-mono sets its labels in a monospace stack"
+    (let ((xml (render-style 'crystal-mono)))
+      (and (string-contains xml "font-family=\"'SF Mono', ui-monospace")
+           ;; Only the type changes: the glass is the same one.
+           (string-contains xml "url(#ggg-scheme-guile-test-frost)"))))
+
+  (test-assert "crystal-mono shrinks its type to the box the sans widths measured"
+    (let ((sans (first-attribute-value (render-style 'crystal) "font-size"))
+          (mono (first-attribute-value (render-style 'crystal-mono) "font-size")))
+      (and sans mono
+           ;; A monospace advance is a tenth wider than an average sans one.
+           (< (string->number mono) (string->number sans)))))
 
   (test-assert "every style keeps the exact flat canvas, so a row stays aligned"
     (let* ((flat (mk-glyph valid-glyph #:resources resources))
