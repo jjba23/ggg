@@ -3,6 +3,28 @@
 #+email: jjbigorra@gmail.com
 #+options: toc:nil
 
+* 2.1.0 (2026-11-17)
+
+** Added
+
+- =glyphs/jjba23.scm= declares 21 more badges, all in the =crystal= frosted
+  glass: the Rust toolchain (=rust-edition-2021=, =cargo-test=, =cargo-clippy=,
+  =cargo-fmt=, =rust-tokio=, =rust-gtk4=) and the rest of what the checkouts
+  beside ggg tick off (=lang-typescript=, =web-react=, =build-vite=,
+  =build-ninja=, =ci-github-actions=, =ci-woodpecker=, =deploy-shepherd=,
+  =dev-podman=, =web-caddy=, =obs-prometheus=, =obs-grafana=, =data-json=,
+  =data-yaml=, =dev-wayland=, =test-junit=). Each arrives with its
+  =showcase-= twin, so the set is now 194 badges from 93 declarations.
+- =dist/= carries the SVG and PNG of every new badge, and ~README.org~ and
+  ~VISION.md~ describe the new groups and their counts.
+
+* 2.0.3 (2026-11-13)
+
+** Added
+
+- =VISION.md= records what ggg is for and where it is going, and names the two
+  glyph files as the best documentation of what the tool does.
+
 * 2.0.2 (2026-11-12)
 
 ** Fixed

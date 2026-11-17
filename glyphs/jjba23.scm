@@ -20,6 +20,15 @@
 ;; docs, a peach for planning, a yellow for testing, while badges that stand for
 ;; a brand keep that brand's hue.
 ;;
+;; The Rust family keeps the one peach: `rust-185+', the edition and the cargo
+;; subcommands all wear it, so a reader sees Rust at a glance and reads the
+;; second word for the detail -- except `cargo-clippy' and `cargo-fmt', which
+;; join the lavender lint and yellow format families they belong to. The tools
+;; the rest of the checkouts in this tree tick off follow the same rule: the
+;; TypeScript, React, Vite and Ninja badges of a Vite dashboard, the Actions and
+;; Woodpecker CI badges, and the Shepherd, Podman, Caddy, Prometheus, Grafana,
+;; JSON, YAML, Wayland and JUnit badges take the hue of the thing they name.
+;;
 ;; Every badge is declared once, at the end of this file, and rendered twice:
 ;; in crystal glass under its plain id -- the set a project links to -- and in
 ;; the subtle `shadow' finish under a `showcase-' id, which keeps the look the
@@ -679,6 +688,210 @@
     (style . shadow)
     (id . docs-markdown)))
 
+;; ====== Rust and Cargo ======
+;;
+;; The toolchain a Rust checkout ticks off: the edition it pins, and the three
+;; cargo subcommands that have to pass before a change lands. The edition and
+;; `cargo test' keep the Rust peach; clippy joins the lavender lints and rustfmt
+;; the yellow formatters, so a row of `lint', `format' and `test' badges reads
+;; the same whoever writes it.
+
+(define glyph-rust-edition-2021
+  `((sections ((background . catppuccin-latte-subtext1) (text . "Rust")
+               (color . catppuccin-latte-base)
+               (logo . rust))
+              ((background . catppuccin-mocha-peach) (text . "edition 2021")
+               (color . catppuccin-mocha-base)))
+    (style . shadow)
+    (id . rust-edition-2021)))
+
+(define glyph-cargo-test
+  `((sections ((background . catppuccin-latte-subtext1) (text . "test")
+               (color . catppuccin-latte-base)
+               (logo . rust))
+              ((background . catppuccin-mocha-peach) (text . "cargo test")
+               (color . catppuccin-mocha-base)))
+    (style . shadow)
+    (id . cargo-test)))
+
+(define glyph-cargo-clippy
+  `((sections ((background . catppuccin-latte-subtext1) (text . "lint")
+               (color . catppuccin-latte-base)
+               (logo . shield-check))
+              ((background . catppuccin-mocha-lavender) (text . "clippy")
+               (color . catppuccin-mocha-base)))
+    (style . shadow)
+    (id . cargo-clippy)))
+
+(define glyph-cargo-fmt
+  `((sections ((background . catppuccin-latte-subtext1) (text . "format")
+               (color . catppuccin-latte-base)
+               (logo . rust))
+              ((background . catppuccin-mocha-yellow) (text . "rustfmt")
+               (color . catppuccin-mocha-base)))
+    (style . shadow)
+    (id . cargo-fmt)))
+
+(define glyph-rust-tokio
+  `((sections ((background . catppuccin-latte-subtext1) (text . "Rust")
+               (color . catppuccin-latte-base)
+               (logo . bolt))
+              ((background . catppuccin-mocha-teal) (text . "tokio")
+               (color . catppuccin-mocha-base)))
+    (style . shadow)
+    (id . rust-tokio)))
+
+(define glyph-rust-gtk4
+  `((sections ((background . catppuccin-latte-subtext1) (text . "Rust")
+               (color . catppuccin-latte-base)
+               (logo . rust))
+              ((background . catppuccin-mocha-blue) (text . "GTK4")
+               (color . catppuccin-mocha-base)))
+    (style . shadow)
+    (id . rust-gtk4)))
+
+;; ====== The rest of the toolchain in this tree ======
+;;
+;; One badge per thing the checkouts beside ggg in this tree tick off: the Vite
+;; dashboard, the Meson projects that drive Ninja, the two CI systems, the init
+;; the Guix hosts run, the containers, the reverse proxy, the two observability
+;; services, the two data formats and the two desktop layers.
+
+(define glyph-lang-typescript
+  `((sections ((background . catppuccin-latte-subtext1) (text . "TypeScript")
+               (color . catppuccin-latte-base)
+               (logo . typescript))
+              ((background . catppuccin-mocha-blue) (text . "6.0")
+               (color . catppuccin-mocha-base)))
+    (style . shadow)
+    (id . lang-typescript)))
+
+(define glyph-web-react
+  `((sections ((background . catppuccin-latte-subtext1) (text . "web")
+               (color . catppuccin-latte-base)
+               (logo . react))
+              ((background . catppuccin-mocha-sky) (text . "React 19")
+               (color . catppuccin-mocha-base)))
+    (style . shadow)
+    (id . web-react)))
+
+(define glyph-build-vite
+  `((sections ((background . catppuccin-latte-subtext1) (text . "build")
+               (color . catppuccin-latte-base)
+               (logo . vite))
+              ((background . catppuccin-mocha-mauve) (text . "Vite 8")
+               (color . catppuccin-mocha-base)))
+    (style . shadow)
+    (id . build-vite)))
+
+(define glyph-build-ninja
+  `((sections ((background . catppuccin-latte-subtext1) (text . "build")
+               (color . catppuccin-latte-base)
+               (logo . gear))
+              ((background . catppuccin-mocha-teal) (text . "Ninja")
+               (color . catppuccin-mocha-base)))
+    (style . shadow)
+    (id . build-ninja)))
+
+(define glyph-ci-github-actions
+  `((sections ((background . catppuccin-latte-subtext1) (text . "CI")
+               (color . catppuccin-latte-base)
+               (logo . githubactions))
+              ((background . catppuccin-mocha-blue) (text . "Actions")
+               (color . catppuccin-mocha-base)))
+    (style . shadow)
+    (id . ci-github-actions)))
+
+(define glyph-ci-woodpecker
+  `((sections ((background . catppuccin-latte-subtext1) (text . "CI")
+               (color . catppuccin-latte-base)
+               (logo . bolt))
+              ((background . catppuccin-mocha-green) (text . "Woodpecker")
+               (color . catppuccin-mocha-base)))
+    (style . shadow)
+    (id . ci-woodpecker)))
+
+(define glyph-deploy-shepherd
+  `((sections ((background . catppuccin-latte-subtext1) (text . "deploy")
+               (color . catppuccin-latte-base)
+               (logo . gear))
+              ((background . catppuccin-mocha-maroon) (text . "Shepherd")
+               (color . catppuccin-mocha-base)))
+    (style . shadow)
+    (id . deploy-shepherd)))
+
+(define glyph-dev-podman
+  `((sections ((background . catppuccin-latte-subtext1) (text . "Podman")
+               (color . catppuccin-latte-base)
+               (logo . podman))
+              ((background . catppuccin-mocha-mauve) (text . "containers")
+               (color . catppuccin-mocha-base)))
+    (style . shadow)
+    (id . dev-podman)))
+
+(define glyph-web-caddy
+  `((sections ((background . catppuccin-latte-subtext1) (text . "server")
+               (color . catppuccin-latte-base)
+               (logo . caddy))
+              ((background . catppuccin-mocha-sky) (text . "Caddy")
+               (color . catppuccin-mocha-base)))
+    (style . shadow)
+    (id . web-caddy)))
+
+(define glyph-obs-prometheus
+  `((sections ((background . catppuccin-latte-subtext1) (text . "metrics")
+               (color . catppuccin-latte-base)
+               (logo . prometheus))
+              ((background . catppuccin-mocha-red) (text . "Prometheus")
+               (color . catppuccin-mocha-base)))
+    (style . shadow)
+    (id . obs-prometheus)))
+
+(define glyph-obs-grafana
+  `((sections ((background . catppuccin-latte-subtext1) (text . "dashboards")
+               (color . catppuccin-latte-base)
+               (logo . grafana))
+              ((background . catppuccin-mocha-yellow) (text . "Grafana")
+               (color . catppuccin-mocha-base)))
+    (style . shadow)
+    (id . obs-grafana)))
+
+(define glyph-data-json
+  `((sections ((background . catppuccin-latte-subtext1) (text . "data")
+               (color . catppuccin-latte-base)
+               (logo . json))
+              ((background . catppuccin-mocha-yellow) (text . "JSON")
+               (color . catppuccin-mocha-base)))
+    (style . shadow)
+    (id . data-json)))
+
+(define glyph-data-yaml
+  `((sections ((background . catppuccin-latte-subtext1) (text . "config")
+               (color . catppuccin-latte-base)
+               (logo . yaml))
+              ((background . catppuccin-mocha-teal) (text . "YAML")
+               (color . catppuccin-mocha-base)))
+    (style . shadow)
+    (id . data-yaml)))
+
+(define glyph-dev-wayland
+  `((sections ((background . catppuccin-latte-subtext1) (text . "display")
+               (color . catppuccin-latte-base)
+               (logo . wayland))
+              ((background . catppuccin-mocha-mauve) (text . "Wayland")
+               (color . catppuccin-mocha-base)))
+    (style . shadow)
+    (id . dev-wayland)))
+
+(define glyph-test-junit
+  `((sections ((background . catppuccin-latte-subtext1) (text . "test")
+               (color . catppuccin-latte-base)
+               (logo . shield-check))
+              ((background . catppuccin-mocha-maroon) (text . "JUnit 5")
+               (color . catppuccin-mocha-base)))
+    (style . shadow)
+    (id . test-junit)))
+
 ;; ====== Crystal glass, in the other palettes ======
 ;;
 ;; The frosted glass that (style . crystal) draws again, this time with accent
@@ -858,7 +1071,30 @@
         glyph-infra-terraform
         glyph-web-nginx
         glyph-shell-zsh
-        glyph-docs-markdown))
+        glyph-docs-markdown
+        ;; Rust and Cargo
+        glyph-rust-edition-2021
+        glyph-cargo-test
+        glyph-cargo-clippy
+        glyph-cargo-fmt
+        glyph-rust-tokio
+        glyph-rust-gtk4
+        ;; The rest of the toolchain in this tree
+        glyph-lang-typescript
+        glyph-web-react
+        glyph-build-vite
+        glyph-build-ninja
+        glyph-ci-github-actions
+        glyph-ci-woodpecker
+        glyph-deploy-shepherd
+        glyph-dev-podman
+        glyph-web-caddy
+        glyph-obs-prometheus
+        glyph-obs-grafana
+        glyph-data-json
+        glyph-data-yaml
+        glyph-dev-wayland
+        glyph-test-junit))
 
 (define ggg-glyphs
   (append
