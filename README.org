@@ -68,6 +68,21 @@ We choose for ~geometricPrecision~ in SVG to allow highest quality and fidelity,
 - Using SVG effectively :: Standard SVG elements and attributes are used in a structured way to create the visual appearance.
 - Abstraction :: of layout and view thanks to Lisp, handling all options gracefully.
 
+** From glyph to badge
+
+A glyph becomes a badge in four steps: each section of the glyph is laid out as
+one segment, each segment's text is measured (a per-character width for the font
+size, plus the five pixels of padding on either side), the logo and the named
+colors of the chosen style are drawn into the same document, and the result is
+written as an SVG.  ~--convert~ then rasterizes that SVG to a PNG.
+
+#+attr_html: :width 720 :alt A glyph definition becoming a badge SVG
+[[file:resources/diagrams/glyph-to-badge.svg]]
+
+The source of the diagram is [[file:resources/diagrams/glyph-to-badge.mmd][resources/diagrams/glyph-to-badge.mmd]];
+~maak diagrams~ renders every source under ~resources/diagrams~ to the SVG
+beside it.
+
 ----------
 
 * How to define a glyph?
@@ -403,7 +418,7 @@ The project's automation is done using [[https://codeberg.org/jjba23/maak][Maak]
 
 Also, find the technical Guile Scheme API documentation for GGG here:
 
-https://jointhefreeworld.org/api-docs/ggg/API.html
+https://jointhefreeworld.org/api-docs/ggg/index.html
 
 You can see the program's help by invoking it with the ~--help~ argument or looking at ~resources/help.txt~.
 
@@ -418,6 +433,8 @@ Useful helpers while working on glyphs:
 - ~ggg -V~ / ~--version~ :: print the version, license and homepage.
 - ~maak showcase~ :: regenerate the popular-logo badges of [[./glyphs/showcase.scm][glyphs/showcase.scm]] in ~dist/~.
 - ~maak test~ (or ~guile -L ./src ./test/ggg-tests.scm~) :: run the test suite, which covers color resolution, the logo library, glyph validation and the gallery.
+- ~maak docs~ :: build the API reference in ~doc/api-dist~ with ~dokgen~, then render it with ~texi2any~.
+- ~maak diagrams~ :: render every mermaid source under ~resources/diagrams~ to the SVG beside it.
 - ~maak release~ :: sync, commit and tag a release (see below).
 
 ** Releasing

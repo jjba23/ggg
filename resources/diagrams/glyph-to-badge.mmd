@@ -1,0 +1,7 @@
+flowchart LR
+  glyph["glyph: id, sections, style"] --> segments["one segment per section"]
+  segments --> width["text width plus padding"]
+  logo["resources/logos/name.svg"] --> svg
+  finish["style and named colors"] --> svg
+  width --> svg["SVG document"]
+  svg --> out["dist/name.svg"]

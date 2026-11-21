@@ -3,6 +3,34 @@
 ;; Spdx-License-Identifier: MIT
 ;; Copyright © Josep Bigorra <jjbigorra@gmail.com>
 
+;;; Commentary:
+;;
+;; The pipeline one run of ggg walks.
+;;
+;; A glyph configuration is a Scheme file -- or a document on stdin -- saying
+;; what each badge says, which logo it carries and which style and colors it is
+;; drawn in.  The whole list is validated against the resources directory before
+;; the destination is touched, so a typo never leaves a half-generated dist/
+;; behind.  Each glyph that passes is written as an SVG; `--convert' then
+;; rasterizes every one of them to a PNG with ImageMagick, or Inkscape when a
+;; security policy has disabled ImageMagick's SVG delegate.
+;;
+;; ```mermaid
+;; flowchart LR
+;;   config["glyph configuration<br/>file or stdin"] --> load["load-glyphs"]
+;;   load --> validate{"validate-glyphs"}
+;;   validate -- problems --> report["report-problems"]
+;;   validate -- fine --> render["write-svg"]
+;;   logos["resources/logos/*.svg"] --> render
+;;   render --> svg["dist/name.svg"]
+;;   svg --> png["dist/name.png<br/>with --convert"]
+;; ```
+;;
+;; `--stdout' takes the same path and prints the documents instead of writing
+;; them, which is what a pipe into another program uses.
+;;
+;;; Code:
+
 (define-module (ggg main)
   #:declarative? #f
   #:use-module (ice-9 format)

@@ -3,6 +3,21 @@
 #+email: jjbigorra@gmail.com
 #+options: toc:nil
 
+* 2.1.1 (2026-11-21)
+
+- The API reference is generated with =dokgen= instead of =documenta=, and
+  rendered as one page: ~maak docs~ writes =doc/api/index.texi= and
+  =doc/api-dist/index.html=, with =dokgen.css=, =dokgen.js= and the drawn
+  diagrams beside it.
+- =channels.scm= pins Guix =5cea8de= and adds the =jointhefreeworld= channel,
+  which is where =guile-dokgen= comes from, so ~maak test~, ~maak repl~ and
+  ~maak docs= run inside that channel set.
+- ~maak diagrams~ renders every mermaid source under =resources/diagrams= to the
+  SVG beside it. =resources/diagrams/glyph-to-badge.svg= is the first one: the
+  pipeline the README describes, drawn.
+- The =(ggg main)= commentary now describes the run's pipeline and carries the
+  same mermaid source, so ~maak docs= draws it into the API reference too.
+
 * 2.1.0 (2026-11-17)
 
 ** Added

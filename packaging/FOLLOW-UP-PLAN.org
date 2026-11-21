@@ -210,7 +210,7 @@ Byggsteg). The packaging has no automated check at all, which means a change to
 ** 8. Smaller cleanups worth doing with the next release
 
 - Manual page :: there is none. ~manifest.scm~ already pulls in
-  ~guile-documenta~, so a ~man/ggg.1~ could be generated from the docstrings and
+  ~guile-dokgen~, so a ~man/ggg.1~ could be generated from the docstrings and
   installed by all four recipes. Debian and openSUSE reviewers will ask.
 - Shell completions :: ~default.nix~ looks for ~scripts/ggg-completion.{bash,fish,zsh}~
   and installs them when present, and the Debian and openSUSE recipes have a

@@ -5,6 +5,7 @@
 
 (use-modules (guix packages)
              (gnu)
+             (gnu packages)
              (guix utils)
              (guix git-download)
              (guix download)
@@ -27,6 +28,10 @@
 (packages->manifest (list guile-3.0
                           imagemagick
                           watchexec
-                          guile-documenta
+                          ;; The API documentation generator.  It is defined
+                          ;; by the jointhefreeworld channel `channels.scm'
+                          ;; pins, so it is resolved by name against the
+                          ;; channels rather than imported from a module.
+                          (specification->package "guile-dokgen")
                           texinfo
                           guile-ares-rs))
