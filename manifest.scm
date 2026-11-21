@@ -33,5 +33,5 @@
                           ;; pins, so it is resolved by name against the
                           ;; channels rather than imported from a module.
                           (specification->package "guile-dokgen")
-                          texinfo
+                          (specification->package "texinfo")
                           guile-ares-rs))
