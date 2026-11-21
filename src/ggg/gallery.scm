@@ -314,7 +314,7 @@ quotes readable in a double-quoted attribute."
       <nav aria-label=\"Project links\">
         <a href=\"https://github.com/jjba23/ggg\">Source code</a>
         <a href=\"https://github.com/jjba23/ggg/blob/trunk/README.org\">README</a>
-        <a href=\"https://jointhefreeworld.org/api-docs/ggg/API.html\">API docs</a>
+        <a href=\"https://jointhefreeworld.org/api-docs/ggg/index.html\">API docs</a>
         <a href=\"https://ggg.jointhefreeworld.org\">Badge builder</a>
         <a href=\"https://github.com/jjba23/ggg/blob/trunk/CREDITS.org\">Logo credits</a>
         <a href=\"https://opensource.org/license/mit\">MIT License</a>

@@ -3,6 +3,13 @@
 #+email: jjbigorra@gmail.com
 #+options: toc:nil
 
+* 2.1.2 (2026-11-21)
+
+- The API links point at =index.html=, the one page the reference has been
+  since the dokgen migration, rather than at =.../API.html=.
+- =channels.scm= pins the jointhefreeworld revision that carries
+  =guile-dokgen= 0.9.1.
+
 * 2.1.1 (2026-11-21)
 
 - The API reference is generated with =dokgen= instead of =documenta=, and
