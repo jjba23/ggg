@@ -10,6 +10,8 @@
 #+attr_html: :width 160 :alt GGG logo
 [[file:logo.svg]]
 
+- 📖 *API reference:* [[https://jointhefreeworld.org/api-docs/ggg/index.html][GGG API reference]]
+
 /Generate SVG images for handy useful glyphs, Org/Markdown badges and more, leveraging the power of Lisp (Guile Scheme)/
 
 Be proud and appreciate technologies and techniques you use, distinguish clearly supported versions of things, etc.
